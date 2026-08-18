@@ -93,7 +93,6 @@
     .photo-card {
       position: sticky;
       top: 95px;
-
       height: fit-content;
     }
 
@@ -233,7 +232,6 @@
 
     .section h2 {
       font-size: 18px;
-
       margin-bottom: 16px;
     }
 
@@ -286,7 +284,9 @@
       font-size: 15px;
     }
 
-    .booking-btn {
+    /* WhatsApp Button */
+
+    .whatsapp-btn {
       display: block;
 
       width: 100%;
@@ -300,23 +300,30 @@
       background:
         linear-gradient(
           90deg,
-          #823cff,
-          #ff2ea6
+          #25D366,
+          #17aa50
         );
 
       color: white;
 
       text-align: center;
 
-      font-size: 16px;
+      font-size: 17px;
       font-weight: bold;
 
       cursor: pointer;
 
       margin-top: 15px;
+
+      transition: .2s;
     }
 
-    .notice {
+    .whatsapp-btn:hover {
+      transform: translateY(-2px);
+      opacity: .94;
+    }
+
+    .contact-note {
       margin-top: 13px;
 
       color: #777;
@@ -457,6 +464,7 @@
 
       <div id="photoBox"></div>
 
+
       <div class="status-row">
 
         <span
@@ -481,6 +489,7 @@
         class="name">
       </h1>
 
+
       <div
         id="subInfo"
         class="sub-info">
@@ -496,10 +505,12 @@
           价格
         </div>
 
+
         <div
           id="price"
           class="price">
         </div>
+
 
         <div
           id="minimum"
@@ -516,6 +527,7 @@
           data-th="ข้อมูลพื้นฐาน">
           基本资料
         </h2>
+
 
         <div class="info-grid">
 
@@ -591,9 +603,9 @@
 
             <div
               class="label"
-              data-zh="可预约时间"
-              data-th="เวลาที่รับจอง">
-              可预约时间
+              data-zh="可联系时间"
+              data-th="เวลาที่ติดต่อได้">
+              可联系时间
             </div>
 
             <div
@@ -627,9 +639,9 @@
       <section class="section">
 
         <h2
-          data-zh="可以陪同"
-          data-th="กิจกรรมที่สามารถร่วมได้">
-          可以陪同
+          data-zh="陪同项目"
+          data-th="กิจกรรม">
+          陪同项目
         </h2>
 
         <div
@@ -656,19 +668,24 @@
       </section>
 
 
+      <!-- 直接 WhatsApp -->
+
       <a
-        id="bookingBtn"
-        class="booking-btn"
-        href="#">
-        立即预约
+        href="#"
+        id="whatsappBtn"
+        class="whatsapp-btn"
+        onclick="contactWhatsApp(); return false;"
+        data-zh="💬 WhatsApp 联系"
+        data-th="💬 ติดต่อผ่าน WhatsApp">
+        💬 WhatsApp 联系
       </a>
 
 
       <div
-        class="notice"
-        data-zh="提交预约后，需要由 SABAI GO 确认时间与安排后才算预约成功。"
-        data-th="หลังจากส่งคำขอจอง SABAI GO จะติดต่อเพื่อยืนยันเวลาและรายละเอียดก่อนการจองสำเร็จ">
-        提交预约后，需要由 SABAI GO 确认时间与安排后才算预约成功。
+        class="contact-note"
+        data-zh="点击按钮后将直接打开 WhatsApp 联系 SABAI GO。"
+        data-th="กดปุ่มเพื่อเปิด WhatsApp และติดต่อ SABAI GO">
+        点击按钮后将直接打开 WhatsApp 联系 SABAI GO。
       </div>
 
     </div>
@@ -708,8 +725,13 @@
 
 <script>
 
+  /* =========================================
+     SUPABASE
+  ========================================= */
+
   const SUPABASE_URL =
     "https://xfezhdqakmyecregqesn.supabase.co";
+
 
   const SUPABASE_KEY =
     "sb_publishable_AuNzm5CWOK2B2Pa7Pn_wBA_pAqHVpI2";
@@ -720,6 +742,14 @@
       SUPABASE_URL,
       SUPABASE_KEY
     );
+
+
+  /* =========================================
+     WHATSAPP
+  ========================================= */
+
+  const WHATSAPP_NUMBER =
+    "601163803627";
 
 
   let profile = null;
@@ -738,10 +768,12 @@
 
 
   const slug =
-    params.get(
-      "id"
-    );
+    params.get("id");
 
+
+  /* =========================================
+     LOAD PROFILE
+  ========================================= */
 
   async function loadProfile() {
 
@@ -812,6 +844,10 @@
 
   }
 
+
+  /* =========================================
+     RENDER
+  ========================================= */
 
   function renderProfile() {
 
@@ -938,7 +974,7 @@
       )
       .textContent =
         currentLanguage === "zh"
-          ? "最低预约 " +
+          ? "最低 " +
             (
               profile.minimum_hours ||
               0
@@ -986,34 +1022,105 @@
 
     renderLanguageTags();
 
-
     renderServiceTags();
-
 
     renderStatus();
 
 
-    const bookingBtn =
-      document
-        .getElementById(
-          "bookingBtn"
-        );
-
-
-    bookingBtn.textContent =
-      currentLanguage === "zh"
-        ? "立即预约"
-        : "จองตอนนี้";
-
-
-    bookingBtn.href =
-      "booking.html?id=" +
-      encodeURIComponent(
-        profile.slug
-      );
+    document
+      .getElementById(
+        "whatsappBtn"
+      )
+      .textContent =
+        currentLanguage === "zh"
+          ? "💬 WhatsApp 联系"
+          : "💬 ติดต่อผ่าน WhatsApp";
 
   }
 
+
+  /* =========================================
+     WHATSAPP DIRECT CONTACT
+  ========================================= */
+
+  function contactWhatsApp() {
+
+    if (!profile) {
+      return;
+    }
+
+
+    const nickname =
+      profile.nickname ||
+      "-";
+
+
+    const slug =
+      profile.slug ||
+      "-";
+
+
+    const area =
+      profile.area ||
+      "-";
+
+
+    const price =
+      profile.price_per_hour ??
+      0;
+
+
+    let message;
+
+
+    if (
+      currentLanguage === "zh"
+    ) {
+
+      message =
+`你好 SABAI GO，我想咨询这个资料。
+
+人物：${nickname}
+编号：${slug}
+地区：${area}
+价格：RM${price} / 小时
+
+请问现在可以安排吗？`;
+
+    }
+    else {
+
+      message =
+`สวัสดี SABAI GO ฉันต้องการสอบถามโปรไฟล์นี้
+
+ชื่อ: ${nickname}
+รหัส: ${slug}
+พื้นที่: ${area}
+ราคา: RM${price} / ชั่วโมง
+
+ตอนนี้สามารถนัดได้ไหม?`;
+
+    }
+
+
+    const url =
+      "https://wa.me/" +
+      WHATSAPP_NUMBER +
+      "?text=" +
+      encodeURIComponent(
+        message
+      );
+
+
+    window.location.href =
+      url;
+
+  }
+
+
+  /* =========================================
+     LANGUAGES
+  ========================================= */
 
   function renderLanguageTags() {
 
@@ -1048,10 +1155,9 @@
         function(item) {
 
           const span =
-            document
-              .createElement(
-                "span"
-              );
+            document.createElement(
+              "span"
+            );
 
 
           span.className =
@@ -1074,6 +1180,10 @@
   }
 
 
+  /* =========================================
+     SERVICES
+  ========================================= */
+
   function renderServiceTags() {
 
     const box =
@@ -1094,9 +1204,7 @@
 
 
     if (!value) {
-
       return;
-
     }
 
 
@@ -1111,10 +1219,9 @@
         function(item) {
 
           const span =
-            document
-              .createElement(
-                "span"
-              );
+            document.createElement(
+              "span"
+            );
 
 
           span.className =
@@ -1134,6 +1241,10 @@
 
   }
 
+
+  /* =========================================
+     STATUS
+  ========================================= */
 
   function renderStatus() {
 
@@ -1164,8 +1275,7 @@
   ) {
 
     if (
-      value ===
-      "available"
+      value === "available"
     ) {
 
       return "available";
@@ -1174,8 +1284,7 @@
 
 
     if (
-      value ===
-      "busy"
+      value === "busy"
     ) {
 
       return "busy";
@@ -1193,8 +1302,7 @@
   ) {
 
     if (
-      value ===
-      "available"
+      value === "available"
     ) {
 
       return currentLanguage === "zh"
@@ -1205,8 +1313,7 @@
 
 
     if (
-      value ===
-      "busy"
+      value === "busy"
     ) {
 
       return currentLanguage === "zh"
@@ -1223,13 +1330,16 @@
   }
 
 
+  /* =========================================
+     GENDER
+  ========================================= */
+
   function genderText(
     value
   ) {
 
     if (
-      value ===
-      "female"
+      value === "female"
     ) {
 
       return currentLanguage === "zh"
@@ -1240,8 +1350,7 @@
 
 
     if (
-      value ===
-      "male"
+      value === "male"
     ) {
 
       return currentLanguage === "zh"
@@ -1256,13 +1365,16 @@
   }
 
 
+  /* =========================================
+     SERVICE TYPE
+  ========================================= */
+
   function serviceTypeText(
     value
   ) {
 
     if (
-      value ===
-      "party"
+      value === "party"
     ) {
 
       return "Party Companion";
@@ -1271,8 +1383,7 @@
 
 
     if (
-      value ===
-      "girlfriend"
+      value === "girlfriend"
     ) {
 
       return currentLanguage === "zh"
@@ -1283,8 +1394,7 @@
 
 
     if (
-      value ===
-      "boyfriend"
+      value === "boyfriend"
     ) {
 
       return currentLanguage === "zh"
@@ -1294,11 +1404,14 @@
     }
 
 
-    return value ||
-      "-";
+    return value || "-";
 
   }
 
+
+  /* =========================================
+     LANGUAGE TEXT
+  ========================================= */
 
   function languageText(
     value
@@ -1345,6 +1458,10 @@
 
   }
 
+
+  /* =========================================
+     LANGUAGE SWITCH
+  ========================================= */
 
   function setLanguage(
     lang
@@ -1426,6 +1543,10 @@
   }
 
 
+  /* =========================================
+     NOT FOUND
+  ========================================= */
+
   function showNotFound() {
 
     document
@@ -1453,6 +1574,10 @@
 
   }
 
+
+  /* =========================================
+     SAFE HTML
+  ========================================= */
 
   function escapeHtml(
     value
@@ -1484,6 +1609,10 @@
 
   }
 
+
+  /* =========================================
+     START
+  ========================================= */
 
   setLanguage(
     currentLanguage
