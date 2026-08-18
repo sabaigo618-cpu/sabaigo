@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SABAI GO - Companion Detail</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #050505;
+      color: #fff;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      padding: 15px 6%;
+
+      background: rgba(0,0,0,.93);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      font-size: 29px;
+      font-weight: 900;
+    }
+
+    .logo span {
+      color: #ff2ea6;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      color: #ccc;
+      font-size: 14px;
+    }
+
+    .lang-btn {
+      border: 1px solid #ff2ea6;
+      background: transparent;
+      color: white;
+
+      padding: 7px 13px;
+      border-radius: 20px;
+
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      background: #ff2ea6;
+    }
+
+    .container {
+      max-width: 1150px;
+      margin: auto;
+      padding: 45px 20px 80px;
+
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 45px;
+    }
+
+    .photo-card {
+      position: sticky;
+      top: 95px;
+      height: fit-content;
+    }
+
+    .main-photo {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+
+      border-radius: 22px;
+      background: #111;
+
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .status-row {
+      margin-top: 15px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .status {
+      padding: 8px 13px;
+      border-radius: 20px;
+
+      background: rgba(24,180,100,.9);
+
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .profile-code {
+      color: #777;
+      font-size: 12px;
+    }
+
+    .name {
+      font-size: 42px;
+      margin-bottom: 8px;
+    }
+
+    .sub-info {
+      color: #aaa;
+      font-size: 15px;
+      margin-bottom: 25px;
+      line-height: 1.7;
+    }
+
+    .section {
+      background: #0e0e0e;
+      border: 1px solid rgba(255,255,255,.07);
+
+      border-radius: 18px;
+      padding: 23px;
+
+      margin-bottom: 18px;
+    }
+
+    .section h2 {
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .info-box {
+      background: #151515;
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .label {
+      color: #777;
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+
+    .value {
+      font-size: 15px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      background: #191919;
+      border: 1px solid #292929;
+
+      padding: 8px 11px;
+      border-radius: 18px;
+
+      color: #ccc;
+      font-size: 13px;
+    }
+
+    .description {
+      color: #bbb;
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    .price-box {
+      background:
+        linear-gradient(
+          135deg,
+          rgba(139,60,255,.18),
+          rgba(255,46,166,.15)
+        );
+
+      border: 1px solid rgba(255,46,166,.25);
+
+      border-radius: 18px;
+
+      padding: 24px;
+
+      margin-bottom: 18px;
+    }
+
+    .price {
+      font-size: 34px;
+      font-weight: bold;
+      color: #ff54b8;
+
+      margin-bottom: 7px;
+    }
+
+    .price-note {
+      color: #aaa;
+      font-size: 13px;
+    }
+
+    .booking-btn {
+      display: block;
+      width: 100%;
+
+      border: none;
+
+      padding: 16px;
+
+      border-radius: 12px;
+
+      background:
+        linear-gradient(
+          90deg,
+          #823cff,
+          #ff2ea6
+        );
+
+      color: white;
+
+      text-align: center;
+
+      font-size: 16px;
+      font-weight: bold;
+
+      cursor: pointer;
+
+      margin-top: 15px;
+    }
+
+    .notice {
+      margin-top: 13px;
+
+      color: #777;
+      font-size: 11px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .not-found {
+      display: none;
+
+      padding: 100px 20px;
+      text-align: center;
+    }
+
+    footer {
+      border-top: 1px solid rgba(255,255,255,.07);
+
+      color: #666;
+
+      text-align: center;
+      padding: 25px;
+
+      font-size: 12px;
+    }
+
+    @media(max-width:850px) {
+
+      .container {
+        grid-template-columns: 1fr;
+        max-width: 650px;
+      }
+
+      .photo-card {
+        position: static;
+      }
+
+      .main-photo {
+        max-height: 650px;
+      }
+
+    }
+
+    @media(max-width:520px) {
+
+      .topbar {
+        padding: 13px 15px;
+      }
+
+      .logo {
+        font-size: 23px;
+      }
+
+      .back-btn {
+        display: none;
+      }
+
+      .container {
+        padding: 22px 14px 60px;
+        gap: 25px;
+      }
+
+      .name {
+        font-size: 32px;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+  <a href="index.html" class="logo">
+    SABAI <span>GO</span>
+  </a>
+
+  <div class="top-right">
+
+    <a
+      href="companions.html"
+      class="back-btn"
+      data-zh="← 返回列表"
+      data-th="← กลับไปหน้ารายการ">
+      ← 返回列表
+    </a>
+
+    <button
+      id="zhBtn"
+      class="lang-btn active"
+      onclick="setLanguage('zh')">
+      中文
+    </button>
+
+    <button
+      id="thBtn"
+      class="lang-btn"
+      onclick="setLanguage('th')">
+      ไทย
+    </button>
+
+  </div>
+
+</header>
+
+
+<div id="profilePage">
+
+  <main class="container">
+
+    <div class="photo-card">
+
+      <img
+        id="mainPhoto"
+        class="main-photo"
+        src=""
+        alt="Companion">
+
+      <div class="status-row">
+
+        <span
+          id="status"
+          class="status">
+          ● Available
+        </span>
+
+        <span
+          id="profileCode"
+          class="profile-code">
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div>
+
+      <h1
+        id="name"
+        class="name">
+      </h1>
+
+      <div
+        id="subInfo"
+        class="sub-info">
+      </div>
+
+
+      <div class="price-box">
+
+        <div
+          class="label"
+          data-zh="价格"
+          data-th="ราคา">
+          价格
+        </div>
+
+        <div
+          id="price"
+          class="price">
+        </div>
+
+        <div
+          id="minimum"
+          class="price-note">
+        </div>
+
+      </div>
+
+
+      <section class="section">
+
+        <h2
+          data-zh="基本资料"
+          data-th="ข้อมูลพื้นฐาน">
+          基本资料
+        </h2>
+
+        <div class="info-grid">
+
+          <div class="info-box">
+
+            <div
+              class="label"
+              data-zh="年龄"
+              data-th="อายุ">
+              年龄
+            </div>
+
+            <div
+              id="age"
+              class="value">
+            </div>
+
+          </div>
+
+          <div class="info-box">
+
+            <div
+              class="label"
+              data-zh="地区"
+              data-th="พื้นที่">
+              地区
+            </div>
+
+            <div
+              id="area"
+              class="value">
+            </div>
+
+          </div>
+
+          <div class="info-box">
+
+            <div
+              class="label"
+              data-zh="性别"
+              data-th="เพศ">
+              性别
+            </div>
+
+            <div
+              id="gender"
+              class="value">
+            </div>
+
+          </div>
+
+          <div class="info-box">
+
+            <div
+              class="label"
+              data-zh="服务类型"
+              data-th="ประเภทบริการ">
+              服务类型
+            </div>
+
+            <div
+              id="serviceType"
+              class="value">
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section class="section">
+
+        <h2
+          data-zh="语言"
+          data-th="ภาษา">
+          语言
+        </h2>
+
+        <div
+          id="languages"
+          class="tags">
+        </div>
+
+      </section>
+
+
+      <section class="section">
+
+        <h2
+          data-zh="可以陪同"
+          data-th="กิจกรรมที่สามารถร่วมได้">
+          可以陪同
+        </h2>
+
+        <div
+          id="services"
+          class="tags">
+        </div>
+
+      </section>
+
+
+      <section class="section">
+
+        <h2
+          data-zh="个人介绍"
+          data-th="แนะนำตัว">
+          个人介绍
+        </h2>
+
+        <p
+          id="description"
+          class="description">
+        </p>
+
+      </section>
+
+
+      <a
+        id="bookingBtn"
+        class="booking-btn"
+        href="#">
+        立即预约
+      </a>
+
+      <div
+        class="notice"
+        data-zh="提交预约后，需要由 SABAI GO 确认时间与安排后才算预约成功。"
+        data-th="หลังจากส่งคำขอจอง SABAI GO จะติดต่อเพื่อยืนยันเวลาและรายละเอียดก่อนการจองสำเร็จ">
+        提交预约后，需要由 SABAI GO 确认时间与安排后才算预约成功。
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<div
+  id="notFound"
+  class="not-found">
+
+  <h2
+    data-zh="找不到这个资料"
+    data-th="ไม่พบโปรไฟล์นี้">
+    找不到这个资料
+  </h2>
+
+  <br>
+
+  <a
+    href="companions.html"
+    style="color:#ff4eb3;"
+    data-zh="返回人物列表"
+    data-th="กลับไปหน้ารายการ">
+    返回人物列表
+  </a>
+
+</div>
+
+
+<footer>
+  © 2026 SABAI GO
+</footer>
+
+
+<script>
+
+const profiles = {
+
+  may: {
+
+    code: "SG001",
+
+    name: "May 🇹🇭",
+
+    age: 24,
+
+    area: "Kuala Lumpur",
+
+    gender: {
+      zh: "女生",
+      th: "ผู้หญิง"
+    },
+
+    serviceType: {
+      zh: "Party Companion · 1日女友",
+      th: "เพื่อนปาร์ตี้ · แฟน 1 วัน"
+    },
+
+    price: 120,
+
+    minimum: 3,
+
+    status: "available",
+
+    photo:
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1000&q=85",
+
+    languages: {
+      zh: ["泰语", "英语"],
+      th: ["ภาษาไทย", "ภาษาอังกฤษ"]
+    },
+
+    services: {
+      zh: [
+        "陪喝酒",
+        "KTV",
+        "聚会",
+        "吃饭",
+        "逛街",
+        "活动陪同"
+      ],
+
+      th: [
+        "เพื่อนดื่ม",
+        "KTV",
+        "ปาร์ตี้",
+        "ทานข้าว",
+        "ช้อปปิ้ง",
+        "ร่วมกิจกรรม"
+      ]
+    },
+
+    description: {
+
+      zh:
+        "性格开朗，比较容易聊天。适合一起吃饭、喝酒、KTV、聚会或参加一般社交活动。预约前可以先选择日期、时间和地区。",
+
+      th:
+        "นิสัยเป็นกันเอง คุยง่าย เหมาะสำหรับไปทานข้าว ดื่ม KTV ปาร์ตี้ หรือร่วมกิจกรรมทั่วไป สามารถเลือกวัน เวลา และพื้นที่ก่อนส่งคำขอจอง"
+
+    }
+
+  },
+
+
+  mint: {
+
+    code: "SG002",
+
+    name: "Mint 🇹🇭",
+
+    age: 23,
+
+    area: "Puchong",
+
+    gender: {
+      zh: "女生",
+      th: "ผู้หญิง"
+    },
+
+    serviceType: {
+      zh: "Party Companion",
+      th: "เพื่อนปาร์ตี้"
+    },
+
+    price: 100,
+
+    minimum: 3,
+
+    status: "available",
+
+    photo:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=85",
+
+    languages: {
+      zh: ["泰语", "华语"],
+      th: ["ภาษาไทย", "ภาษาจีน"]
+    },
+
+    services: {
+      zh: [
+        "陪喝酒",
+        "KTV",
+        "聚会"
+      ],
+
+      th: [
+        "เพื่อนดื่ม",
+        "KTV",
+        "ปาร์ตี้"
+      ]
+    },
+
+    description: {
+
+      zh:
+        "喜欢轻松的聚会和音乐，可以陪同 KTV、朋友聚会以及一般夜生活活动。",
+
+      th:
+        "ชอบบรรยากาศสบายๆ และดนตรี สามารถไป KTV ปาร์ตี้กับเพื่อน และกิจกรรมยามค่ำคืนทั่วไปได้"
+
+    }
+
+  },
+
+
+  nana: {
+
+    code: "SG003",
+
+    name: "Nana 🇹🇭",
+
+    age: 25,
+
+    area: "Petaling Jaya",
+
+    gender: {
+      zh: "女生",
+      th: "ผู้หญิง"
+    },
+
+    serviceType: {
+      zh: "1日女友",
+      th: "แฟน 1 วัน"
+    },
+
+    price: 110,
+
+    minimum: 4,
+
+    status: "busy",
+
+    photo:
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1000&q=85",
+
+    languages: {
+      zh: ["泰语", "英语"],
+      th: ["ภาษาไทย", "ภาษาอังกฤษ"]
+    },
+
+    services: {
+      zh: [
+        "吃饭",
+        "电影",
+        "逛街",
+        "活动陪同"
+      ],
+
+      th: [
+        "ทานข้าว",
+        "ดูหนัง",
+        "ช้อปปิ้ง",
+        "ร่วมกิจกรรม"
+      ]
+    },
+
+    description: {
+
+      zh:
+        "适合一起吃饭、看电影、Shopping 和参加一般活动。",
+
+      th:
+        "เหมาะสำหรับทานข้าว ดูหนัง ช้อปปิ้ง และร่วมกิจกรรมทั่วไป"
+
+    }
+
+  },
+
+
+  ploy: {
+
+    code: "SG004",
+
+    name: "Ploy 🇹🇭",
+
+    age: 26,
+
+    area: "Subang Jaya",
+
+    gender: {
+      zh: "女生",
+      th: "ผู้หญิง"
+    },
+
+    serviceType: {
+      zh: "Party Companion · 1日女友",
+      th: "เพื่อนปาร์ตี้ · แฟน 1 วัน"
+    },
+
+    price: 130,
+
+    minimum: 3,
+
+    status: "available",
+
+    photo:
+      "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=1000&q=85",
+
+    languages: {
+      zh: [
+        "泰语",
+        "华语",
+        "英语"
+      ],
+
+      th: [
+        "ภาษาไทย",
+        "ภาษาจีน",
+        "ภาษาอังกฤษ"
+      ]
+    },
+
+    services: {
+      zh: [
+        "陪喝酒",
+        "KTV",
+        "活动陪同",
+        "吃饭"
+      ],
+
+      th: [
+        "เพื่อนดื่ม",
+        "KTV",
+        "ร่วมกิจกรรม",
+        "ทานข้าว"
+      ]
+    },
+
+    description: {
+
+      zh:
+        "可以使用泰语、华语和英语沟通，适合聚会、KTV、吃饭及活动陪同。",
+
+      th:
+        "สามารถสื่อสารภาษาไทย จีน และอังกฤษ เหมาะสำหรับปาร์ตี้ KTV ทานข้าว และร่วมกิจกรรม"
+
+    }
+
+  },
+
+
+  jay: {
+
+    code: "SG005",
+
+    name: "Jay",
+
+    age: 27,
+
+    area: "Kuala Lumpur",
+
+    gender: {
+      zh: "男生",
+      th: "ผู้ชาย"
+    },
+
+    serviceType: {
+      zh: "1日男友",
+      th: "แฟน 1 วัน (ผู้ชาย)"
+    },
+
+    price: 100,
+
+    minimum: 4,
+
+    status: "available",
+
+    photo:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1000&q=85",
+
+    languages: {
+      zh: ["华语", "英语"],
+      th: ["ภาษาจีน", "ภาษาอังกฤษ"]
+    },
+
+    services: {
+      zh: [
+        "吃饭",
+        "逛街",
+        "电影",
+        "活动陪同"
+      ],
+
+      th: [
+        "ทานข้าว",
+        "ช้อปปิ้ง",
+        "ดูหนัง",
+        "ร่วมกิจกรรม"
+      ]
+    },
+
+    description: {
+
+      zh:
+        "适合一起吃饭、Shopping、电影和参加一般活动。",
+
+      th:
+        "เหมาะสำหรับทานข้าว ช้อปปิ้ง ดูหนัง และร่วมกิจกรรมทั่วไป"
+
+    }
+
+  },
+
+
+  bank: {
+
+    code: "SG006",
+
+    name: "Bank 🇹🇭",
+
+    age: 25,
+
+    area: "Klang",
+
+    gender: {
+      zh: "男生",
+      th: "ผู้ชาย"
+    },
+
+    serviceType: {
+      zh: "Party Companion · 1日男友",
+      th: "เพื่อนปาร์ตี้ · แฟน 1 วัน"
+    },
+
+    price: 90,
+
+    minimum: 3,
+
+    status: "available",
+
+    photo:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1000&q=85",
+
+    languages: {
+      zh: ["泰语", "英语"],
+      th: ["ภาษาไทย", "ภาษาอังกฤษ"]
+    },
+
+    services: {
+      zh: [
+        "陪喝酒",
+        "KTV",
+        "聚会",
+        "活动陪同"
+      ],
+
+      th: [
+        "เพื่อนดื่ม",
+        "KTV",
+        "ปาร์ตี้",
+        "ร่วมกิจกรรม"
+      ]
+    },
+
+    description: {
+
+      zh:
+        "喜欢聚会和 KTV，可以陪同一般社交和娱乐活动。",
+
+      th:
+        "ชอบปาร์ตี้และ KTV สามารถร่วมกิจกรรมสังคมและความบันเทิงทั่วไปได้"
+
+    }
+
+  }
+
+};
+
+
+let currentLanguage =
+  localStorage.getItem(
+    "sabaigo-language"
+  ) || "zh";
+
+
+const params =
+  new URLSearchParams(
+    window.location.search
+  );
+
+
+const id =
+  params.get("id");
+
+
+const profile =
+  profiles[id];
+
+
+if (!profile) {
+
+  document
+    .getElementById("profilePage")
+    .style.display = "none";
+
+  document
+    .getElementById("notFound")
+    .style.display = "block";
+
+}
+else {
+
+  renderProfile();
+
+}
+
+
+function renderProfile() {
+
+  document
+    .getElementById("mainPhoto")
+    .src = profile.photo;
+
+
+  document
+    .getElementById("name")
+    .textContent =
+      profile.name;
+
+
+  document
+    .getElementById("profileCode")
+    .textContent =
+      profile.code;
+
+
+  document
+    .getElementById("age")
+    .textContent =
+      profile.age;
+
+
+  document
+    .getElementById("area")
+    .textContent =
+      profile.area;
+
+
+  document
+    .getElementById("gender")
+    .textContent =
+      profile.gender[
+        currentLanguage
+      ];
+
+
+  document
+    .getElementById(
+      "serviceType"
+    )
+    .textContent =
+      profile.serviceType[
+        currentLanguage
+      ];
+
+
+  document
+    .getElementById("price")
+    .textContent =
+      "RM" +
+      profile.price +
+      " / " +
+      (
+        currentLanguage === "zh"
+        ? "小时"
+        : "ชั่วโมง"
+      );
+
+
+  document
+    .getElementById("minimum")
+    .textContent =
+      currentLanguage === "zh"
+
+      ? "最低预约 " +
+        profile.minimum +
+        " 小时"
+
+      : "ขั้นต่ำ " +
+        profile.minimum +
+        " ชั่วโมง";
+
+
+  document
+    .getElementById("subInfo")
+    .textContent =
+      "📍 " +
+      profile.area +
+      " · " +
+      profile.serviceType[
+        currentLanguage
+      ];
+
+
+  document
+    .getElementById(
+      "description"
+    )
+    .textContent =
+      profile.description[
+        currentLanguage
+      ];
+
+
+  renderTags(
+    "languages",
+    profile.languages[
+      currentLanguage
+    ]
+  );
+
+
+  renderTags(
+    "services",
+    profile.services[
+      currentLanguage
+    ]
+  );
+
+
+  const status =
+    document
+      .getElementById("status");
+
+
+  if (
+    profile.status ===
+    "available"
+  ) {
+
+    status.textContent =
+      currentLanguage === "zh"
+      ? "● Available"
+      : "● ว่าง";
+
+    status.style.background =
+      "rgba(24,180,100,.9)";
+
+  }
+
+  else {
+
+    status.textContent =
+      currentLanguage === "zh"
+      ? "● Busy"
+      : "● ไม่ว่าง";
+
+    status.style.background =
+      "rgba(235,150,20,.92)";
+
+  }
+
+
+  const bookingBtn =
+    document
+      .getElementById(
+        "bookingBtn"
+      );
+
+
+  bookingBtn.textContent =
+    currentLanguage === "zh"
+    ? "立即预约"
+    : "จองตอนนี้";
+
+
+  bookingBtn.href =
+    "booking.html?id=" +
+    id;
+
+}
+
+
+function renderTags(
+  elementId,
+  items
+) {
+
+  const box =
+    document
+      .getElementById(
+        elementId
+      );
+
+
+  box.innerHTML = "";
+
+
+  items.forEach(
+    function(item) {
+
+      const span =
+        document.createElement(
+          "span"
+        );
+
+      span.className =
+        "tag";
+
+      span.textContent =
+        item;
+
+      box.appendChild(
+        span
+      );
+
+    }
+  );
+
+}
+
+
+function setLanguage(lang) {
+
+  currentLanguage =
+    lang;
+
+
+  localStorage.setItem(
+    "sabaigo-language",
+    lang
+  );
+
+
+  document
+    .querySelectorAll(
+      "[data-zh]"
+    )
+    .forEach(
+      function(el) {
+
+        const value =
+          el.getAttribute(
+            "data-" + lang
+          );
+
+        if (
+          value !== null
+        ) {
+
+          el.textContent =
+            value;
+
+        }
+
+      }
+    );
+
+
+  document
+    .getElementById(
+      "zhBtn"
+    )
+    .classList
+    .toggle(
+      "active",
+      lang === "zh"
+    );
+
+
+  document
+    .getElementById(
+      "thBtn"
+    )
+    .classList
+    .toggle(
+      "active",
+      lang === "th"
+    );
+
+
+  document.documentElement.lang =
+    lang === "zh"
+    ? "zh"
+    : "th";
+
+
+  if (profile) {
+
+    renderProfile();
+
+  }
+
+}
+
+
+setLanguage(
+  currentLanguage
+);
+
+</script>
+
+</body>
+</html>
