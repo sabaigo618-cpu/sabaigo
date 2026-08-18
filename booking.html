@@ -346,8 +346,8 @@
       background:
         linear-gradient(
           90deg,
-          #833cff,
-          #ff2ea6
+          #25D366,
+          #16a34a
         );
 
       color: white;
@@ -356,6 +356,10 @@
       font-weight: bold;
 
       cursor: pointer;
+    }
+
+    .submit-btn:hover {
+      opacity: .92;
     }
 
     .message {
@@ -372,16 +376,6 @@
       line-height: 1.6;
 
       font-size: 14px;
-    }
-
-    .message.success {
-      display: block;
-
-      background: rgba(29,171,92,.12);
-
-      border: 1px solid rgba(29,171,92,.35);
-
-      color: #8df0b5;
     }
 
     .message.error {
@@ -410,7 +404,6 @@
 
       .container {
         grid-template-columns: 1fr;
-
         max-width: 650px;
       }
 
@@ -455,7 +448,6 @@
 </head>
 
 <body>
-
 
 <header class="topbar">
 
@@ -511,9 +503,9 @@
     </h1>
 
     <p
-      data-zh="选择日期、时间与预约时长，提交后由 SABAI GO 与你确认最终安排。"
-      data-th="เลือกวันที่ เวลา และจำนวนชั่วโมง หลังจากส่งคำขอ SABAI GO จะติดต่อเพื่อยืนยันรายละเอียด">
-      选择日期、时间与预约时长，提交后由 SABAI GO 与你确认最终安排。
+      data-zh="填写预约资料后，将自动打开 WhatsApp 联系 SABAI GO。"
+      data-th="กรอกข้อมูลการจองแล้ว ระบบจะเปิด WhatsApp เพื่อติดต่อ SABAI GO อัตโนมัติ">
+      填写预约资料后，将自动打开 WhatsApp 联系 SABAI GO。
     </p>
 
   </section>
@@ -796,18 +788,18 @@
 
         <div
           class="booking-note"
-          data-zh="此页面提交的是预约申请，并不代表已经确认。SABAI GO 会与你确认人员时间、地点与最终安排。"
-          data-th="แบบฟอร์มนี้เป็นเพียงคำขอจอง ยังไม่ถือว่าการจองได้รับการยืนยัน SABAI GO จะติดต่อเพื่อยืนยันเวลา สถานที่ และรายละเอียดอีกครั้ง">
-          此页面提交的是预约申请，并不代表已经确认。SABAI GO 会与你确认人员时间、地点与最终安排。
+          data-zh="点击提交后，会自动打开 WhatsApp。预约需要由 SABAI GO 确认时间与安排后才算成功。"
+          data-th="หลังจากกดส่ง ระบบจะเปิด WhatsApp อัตโนมัติ การจองจะสมบูรณ์เมื่อ SABAI GO ยืนยันเวลาและรายละเอียดแล้ว">
+          点击提交后，会自动打开 WhatsApp。预约需要由 SABAI GO 确认时间与安排后才算成功。
         </div>
 
 
         <button
           type="submit"
           class="submit-btn"
-          data-zh="提交预约申请"
-          data-th="ส่งคำขอจอง">
-          提交预约申请
+          data-zh="WhatsApp 提交预约"
+          data-th="ส่งคำขอผ่าน WhatsApp">
+          WhatsApp 提交预约
         </button>
 
 
@@ -871,6 +863,14 @@
       SUPABASE_URL,
       SUPABASE_KEY
     );
+
+
+  /* =========================================
+     WHATSAPP
+  ========================================= */
+
+  const WHATSAPP_NUMBER =
+    "601163803627";
 
 
   let profile = null;
@@ -1366,8 +1366,7 @@
 
 
   /* =========================================
-     SUBMIT
-     暂时还没有写入数据库
+     WHATSAPP SUBMIT
   ========================================= */
 
   document
@@ -1381,11 +1380,9 @@
         event.preventDefault();
 
 
-        const message =
-          document
-            .getElementById(
-              "message"
-            );
+        if (!profile) {
+          return;
+        }
 
 
         const date =
@@ -1402,6 +1399,33 @@
               "bookingTime"
             )
             .value;
+
+
+        const hours =
+          Number(
+            document
+              .getElementById(
+                "hours"
+              )
+              .value
+          );
+
+
+        const area =
+          document
+            .getElementById(
+              "area"
+            )
+            .value;
+
+
+        const meetingPlace =
+          document
+            .getElementById(
+              "meetingPlace"
+            )
+            .value
+            .trim();
 
 
         const customerName =
@@ -1422,45 +1446,128 @@
             .trim();
 
 
-        const meetingPlace =
+        const notes =
           document
             .getElementById(
-              "meetingPlace"
+              "notes"
             )
             .value
             .trim();
 
 
+        const messageBox =
+          document
+            .getElementById(
+              "message"
+            );
+
+
         if (
           !date ||
           !time ||
+          !hours ||
+          !area ||
+          !meetingPlace ||
           !customerName ||
-          !phone ||
-          !meetingPlace
+          !phone
         ) {
 
-          message.className =
+          messageBox.className =
             "message error";
 
 
-          message.textContent =
+          messageBox.textContent =
             currentLanguage === "zh"
               ? "请填写所有必填资料。"
               : "กรุณากรอกข้อมูลที่จำเป็นให้ครบ";
+
 
           return;
 
         }
 
 
-        message.className =
-          "message success";
+        const hourlyPrice =
+          Number(
+            profile.price_per_hour
+          ) || 0;
 
 
-        message.textContent =
+        const total =
+          hourlyPrice *
+          hours;
+
+
+        let whatsappMessage;
+
+
+        if (
           currentLanguage === "zh"
-            ? "预约资料已经填写完成。下一步接上预约数据库后，这个订单就会正式发送到 SABAI GO 后台。"
-            : "กรอกข้อมูลเรียบร้อยแล้ว ขั้นตอนถัดไปจะเชื่อมต่อฐานข้อมูลการจองเพื่อส่งคำขอเข้าสู่ระบบหลังบ้าน SABAI GO";
+        ) {
+
+          whatsappMessage =
+`SABAI GO 预约申请
+
+人物：${profile.nickname}
+编号：${profile.slug}
+
+日期：${date}
+开始时间：${time}
+预约时长：${hours} 小时
+
+地区：${area}
+见面地点：${meetingPlace}
+
+每小时：RM${hourlyPrice}
+预计金额：RM${total}
+
+客户姓名：${customerName}
+客户电话：${phone}
+
+备注：${notes || "-"}
+
+请帮我确认这个预约，谢谢。`;
+
+        }
+        else {
+
+          whatsappMessage =
+`คำขอจอง SABAI GO
+
+โปรไฟล์: ${profile.nickname}
+รหัส: ${profile.slug}
+
+วันที่: ${date}
+เวลาเริ่ม: ${time}
+จำนวน: ${hours} ชั่วโมง
+
+พื้นที่: ${area}
+สถานที่นัดพบ: ${meetingPlace}
+
+ราคาต่อชั่วโมง: RM${hourlyPrice}
+ยอดประมาณการ: RM${total}
+
+ชื่อลูกค้า: ${customerName}
+เบอร์โทร: ${phone}
+
+หมายเหตุ: ${notes || "-"}
+
+กรุณาช่วยยืนยันการจอง ขอบคุณครับ/ค่ะ`;
+
+        }
+
+
+        const whatsappUrl =
+          "https://wa.me/" +
+          WHATSAPP_NUMBER +
+          "?text=" +
+          encodeURIComponent(
+            whatsappMessage
+          );
+
+
+        window.location.href =
+          whatsappUrl;
 
       }
     );
