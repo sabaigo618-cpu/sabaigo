@@ -6,6 +6,8 @@
 
   <title>SABAI GO - Booking</title>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -37,6 +39,7 @@
 
       background: rgba(0,0,0,.93);
       border-bottom: 1px solid rgba(255,255,255,.08);
+
       backdrop-filter: blur(12px);
     }
 
@@ -66,8 +69,8 @@
       color: #fff;
 
       padding: 7px 13px;
-
       border-radius: 20px;
+
       cursor: pointer;
     }
 
@@ -77,6 +80,7 @@
 
     .page-header {
       padding: 55px 20px 35px;
+
       text-align: center;
 
       background:
@@ -101,6 +105,17 @@
       color: #aaa;
       line-height: 1.7;
       font-size: 15px;
+    }
+
+    .loading,
+    .not-found {
+      padding: 100px 20px;
+      text-align: center;
+      color: #888;
+    }
+
+    .not-found {
+      display: none;
     }
 
     .container {
@@ -133,6 +148,7 @@
     .profile-box {
       display: flex;
       align-items: center;
+
       gap: 15px;
 
       margin-bottom: 20px;
@@ -147,6 +163,23 @@
       object-fit: cover;
 
       background: #181818;
+    }
+
+    .profile-placeholder {
+      width: 85px;
+      height: 105px;
+
+      border-radius: 14px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: #181818;
+
+      color: #666;
+
+      font-size: 11px;
     }
 
     .profile-name {
@@ -165,6 +198,7 @@
     .summary-line {
       display: flex;
       justify-content: space-between;
+
       gap: 15px;
 
       padding: 13px 0;
@@ -239,6 +273,7 @@
     .field {
       display: flex;
       flex-direction: column;
+
       gap: 8px;
     }
 
@@ -257,7 +292,6 @@
       width: 100%;
 
       background: #171717;
-
       border: 1px solid #2c2c2c;
 
       color: #fff;
@@ -324,10 +358,6 @@
       cursor: pointer;
     }
 
-    .submit-btn:hover {
-      opacity: .92;
-    }
-
     .message {
       display: none;
 
@@ -364,14 +394,6 @@
       color: #ff9bad;
     }
 
-    .not-found {
-      display: none;
-
-      text-align: center;
-
-      padding: 100px 20px;
-    }
-
     footer {
       border-top: 1px solid rgba(255,255,255,.07);
 
@@ -388,6 +410,7 @@
 
       .container {
         grid-template-columns: 1fr;
+
         max-width: 650px;
       }
 
@@ -411,21 +434,12 @@
         display: none;
       }
 
-      .page-header {
-        padding-top: 40px;
-      }
-
       .page-header h1 {
         font-size: 32px;
       }
 
       .container {
         padding: 22px 14px 60px;
-      }
-
-      .form-card,
-      .summary-card {
-        padding: 18px;
       }
 
       .form-grid {
@@ -441,6 +455,7 @@
 </head>
 
 <body>
+
 
 <header class="topbar">
 
@@ -478,7 +493,14 @@
 </header>
 
 
-<div id="bookingPage">
+<div id="loading" class="loading">
+  Loading...
+</div>
+
+
+<div
+  id="bookingPage"
+  style="display:none;">
 
   <section class="page-header">
 
@@ -503,11 +525,7 @@
 
       <div class="profile-box">
 
-        <img
-          id="profilePhoto"
-          class="profile-photo"
-          src=""
-          alt="Companion">
+        <div id="profilePhotoBox"></div>
 
         <div>
 
@@ -611,6 +629,7 @@
 
         <div class="form-grid">
 
+
           <div class="field">
 
             <label
@@ -676,10 +695,6 @@
               id="area"
               required>
 
-              <option value="">
-                -
-              </option>
-
               <option value="Kuala Lumpur">
                 Kuala Lumpur
               </option>
@@ -720,6 +735,7 @@
               required
               data-placeholder-zh="例如：Pavilion KL、KTV 店名、餐厅名称"
               data-placeholder-th="เช่น Pavilion KL, ชื่อ KTV หรือชื่อร้านอาหาร">
+
           </div>
 
 
@@ -736,6 +752,7 @@
               id="customerName"
               type="text"
               required>
+
           </div>
 
 
@@ -753,6 +770,7 @@
               type="tel"
               required
               placeholder="01X-XXXXXXX">
+
           </div>
 
 
@@ -768,7 +786,8 @@
             <textarea
               id="notes"
               data-placeholder-zh="可以填写活动类型、人数、KTV / 酒吧名称或其他要求。"
-              data-placeholder-th="สามารถระบุประเภทกิจกรรม จำนวนคน ชื่อ KTV / บาร์ หรือรายละเอียดเพิ่มเติมได้"></textarea>
+              data-placeholder-th="สามารถระบุประเภทกิจกรรม จำนวนคน ชื่อ KTV / บาร์ หรือรายละเอียดเพิ่มเติมได้">
+            </textarea>
 
           </div>
 
@@ -777,9 +796,9 @@
 
         <div
           class="booking-note"
-          data-zh="此页面提交的是预约申请，并不代表已经确认。SABAI GO 会根据人员时间与安排与你确认。服务仅限合法社交陪伴及一般娱乐活动。"
-          data-th="แบบฟอร์มนี้เป็นเพียงคำขอจอง ยังไม่ถือว่าการจองได้รับการยืนยัน SABAI GO จะตรวจสอบเวลาและติดต่อกลับ บริการจำกัดเฉพาะกิจกรรมสังคมและความบันเทิงที่ถูกกฎหมายเท่านั้น">
-          此页面提交的是预约申请，并不代表已经确认。SABAI GO 会根据人员时间与安排与你确认。服务仅限合法社交陪伴及一般娱乐活动。
+          data-zh="此页面提交的是预约申请，并不代表已经确认。SABAI GO 会与你确认人员时间、地点与最终安排。"
+          data-th="แบบฟอร์มนี้เป็นเพียงคำขอจอง ยังไม่ถือว่าการจองได้รับการยืนยัน SABAI GO จะติดต่อเพื่อยืนยันเวลา สถานที่ และรายละเอียดอีกครั้ง">
+          此页面提交的是预约申请，并不代表已经确认。SABAI GO 会与你确认人员时间、地点与最终安排。
         </div>
 
 
@@ -836,142 +855,678 @@
 
 <script>
 
-const profiles = {
+  /* =========================================
+     SUPABASE
+  ========================================= */
 
-  may: {
-    name: "May 🇹🇭",
-    area: "Kuala Lumpur",
-    price: 120,
-    minimum: 3,
-    photo:
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=85"
-  },
+  const SUPABASE_URL =
+    "https://xfezhdqakmyecregqesn.supabase.co";
 
-  mint: {
-    name: "Mint 🇹🇭",
-    area: "Puchong",
-    price: 100,
-    minimum: 3,
-    photo:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=85"
-  },
+  const SUPABASE_KEY =
+    "sb_publishable_AuNzm5CWOK2B2Pa7Pn_wBA_pAqHVpI2";
 
-  nana: {
-    name: "Nana 🇹🇭",
-    area: "Petaling Jaya",
-    price: 110,
-    minimum: 4,
-    photo:
-      "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=800&q=85"
-  },
 
-  ploy: {
-    name: "Ploy 🇹🇭",
-    area: "Subang Jaya",
-    price: 130,
-    minimum: 3,
-    photo:
-      "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=800&q=85"
-  },
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
 
-  jay: {
-    name: "Jay",
-    area: "Kuala Lumpur",
-    price: 100,
-    minimum: 4,
-    photo:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=85"
-  },
 
-  bank: {
-    name: "Bank 🇹🇭",
-    area: "Klang",
-    price: 90,
-    minimum: 3,
-    photo:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=85"
+  let profile = null;
+
+
+  let currentLanguage =
+    localStorage.getItem(
+      "sabaigo-language"
+    ) || "zh";
+
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+
+  const slug =
+    params.get("id");
+
+
+  /* =========================================
+     LOAD PROFILE
+  ========================================= */
+
+  async function loadProfile() {
+
+    if (!slug) {
+
+      showNotFound();
+
+      return;
+
+    }
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("companions")
+        .select("*")
+        .eq(
+          "slug",
+          slug
+        )
+        .eq(
+          "is_published",
+          true
+        )
+        .maybeSingle();
+
+
+    document
+      .getElementById(
+        "loading"
+      )
+      .style.display =
+        "none";
+
+
+    if (
+      error ||
+      !data
+    ) {
+
+      console.error(
+        error
+      );
+
+      showNotFound();
+
+      return;
+
+    }
+
+
+    profile =
+      data;
+
+
+    document
+      .getElementById(
+        "bookingPage"
+      )
+      .style.display =
+        "block";
+
+
+    initializePage();
+
   }
 
-};
+
+  /* =========================================
+     PAGE
+  ========================================= */
+
+  function initializePage() {
+
+    if (!profile) {
+      return;
+    }
 
 
-let currentLanguage =
-  localStorage.getItem(
-    "sabaigo-language"
-  ) || "zh";
+    const photoBox =
+      document
+        .getElementById(
+          "profilePhotoBox"
+        );
 
 
-const params =
-  new URLSearchParams(
-    window.location.search
-  );
+    if (
+      profile.cover_image
+    ) {
+
+      photoBox.innerHTML = `
+        <img
+          class="profile-photo"
+          src="${escapeHtml(profile.cover_image)}"
+          alt="${escapeHtml(profile.nickname || "")}">
+      `;
+
+    }
+    else {
+
+      photoBox.innerHTML = `
+        <div class="profile-placeholder">
+          No Image
+        </div>
+      `;
+
+    }
 
 
-const id =
-  params.get("id");
+    document
+      .getElementById(
+        "profileName"
+      )
+      .textContent =
+        profile.nickname ||
+        "-";
 
 
-const profile =
-  profiles[id];
+    document
+      .getElementById(
+        "profileArea"
+      )
+      .textContent =
+        "📍 " +
+        (
+          profile.area ||
+          "-"
+        );
 
 
-if (!profile) {
+    document
+      .getElementById(
+        "hourlyPrice"
+      )
+      .textContent =
+        "RM" +
+        (
+          profile.price_per_hour ??
+          0
+        );
+
+
+    document
+      .getElementById(
+        "area"
+      )
+      .value =
+        profile.area ||
+        "Kuala Lumpur";
+
+
+    document
+      .getElementById(
+        "backLink"
+      )
+      .href =
+        "companion-detail.html?id=" +
+        encodeURIComponent(
+          profile.slug
+        );
+
+
+    createHourOptions();
+
+    setMinimumDate();
+
+    setLanguage(
+      currentLanguage
+    );
+
+    calculateTotal();
+
+  }
+
+
+  /* =========================================
+     HOURS
+  ========================================= */
+
+  function createHourOptions() {
+
+    if (!profile) {
+      return;
+    }
+
+
+    const select =
+      document
+        .getElementById(
+          "hours"
+        );
+
+
+    select.innerHTML =
+      "";
+
+
+    const minimum =
+      Number(
+        profile.minimum_hours
+      ) || 1;
+
+
+    for (
+      let i = minimum;
+      i <= 12;
+      i++
+    ) {
+
+      const option =
+        document
+          .createElement(
+            "option"
+          );
+
+
+      option.value =
+        i;
+
+
+      option.textContent =
+        currentLanguage === "zh"
+          ? i + " 小时"
+          : i + " ชั่วโมง";
+
+
+      select.appendChild(
+        option
+      );
+
+    }
+
+  }
+
+
+  /* =========================================
+     DATE
+  ========================================= */
+
+  function setMinimumDate() {
+
+    const today =
+      new Date();
+
+
+    const year =
+      today.getFullYear();
+
+
+    const month =
+      String(
+        today.getMonth() + 1
+      ).padStart(
+        2,
+        "0"
+      );
+
+
+    const day =
+      String(
+        today.getDate()
+      ).padStart(
+        2,
+        "0"
+      );
+
+
+    document
+      .getElementById(
+        "bookingDate"
+      )
+      .min =
+        year +
+        "-" +
+        month +
+        "-" +
+        day;
+
+  }
+
+
+  /* =========================================
+     TOTAL
+  ========================================= */
+
+  function calculateTotal() {
+
+    if (!profile) {
+      return;
+    }
+
+
+    const hours =
+      Number(
+        document
+          .getElementById(
+            "hours"
+          )
+          .value
+      );
+
+
+    const price =
+      Number(
+        profile.price_per_hour
+      ) || 0;
+
+
+    const total =
+      hours *
+      price;
+
+
+    document
+      .getElementById(
+        "selectedHours"
+      )
+      .textContent =
+        hours
+          ? (
+              currentLanguage === "zh"
+                ? hours + " 小时"
+                : hours + " ชั่วโมง"
+            )
+          : "-";
+
+
+    document
+      .getElementById(
+        "totalPrice"
+      )
+      .textContent =
+        "RM" + total;
+
+  }
+
+
+  /* =========================================
+     LANGUAGE
+  ========================================= */
+
+  function setLanguage(
+    lang
+  ) {
+
+    currentLanguage =
+      lang;
+
+
+    localStorage.setItem(
+      "sabaigo-language",
+      lang
+    );
+
+
+    document
+      .querySelectorAll(
+        "[data-zh]"
+      )
+      .forEach(
+        function(el) {
+
+          const value =
+            el.getAttribute(
+              "data-" + lang
+            );
+
+
+          if (
+            value !== null
+          ) {
+
+            el.textContent =
+              value;
+
+          }
+
+        }
+      );
+
+
+    document
+      .querySelectorAll(
+        "[data-placeholder-zh]"
+      )
+      .forEach(
+        function(el) {
+
+          const value =
+            el.getAttribute(
+              "data-placeholder-" +
+              lang
+            );
+
+
+          if (
+            value !== null
+          ) {
+
+            el.placeholder =
+              value;
+
+          }
+
+        }
+      );
+
+
+    document
+      .getElementById(
+        "zhBtn"
+      )
+      .classList
+      .toggle(
+        "active",
+        lang === "zh"
+      );
+
+
+    document
+      .getElementById(
+        "thBtn"
+      )
+      .classList
+      .toggle(
+        "active",
+        lang === "th"
+      );
+
+
+    document.documentElement.lang =
+      lang === "zh"
+        ? "zh"
+        : "th";
+
+
+    if (
+      profile
+    ) {
+
+      document
+        .getElementById(
+          "minimumHours"
+        )
+        .textContent =
+          lang === "zh"
+            ? (
+                profile.minimum_hours ||
+                0
+              ) +
+              " 小时"
+            : (
+                profile.minimum_hours ||
+                0
+              ) +
+              " ชั่วโมง";
+
+
+      createHourOptions();
+
+      calculateTotal();
+
+    }
+
+  }
+
+
+  /* =========================================
+     SUBMIT
+     暂时还没有写入数据库
+  ========================================= */
 
   document
-    .getElementById("bookingPage")
-    .style.display = "none";
+    .getElementById(
+      "bookingForm"
+    )
+    .addEventListener(
+      "submit",
+      function(event) {
 
-  document
-    .getElementById("notFound")
-    .style.display = "block";
-
-}
-else {
-
-  initializePage();
-
-}
+        event.preventDefault();
 
 
-function initializePage() {
-
-  document
-    .getElementById("profilePhoto")
-    .src = profile.photo;
-
-
-  document
-    .getElementById("profileName")
-    .textContent = profile.name;
+        const message =
+          document
+            .getElementById(
+              "message"
+            );
 
 
-  document
-    .getElementById("profileArea")
-    .textContent =
-      "📍 " + profile.area;
+        const date =
+          document
+            .getElementById(
+              "bookingDate"
+            )
+            .value;
 
 
-  document
-    .getElementById("hourlyPrice")
-    .textContent =
-      "RM" + profile.price;
+        const time =
+          document
+            .getElementById(
+              "bookingTime"
+            )
+            .value;
 
 
-  document
-    .getElementById("area")
-    .value = profile.area;
+        const customerName =
+          document
+            .getElementById(
+              "customerName"
+            )
+            .value
+            .trim();
 
 
-  document
-    .getElementById("backLink")
-    .href =
-      "companion-detail.html?id=" + id;
+        const phone =
+          document
+            .getElementById(
+              "phone"
+            )
+            .value
+            .trim();
 
 
-  createHourOptions();
+        const meetingPlace =
+          document
+            .getElementById(
+              "meetingPlace"
+            )
+            .value
+            .trim();
 
 
-  setMinimumDate();
+        if (
+          !date ||
+          !time ||
+          !customerName ||
+          !phone ||
+          !meetingPlace
+        ) {
+
+          message.className =
+            "message error";
+
+
+          message.textContent =
+            currentLanguage === "zh"
+              ? "请填写所有必填资料。"
+              : "กรุณากรอกข้อมูลที่จำเป็นให้ครบ";
+
+          return;
+
+        }
+
+
+        message.className =
+          "message success";
+
+
+        message.textContent =
+          currentLanguage === "zh"
+            ? "预约资料已经填写完成。下一步接上预约数据库后，这个订单就会正式发送到 SABAI GO 后台。"
+            : "กรอกข้อมูลเรียบร้อยแล้ว ขั้นตอนถัดไปจะเชื่อมต่อฐานข้อมูลการจองเพื่อส่งคำขอเข้าสู่ระบบหลังบ้าน SABAI GO";
+
+      }
+    );
+
+
+  /* =========================================
+     NOT FOUND
+  ========================================= */
+
+  function showNotFound() {
+
+    document
+      .getElementById(
+        "loading"
+      )
+      .style.display =
+        "none";
+
+
+    document
+      .getElementById(
+        "bookingPage"
+      )
+      .style.display =
+        "none";
+
+
+    document
+      .getElementById(
+        "notFound"
+      )
+      .style.display =
+        "block";
+
+  }
+
+
+  function escapeHtml(
+    value
+  ) {
+
+    return String(
+      value ?? ""
+    )
+      .replaceAll(
+        "&",
+        "&amp;"
+      )
+      .replaceAll(
+        "<",
+        "&lt;"
+      )
+      .replaceAll(
+        ">",
+        "&gt;"
+      )
+      .replaceAll(
+        '"',
+        "&quot;"
+      )
+      .replaceAll(
+        "'",
+        "&#039;"
+      );
+
+  }
 
 
   setLanguage(
@@ -979,362 +1534,7 @@ function initializePage() {
   );
 
 
-  calculateTotal();
-
-}
-
-
-function createHourOptions() {
-
-  const select =
-    document.getElementById(
-      "hours"
-    );
-
-
-  select.innerHTML = "";
-
-
-  for (
-    let i = profile.minimum;
-    i <= 12;
-    i++
-  ) {
-
-    const option =
-      document.createElement(
-        "option"
-      );
-
-    option.value = i;
-
-    option.textContent =
-      i + " Hours";
-
-    select.appendChild(
-      option
-    );
-
-  }
-
-}
-
-
-function setMinimumDate() {
-
-  const today =
-    new Date();
-
-
-  const year =
-    today.getFullYear();
-
-
-  const month =
-    String(
-      today.getMonth() + 1
-    ).padStart(
-      2,
-      "0"
-    );
-
-
-  const day =
-    String(
-      today.getDate()
-    ).padStart(
-      2,
-      "0"
-    );
-
-
-  document
-    .getElementById(
-      "bookingDate"
-    )
-    .min =
-      year +
-      "-" +
-      month +
-      "-" +
-      day;
-
-}
-
-
-function calculateTotal() {
-
-  if (!profile) {
-    return;
-  }
-
-
-  const hours =
-    Number(
-      document
-        .getElementById(
-          "hours"
-        )
-        .value
-    );
-
-
-  const total =
-    hours *
-    profile.price;
-
-
-  document
-    .getElementById(
-      "selectedHours"
-    )
-    .textContent =
-      hours
-        ? (
-            currentLanguage === "zh"
-              ? hours + " 小时"
-              : hours + " ชั่วโมง"
-          )
-        : "-";
-
-
-  document
-    .getElementById(
-      "totalPrice"
-    )
-    .textContent =
-      "RM" + total;
-
-}
-
-
-function setLanguage(lang) {
-
-  currentLanguage =
-    lang;
-
-
-  localStorage.setItem(
-    "sabaigo-language",
-    lang
-  );
-
-
-  document
-    .querySelectorAll(
-      "[data-zh]"
-    )
-    .forEach(
-      function(el) {
-
-        const value =
-          el.getAttribute(
-            "data-" + lang
-          );
-
-        if (
-          value !== null
-        ) {
-
-          el.textContent =
-            value;
-
-        }
-
-      }
-    );
-
-
-  document
-    .querySelectorAll(
-      "[data-placeholder-zh]"
-    )
-    .forEach(
-      function(el) {
-
-        const value =
-          el.getAttribute(
-            "data-placeholder-" +
-            lang
-          );
-
-        if (
-          value !== null
-        ) {
-
-          el.placeholder =
-            value;
-
-        }
-
-      }
-    );
-
-
-  document
-    .getElementById(
-      "zhBtn"
-    )
-    .classList
-    .toggle(
-      "active",
-      lang === "zh"
-    );
-
-
-  document
-    .getElementById(
-      "thBtn"
-    )
-    .classList
-    .toggle(
-      "active",
-      lang === "th"
-    );
-
-
-  document.documentElement.lang =
-    lang === "zh"
-      ? "zh"
-      : "th";
-
-
-  if (profile) {
-
-    document
-      .getElementById(
-        "minimumHours"
-      )
-      .textContent =
-        lang === "zh"
-          ? profile.minimum +
-            " 小时"
-          : profile.minimum +
-            " ชั่วโมง";
-
-
-    createHourOptions();
-
-
-    calculateTotal();
-
-  }
-
-}
-
-
-document
-  .getElementById(
-    "bookingForm"
-  )
-  .addEventListener(
-    "submit",
-    function(event) {
-
-      event.preventDefault();
-
-
-      const date =
-        document
-          .getElementById(
-            "bookingDate"
-          )
-          .value;
-
-
-      const time =
-        document
-          .getElementById(
-            "bookingTime"
-          )
-          .value;
-
-
-      const hours =
-        document
-          .getElementById(
-            "hours"
-          )
-          .value;
-
-
-      const area =
-        document
-          .getElementById(
-            "area"
-          )
-          .value;
-
-
-      const meetingPlace =
-        document
-          .getElementById(
-            "meetingPlace"
-          )
-          .value
-          .trim();
-
-
-      const customerName =
-        document
-          .getElementById(
-            "customerName"
-          )
-          .value
-          .trim();
-
-
-      const phone =
-        document
-          .getElementById(
-            "phone"
-          )
-          .value
-          .trim();
-
-
-      const message =
-        document
-          .getElementById(
-            "message"
-          );
-
-
-      if (
-        !date ||
-        !time ||
-        !hours ||
-        !area ||
-        !meetingPlace ||
-        !customerName ||
-        !phone
-      ) {
-
-        message.className =
-          "message error";
-
-
-        message.textContent =
-          currentLanguage === "zh"
-            ? "请填写所有必填资料。"
-            : "กรุณากรอกข้อมูลที่จำเป็นให้ครบ";
-
-        return;
-
-      }
-
-
-      message.className =
-        "message success";
-
-
-      message.textContent =
-        currentLanguage === "zh"
-          ? "预约资料填写成功。下一步接上数据库后，这个订单就会正式发送到 SABAI GO 后台。"
-          : "กรอกข้อมูลเรียบร้อยแล้ว เมื่อเชื่อมต่อฐานข้อมูลในขั้นตอนถัดไป คำขอนี้จะถูกส่งไปยังระบบหลังบ้านของ SABAI GO";
-
-  }
-);
+  loadProfile();
 
 </script>
 
