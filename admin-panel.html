@@ -1,0 +1,2383 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SABAI GO Admin Panel</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #070707;
+      color: #fff;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 5%;
+      background: rgba(0,0,0,.95);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      font-size: 27px;
+      font-weight: 900;
+    }
+
+    .logo span {
+      color: #ff2ea6;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .lang-btn,
+    .logout-btn {
+      border: 1px solid #ff2ea6;
+      background: transparent;
+      color: white;
+      padding: 8px 13px;
+      border-radius: 20px;
+    }
+
+    .lang-btn.active {
+      background: #ff2ea6;
+    }
+
+    .logout-btn {
+      border-color: #444;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 230px 1fr;
+      min-height: calc(100vh - 66px);
+    }
+
+    .sidebar {
+      padding: 25px 15px;
+      background: #0c0c0c;
+      border-right: 1px solid rgba(255,255,255,.07);
+    }
+
+    .menu-title {
+      color: #666;
+      font-size: 11px;
+      letter-spacing: 2px;
+      margin: 0 10px 15px;
+    }
+
+    .menu-btn {
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: #aaa;
+      padding: 13px 14px;
+      border-radius: 10px;
+      text-align: left;
+      margin-bottom: 7px;
+    }
+
+    .menu-btn.active {
+      background: linear-gradient(90deg, rgba(132,60,255,.28), rgba(255,46,166,.20));
+      color: white;
+    }
+
+    .main {
+      padding: 30px;
+    }
+
+    .page-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .page-head h1 {
+      font-size: 30px;
+    }
+
+    .page-head p {
+      color: #888;
+      margin-top: 6px;
+      font-size: 13px;
+    }
+
+    .primary-btn {
+      border: none;
+      color: #fff;
+      background: linear-gradient(90deg, #843cff, #ff2ea6);
+      padding: 11px 17px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .stat {
+      background: #101010;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .stat-label {
+      color: #777;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 27px;
+      font-weight: bold;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar input,
+    .toolbar select {
+      background: #151515;
+      color: white;
+      border: 1px solid #2b2b2b;
+      border-radius: 10px;
+      padding: 11px 12px;
+      outline: none;
+    }
+
+    .toolbar input {
+      min-width: 240px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      background: #0f0f0f;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 16px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 1050px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 14px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      font-size: 13px;
+    }
+
+    th {
+      color: #777;
+      font-weight: normal;
+      background: #121212;
+    }
+
+    .thumb {
+      width: 55px;
+      height: 68px;
+      object-fit: cover;
+      border-radius: 9px;
+      background: #1b1b1b;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 9px;
+      border-radius: 14px;
+      font-size: 11px;
+    }
+
+    .available {
+      background: rgba(30,180,100,.16);
+      color: #80e8aa;
+    }
+
+    .busy {
+      background: rgba(240,160,30,.16);
+      color: #f6c36e;
+    }
+
+    .off {
+      background: rgba(120,120,120,.16);
+      color: #aaa;
+    }
+
+    .published {
+      color: #7deba8;
+    }
+
+    .hidden {
+      color: #999;
+    }
+
+    .action-btn {
+      border: 1px solid #333;
+      background: #171717;
+      color: #ddd;
+      padding: 7px 9px;
+      border-radius: 8px;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+
+    .danger {
+      border-color: rgba(220,60,80,.45);
+      color: #ff8798;
+    }
+
+    .empty {
+      padding: 50px;
+      text-align: center;
+      color: #777;
+    }
+
+    .loading {
+      padding: 40px;
+      text-align: center;
+      color: #999;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(0,0,0,.82);
+      padding: 25px;
+      overflow-y: auto;
+    }
+
+    .modal.show {
+      display: block;
+    }
+
+    .modal-box {
+      max-width: 850px;
+      margin: 30px auto;
+      background: #0f0f0f;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 20px;
+      padding: 25px;
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+
+    .close-btn {
+      border: none;
+      background: transparent;
+      color: #aaa;
+      font-size: 25px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      color: #999;
+      font-size: 12px;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      background: #171717;
+      border: 1px solid #2e2e2e;
+      color: white;
+      border-radius: 9px;
+      padding: 12px;
+      outline: none;
+    }
+
+    .field textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: #ff2ea6;
+    }
+
+    .preview {
+      margin-top: 10px;
+      width: 130px;
+      height: 165px;
+      object-fit: cover;
+      border-radius: 12px;
+      background: #1a1a1a;
+      display: none;
+    }
+
+    .form-actions {
+      margin-top: 22px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .secondary-btn {
+      background: #191919;
+      border: 1px solid #333;
+      color: white;
+      padding: 11px 16px;
+      border-radius: 9px;
+    }
+
+    .message {
+      display: none;
+      margin-top: 15px;
+      padding: 13px;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+
+    .message.error {
+      display: block;
+      color: #ff9aaa;
+      border: 1px solid rgba(220,60,80,.35);
+      background: rgba(220,60,80,.10);
+    }
+
+    .message.success {
+      display: block;
+      color: #91efb7;
+      border: 1px solid rgba(30,180,100,.35);
+      background: rgba(30,180,100,.10);
+    }
+
+    @media(max-width:900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media(max-width:600px) {
+      .main {
+        padding: 18px 13px;
+      }
+
+      .page-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field.full {
+        grid-column: auto;
+      }
+
+      .topbar {
+        padding: 12px 14px;
+      }
+
+      .logo {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="logo">
+    SABAI <span>GO</span>
+  </div>
+
+  <div class="top-right">
+    <button id="zhBtn" class="lang-btn active" onclick="setLanguage('zh')">中文</button>
+    <button id="thBtn" class="lang-btn" onclick="setLanguage('th')">ไทย</button>
+
+    <button
+      class="logout-btn"
+      onclick="logout()"
+      data-zh="登出"
+      data-th="ออกจากระบบ">
+      登出
+    </button>
+  </div>
+</header>
+
+
+<div class="layout">
+
+  <aside class="sidebar">
+
+    <div class="menu-title">
+      ADMIN
+    </div>
+
+    <button
+      class="menu-btn active"
+      data-zh="👤 人物管理"
+      data-th="👤 จัดการโปรไฟล์">
+      👤 人物管理
+    </button>
+
+    <button
+      class="menu-btn"
+      data-zh="📋 预约订单（稍后）"
+      data-th="📋 รายการจอง (ภายหลัง)">
+      📋 预约订单（稍后）
+    </button>
+
+    <button
+      class="menu-btn"
+      data-zh="💆 Massage & SPA（稍后）"
+      data-th="💆 Massage & SPA (ภายหลัง)">
+      💆 Massage & SPA（稍后）
+    </button>
+
+    <button
+      class="menu-btn"
+      data-zh="🍸 娱乐场所（稍后）"
+      data-th="🍸 สถานบันเทิง (ภายหลัง)">
+      🍸 娱乐场所（稍后）
+    </button>
+
+  </aside>
+
+
+  <main class="main">
+
+    <div class="page-head">
+
+      <div>
+        <h1
+          data-zh="人物管理"
+          data-th="จัดการโปรไฟล์">
+          人物管理
+        </h1>
+
+        <p
+          data-zh="新增、编辑、价格、状态、照片与上下架"
+          data-th="เพิ่ม แก้ไข ราคา สถานะ รูปภาพ และการแสดงผล">
+          新增、编辑、价格、状态、照片与上下架
+        </p>
+      </div>
+
+      <button
+        class="primary-btn"
+        onclick="openAddModal()"
+        data-zh="+ 新增人物"
+        data-th="+ เพิ่มโปรไฟล์">
+        + 新增人物
+      </button>
+
+    </div>
+
+
+    <section class="stats">
+
+      <div class="stat">
+        <div
+          class="stat-label"
+          data-zh="总人物"
+          data-th="ทั้งหมด">
+          总人物
+        </div>
+        <div class="stat-value" id="totalCount">0</div>
+      </div>
+
+      <div class="stat">
+        <div
+          class="stat-label"
+          data-zh="Available"
+          data-th="ว่าง">
+          Available
+        </div>
+        <div class="stat-value" id="availableCount">0</div>
+      </div>
+
+      <div class="stat">
+        <div
+          class="stat-label"
+          data-zh="Busy"
+          data-th="ไม่ว่าง">
+          Busy
+        </div>
+        <div class="stat-value" id="busyCount">0</div>
+      </div>
+
+      <div class="stat">
+        <div
+          class="stat-label"
+          data-zh="已发布"
+          data-th="เผยแพร่แล้ว">
+          已发布
+        </div>
+        <div class="stat-value" id="publishedCount">0</div>
+      </div>
+
+    </section>
+
+
+    <div class="toolbar">
+
+      <input
+        id="searchInput"
+        type="text"
+        oninput="renderTable()"
+        data-placeholder-zh="搜索昵称 / 地区..."
+        data-placeholder-th="ค้นหาชื่อ / พื้นที่...">
+
+      <select id="statusFilter" onchange="renderTable()">
+        <option value="all" data-zh="全部状态" data-th="ทุกสถานะ">
+          全部状态
+        </option>
+        <option value="available">Available</option>
+        <option value="busy">Busy</option>
+        <option value="off">Off</option>
+      </select>
+
+    </div>
+
+
+    <div class="table-wrap">
+      <div id="loading" class="loading">
+        Loading...
+      </div>
+
+      <table id="dataTable" style="display:none;">
+        <thead>
+          <tr>
+            <th data-zh="照片" data-th="รูป">照片</th>
+            <th data-zh="昵称" data-th="ชื่อ">昵称</th>
+            <th data-zh="地区" data-th="พื้นที่">地区</th>
+            <th data-zh="类型" data-th="ประเภท">类型</th>
+            <th data-zh="价格" data-th="ราคา">价格</th>
+            <th data-zh="状态" data-th="สถานะ">状态</th>
+            <th data-zh="发布" data-th="เผยแพร่">发布</th>
+            <th data-zh="操作" data-th="จัดการ">操作</th>
+          </tr>
+        </thead>
+
+        <tbody id="tableBody"></tbody>
+      </table>
+
+      <div id="emptyState" class="empty" style="display:none;">
+        暂时没有人物资料
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+
+<div class="modal" id="profileModal">
+
+  <div class="modal-box">
+
+    <div class="modal-head">
+
+      <h2
+        id="modalTitle"
+        data-zh="新增人物"
+        data-th="เพิ่มโปรไฟล์">
+        新增人物
+      </h2>
+
+      <button class="close-btn" onclick="closeModal()">×</button>
+
+    </div>
+
+
+    <form id="profileForm">
+
+      <input type="hidden" id="editId">
+      <input type="hidden" id="existingImage">
+
+
+      <div class="form-grid">
+
+        <div class="field">
+          <label>Slug</label>
+          <input
+            id="slug"
+            type="text"
+            required
+            placeholder="may">
+        </div>
+
+
+        <div class="field">
+          <label
+            data-zh="昵称"
+            data-th="ชื่อเล่น">
+            昵称
+          </label>
+          <input id="nickname" type="text" required>
+        </div>
+
+
+        <div class="field">
+          <label
+            data-zh="年龄"
+            data-th="อายุ">
+            年龄
+          </label>
+          <input id="age" type="number" min="18" max="99" required>
+        </div>
+
+
+        <div class="field">
+          <label
+            data-zh="性别"
+            data-th="เพศ">
+            性别
+          </label>
+
+          <select id="gender" required>
+            <option value="female" data-zh="女生" data-th="ผู้หญิง">
+              女生
+            </option>
+            <option value="male" data-zh="男生" data-th="ผู้ชาย">
+              男生
+            </option>
+          </select>
+        </div>
+
+
+        <div class="field">
+          <label
+            data-zh="地区"
+            data-th="พื้นที่">
+            地区
+          </label>
+
+          <select id="area" required>
+            <option value="Kuala Lumpur">Kuala Lumpur</option>
+            <option value="Puchong">Puchong</option>
+            <option value="Petaling Jaya">Petaling Jaya</option>
+            <option value="Subang Jaya">Subang Jaya</option>
+            <option value="Klang">Klang</option>
+          </select>
+        </div>
+
+
+        <div class="field">
+          <label
+            data-zh="服务类型"
+            data-th="ประเภทบริการ">
+            服务类型
+          </label>
+
+          <select id="serviceType" required>
+            <option value="party">Party Companion</option>
+            <option value="girlfriend" data-zh="1日女友" data-th="แฟน 1 วัน">
+              1日女友
+            </option>
+            <option value="boyfriend" data-zh="1日男友" data-th="แฟน 1 วัน (ผู้ชาย)">
+              1日男友
+            </option>
+          </select>
+        </div>
+
+
+        <div class="field">
+          <label
+            data-zh="语言"
+            data-th="ภาษา">
+            语言
+          </label>
+
+          <input
+            id="languages"
+            type="text"
+            placeholder="thai,chinese,english">
+        </div>
+
+
+        <div class="field">
+          <label
+            data-zh="可预约时间"
+            data-th="เวลาที่รับจอง">
+            可预约时间
+          </label>
+
+          <input
+            id="availableTime"
+            type="text"
+            placeholder="7PM - 2AM">
+        </div>
+
+
+        <div class="field">
+          <label
+            data-zh="RM / 小时"
+            data-th="RM / ชั่วโมง">
+            RM / 小时
+          </label>
+
+          <input
+            id="pricePerHour"
+            type="number"
+            min="0"
+            step="1"
+            required>
+        </div>
+
+
+        <div class="field">
+          <label
+            data-zh="最低预约小时"
+            data-th="ขั้นต่ำกี่ชั่วโมง">
+            最低预约小时
+          </label>
+
+          <input
+            id="minimumHours"
+            type="number"
+            min="1"
+            max="24"
+            value="3"
+            required>
+        </div>
+
+
+        <div class="field">
+          <label
+            data-zh="状态"
+            data-th="สถานะ">
+            状态
+          </label>
+
+          <select id="status">
+            <option value="available">Available</option>
+            <option value="busy">Busy</option>
+            <option value="off">Off</option>
+          </select>
+        </div>
+
+
+        <div class="field">
+          <label
+            data-zh="前台显示"
+            data-th="แสดงหน้าเว็บ">
+            前台显示
+          </label>
+
+          <select id="isPublished">
+            <option value="true" data-zh="发布" data-th="เผยแพร่">
+              发布
+            </option>
+            <option value="false" data-zh="隐藏" data-th="ซ่อน">
+              隐藏
+            </option>
+          </select>
+        </div>
+
+
+        <div class="field full">
+          <label
+            data-zh="中文服务"
+            data-th="บริการภาษาจีน">
+            中文服务
+          </label>
+
+          <input
+            id="servicesZh"
+            type="text"
+            placeholder="陪喝酒,KTV,聚会,吃饭">
+        </div>
+
+
+        <div class="field full">
+          <label
+            data-zh="泰语服务"
+            data-th="บริการภาษาไทย">
+            泰语服务
+          </label>
+
+          <input
+            id="servicesTh"
+            type="text"
+            placeholder="เพื่อนดื่ม,KTV,ปาร์ตี้">
+        </div>
+
+
+        <div class="field full">
+          <label
+            data-zh="中文介绍"
+            data-th="รายละเอียดภาษาจีน">
+            中文介绍
+          </label>
+
+          <textarea id="descriptionZh"></textarea>
+        </div>
+
+
+        <div class="field full">
+          <label
+            data-zh="泰语介绍"
+            data-th="รายละเอียดภาษาไทย">
+            泰语介绍
+          </label>
+
+          <textarea id="descriptionTh"></textarea>
+        </div>
+
+
+        <div class="field full">
+          <label
+            data-zh="封面照片"
+            data-th="รูปหน้าปก">
+            封面照片
+          </label>
+
+          <input
+            id="imageFile"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onchange="previewSelectedImage()">
+
+          <img id="imagePreview" class="preview" alt="Preview">
+        </div>
+
+      </div>
+
+
+      <div id="formMessage" class="message"></div>
+
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="secondary-btn"
+          onclick="closeModal()"
+          data-zh="取消"
+          data-th="ยกเลิก">
+          取消
+        </button>
+
+        <button
+          id="saveBtn"
+          type="submit"
+          class="primary-btn"
+          data-zh="保存"
+          data-th="บันทึก">
+          保存
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<script>
+
+  /* =========================================
+     SUPABASE
+  ========================================= */
+
+  const SUPABASE_URL =
+    "https://xfezhdqakmyecregqesn.supabase.co";
+
+  const SUPABASE_KEY =
+    "YOUR_SUPABASE_PUBLISHABLE_KEY";
+
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  const BUCKET_NAME =
+    "companion-images";
+
+
+  let companions = [];
+
+  let currentLanguage =
+    localStorage.getItem(
+      "sabaigo-language"
+    ) || "zh";
+
+
+  /* =========================================
+     AUTH GUARD
+  ========================================= */
+
+  async function protectPage() {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .auth
+        .getUser();
+
+
+    if (
+      error ||
+      !data.user
+    ) {
+
+      window.location.href =
+        "admin.html";
+
+      return false;
+
+    }
+
+    return true;
+
+  }
+
+
+  async function logout() {
+
+    await supabaseClient
+      .auth
+      .signOut();
+
+    window.location.href =
+      "admin.html";
+
+  }
+
+
+  /* =========================================
+     LANGUAGE
+  ========================================= */
+
+  function setLanguage(lang) {
+
+    currentLanguage = lang;
+
+    localStorage.setItem(
+      "sabaigo-language",
+      lang
+    );
+
+
+    document
+      .querySelectorAll("[data-zh]")
+      .forEach(function(el) {
+
+        const value =
+          el.getAttribute(
+            "data-" + lang
+          );
+
+        if (value !== null) {
+          el.textContent = value;
+        }
+
+      });
+
+
+    document
+      .querySelectorAll("[data-placeholder-zh]")
+      .forEach(function(el) {
+
+        const value =
+          el.getAttribute(
+            "data-placeholder-" + lang
+          );
+
+        if (value !== null) {
+          el.placeholder = value;
+        }
+
+      });
+
+
+    document
+      .getElementById("zhBtn")
+      .classList.toggle(
+        "active",
+        lang === "zh"
+      );
+
+
+    document
+      .getElementById("thBtn")
+      .classList.toggle(
+        "active",
+        lang === "th"
+      );
+
+
+    document.documentElement.lang =
+      lang === "zh"
+        ? "zh"
+        : "th";
+
+
+    renderTable();
+
+  }
+
+
+  /* =========================================
+     LOAD DATA
+  ========================================= */
+
+  async function loadCompanions() {
+
+    document
+      .getElementById("loading")
+      .style.display =
+        "block";
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("companions")
+        .select("*")
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        );
+
+
+    document
+      .getElementById("loading")
+      .style.display =
+        "none";
+
+
+    if (error) {
+
+      alert(
+        "Load error: " +
+        error.message
+      );
+
+      return;
+
+    }
+
+
+    companions =
+      data || [];
+
+
+    updateStats();
+
+    renderTable();
+
+  }
+
+
+  function updateStats() {
+
+    document
+      .getElementById(
+        "totalCount"
+      )
+      .textContent =
+        companions.length;
+
+
+    document
+      .getElementById(
+        "availableCount"
+      )
+      .textContent =
+        companions.filter(
+          item =>
+            item.status ===
+            "available"
+        ).length;
+
+
+    document
+      .getElementById(
+        "busyCount"
+      )
+      .textContent =
+        companions.filter(
+          item =>
+            item.status ===
+            "busy"
+        ).length;
+
+
+    document
+      .getElementById(
+        "publishedCount"
+      )
+      .textContent =
+        companions.filter(
+          item =>
+            item.is_published === true
+        ).length;
+
+  }
+
+
+  /* =========================================
+     TABLE
+  ========================================= */
+
+  function renderTable() {
+
+    const body =
+      document
+        .getElementById(
+          "tableBody"
+        );
+
+
+    if (!body) {
+      return;
+    }
+
+
+    const search =
+      document
+        .getElementById(
+          "searchInput"
+        )
+        ?.value
+        .trim()
+        .toLowerCase() || "";
+
+
+    const status =
+      document
+        .getElementById(
+          "statusFilter"
+        )
+        ?.value || "all";
+
+
+    const filtered =
+      companions.filter(
+        item => {
+
+          const searchable =
+            (
+              (item.nickname || "") +
+              " " +
+              (item.area || "")
+            )
+            .toLowerCase();
+
+
+          const searchMatch =
+            !search ||
+            searchable.includes(
+              search
+            );
+
+
+          const statusMatch =
+            status === "all" ||
+            item.status === status;
+
+
+          return (
+            searchMatch &&
+            statusMatch
+          );
+
+        }
+      );
+
+
+    body.innerHTML = "";
+
+
+    const table =
+      document
+        .getElementById(
+          "dataTable"
+        );
+
+
+    const empty =
+      document
+        .getElementById(
+          "emptyState"
+        );
+
+
+    if (
+      filtered.length === 0
+    ) {
+
+      table.style.display =
+        "none";
+
+      empty.style.display =
+        "block";
+
+      empty.textContent =
+        currentLanguage === "zh"
+          ? "暂时没有符合条件的人物资料"
+          : "ยังไม่มีโปรไฟล์ที่ตรงกับเงื่อนไข";
+
+      return;
+
+    }
+
+
+    empty.style.display =
+      "none";
+
+    table.style.display =
+      "table";
+
+
+    filtered.forEach(
+      function(item) {
+
+        const tr =
+          document.createElement(
+            "tr"
+          );
+
+
+        const image =
+          item.cover_image
+            ? `<img class="thumb" src="${escapeHtml(item.cover_image)}">`
+            : `<div class="thumb"></div>`;
+
+
+        const statusClass =
+          item.status === "available"
+            ? "available"
+            : item.status === "busy"
+              ? "busy"
+              : "off";
+
+
+        const publishText =
+          item.is_published
+            ? (
+                currentLanguage === "zh"
+                  ? "已发布"
+                  : "เผยแพร่"
+              )
+            : (
+                currentLanguage === "zh"
+                  ? "隐藏"
+                  : "ซ่อน"
+              );
+
+
+        const publishClass =
+          item.is_published
+            ? "published"
+            : "hidden";
+
+
+        tr.innerHTML = `
+          <td>${image}</td>
+
+          <td>
+            <strong>${escapeHtml(item.nickname || "-")}</strong>
+            <br>
+            <small style="color:#666;">
+              ${escapeHtml(item.slug || "")}
+            </small>
+          </td>
+
+          <td>
+            ${escapeHtml(item.area || "-")}
+          </td>
+
+          <td>
+            ${serviceTypeLabel(item.service_type)}
+          </td>
+
+          <td>
+            <strong style="color:#ff52b7;">
+              RM${item.price_per_hour ?? 0}
+            </strong>
+            <br>
+            <small style="color:#777;">
+              ${
+                currentLanguage === "zh"
+                  ? `最低 ${item.minimum_hours || 0} 小时`
+                  : `ขั้นต่ำ ${item.minimum_hours || 0} ชม.`
+              }
+            </small>
+          </td>
+
+          <td>
+            <span class="badge ${statusClass}">
+              ${escapeHtml(item.status || "off")}
+            </span>
+          </td>
+
+          <td>
+            <span class="${publishClass}">
+              ${publishText}
+            </span>
+          </td>
+
+          <td>
+            <button
+              class="action-btn"
+              onclick="editCompanion('${item.id}')">
+              ${
+                currentLanguage === "zh"
+                  ? "编辑"
+                  : "แก้ไข"
+              }
+            </button>
+
+            <button
+              class="action-btn"
+              onclick="togglePublished('${item.id}', ${!item.is_published})">
+              ${
+                item.is_published
+                  ? (
+                      currentLanguage === "zh"
+                        ? "下架"
+                        : "ซ่อน"
+                    )
+                  : (
+                      currentLanguage === "zh"
+                        ? "发布"
+                        : "เผยแพร่"
+                    )
+              }
+            </button>
+
+            <button
+              class="action-btn danger"
+              onclick="deleteCompanion('${item.id}')">
+              ${
+                currentLanguage === "zh"
+                  ? "删除"
+                  : "ลบ"
+              }
+            </button>
+          </td>
+        `;
+
+
+        body.appendChild(
+          tr
+        );
+
+      }
+    );
+
+  }
+
+
+  function serviceTypeLabel(
+    value
+  ) {
+
+    if (
+      value === "party"
+    ) {
+
+      return "Party Companion";
+
+    }
+
+
+    if (
+      value === "girlfriend"
+    ) {
+
+      return currentLanguage === "zh"
+        ? "1日女友"
+        : "แฟน 1 วัน";
+
+    }
+
+
+    if (
+      value === "boyfriend"
+    ) {
+
+      return currentLanguage === "zh"
+        ? "1日男友"
+        : "แฟน 1 วัน (ผู้ชาย)";
+
+    }
+
+
+    return value || "-";
+
+  }
+
+
+  /* =========================================
+     ADD / EDIT MODAL
+  ========================================= */
+
+  function openAddModal() {
+
+    document
+      .getElementById(
+        "profileForm"
+      )
+      .reset();
+
+
+    document
+      .getElementById(
+        "editId"
+      )
+      .value = "";
+
+
+    document
+      .getElementById(
+        "existingImage"
+      )
+      .value = "";
+
+
+    document
+      .getElementById(
+        "minimumHours"
+      )
+      .value = "3";
+
+
+    document
+      .getElementById(
+        "status"
+      )
+      .value =
+        "available";
+
+
+    document
+      .getElementById(
+        "isPublished"
+      )
+      .value =
+        "true";
+
+
+    const preview =
+      document
+        .getElementById(
+          "imagePreview"
+        );
+
+
+    preview.src = "";
+
+    preview.style.display =
+      "none";
+
+
+    document
+      .getElementById(
+        "formMessage"
+      )
+      .className =
+        "message";
+
+
+    document
+      .getElementById(
+        "modalTitle"
+      )
+      .textContent =
+        currentLanguage === "zh"
+          ? "新增人物"
+          : "เพิ่มโปรไฟล์";
+
+
+    document
+      .getElementById(
+        "profileModal"
+      )
+      .classList
+      .add(
+        "show"
+      );
+
+  }
+
+
+  function editCompanion(id) {
+
+    const item =
+      companions.find(
+        x => x.id === id
+      );
+
+
+    if (!item) {
+      return;
+    }
+
+
+    document
+      .getElementById(
+        "editId"
+      )
+      .value =
+        item.id;
+
+
+    document
+      .getElementById(
+        "slug"
+      )
+      .value =
+        item.slug || "";
+
+
+    document
+      .getElementById(
+        "nickname"
+      )
+      .value =
+        item.nickname || "";
+
+
+    document
+      .getElementById(
+        "age"
+      )
+      .value =
+        item.age || "";
+
+
+    document
+      .getElementById(
+        "gender"
+      )
+      .value =
+        item.gender || "female";
+
+
+    document
+      .getElementById(
+        "area"
+      )
+      .value =
+        item.area || "Kuala Lumpur";
+
+
+    document
+      .getElementById(
+        "serviceType"
+      )
+      .value =
+        item.service_type || "party";
+
+
+    document
+      .getElementById(
+        "languages"
+      )
+      .value =
+        item.languages || "";
+
+
+    document
+      .getElementById(
+        "availableTime"
+      )
+      .value =
+        item.available_time || "";
+
+
+    document
+      .getElementById(
+        "pricePerHour"
+      )
+      .value =
+        item.price_per_hour ?? "";
+
+
+    document
+      .getElementById(
+        "minimumHours"
+      )
+      .value =
+        item.minimum_hours || 3;
+
+
+    document
+      .getElementById(
+        "status"
+      )
+      .value =
+        item.status || "available";
+
+
+    document
+      .getElementById(
+        "isPublished"
+      )
+      .value =
+        item.is_published
+          ? "true"
+          : "false";
+
+
+    document
+      .getElementById(
+        "servicesZh"
+      )
+      .value =
+        item.services_zh || "";
+
+
+    document
+      .getElementById(
+        "servicesTh"
+      )
+      .value =
+        item.services_th || "";
+
+
+    document
+      .getElementById(
+        "descriptionZh"
+      )
+      .value =
+        item.description_zh || "";
+
+
+    document
+      .getElementById(
+        "descriptionTh"
+      )
+      .value =
+        item.description_th || "";
+
+
+    document
+      .getElementById(
+        "existingImage"
+      )
+      .value =
+        item.cover_image || "";
+
+
+    const preview =
+      document
+        .getElementById(
+          "imagePreview"
+        );
+
+
+    if (
+      item.cover_image
+    ) {
+
+      preview.src =
+        item.cover_image;
+
+      preview.style.display =
+        "block";
+
+    }
+    else {
+
+      preview.style.display =
+        "none";
+
+    }
+
+
+    document
+      .getElementById(
+        "modalTitle"
+      )
+      .textContent =
+        currentLanguage === "zh"
+          ? "编辑人物"
+          : "แก้ไขโปรไฟล์";
+
+
+    document
+      .getElementById(
+        "profileModal"
+      )
+      .classList
+      .add(
+        "show"
+      );
+
+  }
+
+
+  function closeModal() {
+
+    document
+      .getElementById(
+        "profileModal"
+      )
+      .classList
+      .remove(
+        "show"
+      );
+
+  }
+
+
+  /* =========================================
+     IMAGE
+  ========================================= */
+
+  function previewSelectedImage() {
+
+    const file =
+      document
+        .getElementById(
+          "imageFile"
+        )
+        .files[0];
+
+
+    if (!file) {
+      return;
+    }
+
+
+    const preview =
+      document
+        .getElementById(
+          "imagePreview"
+        );
+
+
+    preview.src =
+      URL.createObjectURL(
+        file
+      );
+
+
+    preview.style.display =
+      "block";
+
+  }
+
+
+  async function uploadImage(
+    file,
+    slug
+  ) {
+
+    const extension =
+      file.name
+        .split(".")
+        .pop()
+        .toLowerCase();
+
+
+    const fileName =
+      `${slug}-${Date.now()}.${extension}`;
+
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .storage
+        .from(
+          BUCKET_NAME
+        )
+        .upload(
+          fileName,
+          file,
+          {
+            cacheControl:
+              "3600",
+
+            upsert:
+              false
+          }
+        );
+
+
+    if (error) {
+      throw error;
+    }
+
+
+    const {
+      data
+    } =
+      supabaseClient
+        .storage
+        .from(
+          BUCKET_NAME
+        )
+        .getPublicUrl(
+          fileName
+        );
+
+
+    return data.publicUrl;
+
+  }
+
+
+  /* =========================================
+     SAVE
+  ========================================= */
+
+  document
+    .getElementById(
+      "profileForm"
+    )
+    .addEventListener(
+      "submit",
+      async function(event) {
+
+        event.preventDefault();
+
+
+        const saveBtn =
+          document
+            .getElementById(
+              "saveBtn"
+            );
+
+
+        const message =
+          document
+            .getElementById(
+              "formMessage"
+            );
+
+
+        saveBtn.disabled =
+          true;
+
+
+        message.className =
+          "message";
+
+
+        try {
+
+          const editId =
+            document
+              .getElementById(
+                "editId"
+              )
+              .value;
+
+
+          const slug =
+            document
+              .getElementById(
+                "slug"
+              )
+              .value
+              .trim()
+              .toLowerCase();
+
+
+          let imageUrl =
+            document
+              .getElementById(
+                "existingImage"
+              )
+              .value;
+
+
+          const imageFile =
+            document
+              .getElementById(
+                "imageFile"
+              )
+              .files[0];
+
+
+          if (
+            imageFile
+          ) {
+
+            imageUrl =
+              await uploadImage(
+                imageFile,
+                slug
+              );
+
+          }
+
+
+          const payload = {
+
+            slug:
+              slug,
+
+            nickname:
+              document
+                .getElementById(
+                  "nickname"
+                )
+                .value
+                .trim(),
+
+            age:
+              Number(
+                document
+                  .getElementById(
+                    "age"
+                  )
+                  .value
+              ),
+
+            gender:
+              document
+                .getElementById(
+                  "gender"
+                )
+                .value,
+
+            area:
+              document
+                .getElementById(
+                  "area"
+                )
+                .value,
+
+            languages:
+              document
+                .getElementById(
+                  "languages"
+                )
+                .value
+                .trim(),
+
+            services_zh:
+              document
+                .getElementById(
+                  "servicesZh"
+                )
+                .value
+                .trim(),
+
+            services_th:
+              document
+                .getElementById(
+                  "servicesTh"
+                )
+                .value
+                .trim(),
+
+            service_type:
+              document
+                .getElementById(
+                  "serviceType"
+                )
+                .value,
+
+            price_per_hour:
+              Number(
+                document
+                  .getElementById(
+                    "pricePerHour"
+                  )
+                  .value
+              ),
+
+            minimum_hours:
+              Number(
+                document
+                  .getElementById(
+                    "minimumHours"
+                  )
+                  .value
+              ),
+
+            available_time:
+              document
+                .getElementById(
+                  "availableTime"
+                )
+                .value
+                .trim(),
+
+            status:
+              document
+                .getElementById(
+                  "status"
+                )
+                .value,
+
+            description_zh:
+              document
+                .getElementById(
+                  "descriptionZh"
+                )
+                .value
+                .trim(),
+
+            description_th:
+              document
+                .getElementById(
+                  "descriptionTh"
+                )
+                .value
+                .trim(),
+
+            cover_image:
+              imageUrl || null,
+
+            is_published:
+              document
+                .getElementById(
+                  "isPublished"
+                )
+                .value ===
+                "true"
+
+          };
+
+
+          let result;
+
+
+          if (
+            editId
+          ) {
+
+            result =
+              await supabaseClient
+                .from(
+                  "companions"
+                )
+                .update(
+                  payload
+                )
+                .eq(
+                  "id",
+                  editId
+                );
+
+          }
+          else {
+
+            result =
+              await supabaseClient
+                .from(
+                  "companions"
+                )
+                .insert(
+                  payload
+                );
+
+          }
+
+
+          if (
+            result.error
+          ) {
+
+            throw result.error;
+
+          }
+
+
+          message.className =
+            "message success";
+
+
+          message.textContent =
+            currentLanguage === "zh"
+              ? "保存成功。"
+              : "บันทึกสำเร็จ";
+
+
+          await loadCompanions();
+
+
+          setTimeout(
+            function() {
+
+              closeModal();
+
+            },
+            600
+          );
+
+        }
+        catch(error) {
+
+          message.className =
+            "message error";
+
+
+          message.textContent =
+            error.message;
+
+        }
+        finally {
+
+          saveBtn.disabled =
+            false;
+
+        }
+
+      }
+    );
+
+
+  /* =========================================
+     PUBLISH
+  ========================================= */
+
+  async function togglePublished(
+    id,
+    value
+  ) {
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from(
+          "companions"
+        )
+        .update({
+
+          is_published:
+            value
+
+        })
+        .eq(
+          "id",
+          id
+        );
+
+
+    if (error) {
+
+      alert(
+        error.message
+      );
+
+      return;
+
+    }
+
+
+    await loadCompanions();
+
+  }
+
+
+  /* =========================================
+     DELETE
+  ========================================= */
+
+  async function deleteCompanion(
+    id
+  ) {
+
+    const item =
+      companions.find(
+        x => x.id === id
+      );
+
+
+    const confirmText =
+      currentLanguage === "zh"
+        ? `确定删除 ${item?.nickname || ""} 吗？`
+        : `ยืนยันลบ ${item?.nickname || ""} ?`;
+
+
+    if (
+      !confirm(
+        confirmText
+      )
+    ) {
+
+      return;
+
+    }
+
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from(
+          "companions"
+        )
+        .delete()
+        .eq(
+          "id",
+          id
+        );
+
+
+    if (error) {
+
+      alert(
+        error.message
+      );
+
+      return;
+
+    }
+
+
+    await loadCompanions();
+
+  }
+
+
+  /* =========================================
+     ESCAPE
+  ========================================= */
+
+  function escapeHtml(
+    value
+  ) {
+
+    return String(
+      value ?? ""
+    )
+      .replaceAll(
+        "&",
+        "&amp;"
+      )
+      .replaceAll(
+        "<",
+        "&lt;"
+      )
+      .replaceAll(
+        ">",
+        "&gt;"
+      )
+      .replaceAll(
+        '"',
+        "&quot;"
+      )
+      .replaceAll(
+        "'",
+        "&#039;"
+      );
+
+  }
+
+
+  /* =========================================
+     START
+  ========================================= */
+
+  async function start() {
+
+    const allowed =
+      await protectPage();
+
+
+    if (!allowed) {
+      return;
+    }
+
+
+    setLanguage(
+      currentLanguage
+    );
+
+
+    await loadCompanions();
+
+  }
+
+
+  start();
+
+</script>
+
+</body>
+</html>
