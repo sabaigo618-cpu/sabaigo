@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SABAI GO - Booking</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #050505;
+      color: #fff;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      padding: 15px 6%;
+
+      background: rgba(0,0,0,.93);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      font-size: 29px;
+      font-weight: 900;
+    }
+
+    .logo span {
+      color: #ff2ea6;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .back-link {
+      color: #ccc;
+      font-size: 14px;
+    }
+
+    .lang-btn {
+      border: 1px solid #ff2ea6;
+      background: transparent;
+      color: #fff;
+
+      padding: 7px 13px;
+
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      background: #ff2ea6;
+    }
+
+    .page-header {
+      padding: 55px 20px 35px;
+      text-align: center;
+
+      background:
+        radial-gradient(
+          circle at top,
+          rgba(139,60,255,.25),
+          transparent 38%
+        ),
+        radial-gradient(
+          circle at right,
+          rgba(255,46,166,.18),
+          transparent 32%
+        );
+    }
+
+    .page-header h1 {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .page-header p {
+      color: #aaa;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: auto;
+
+      padding: 35px 20px 80px;
+
+      display: grid;
+      grid-template-columns: 360px 1fr;
+
+      gap: 30px;
+    }
+
+    .summary-card {
+      background: #0e0e0e;
+
+      border: 1px solid rgba(255,255,255,.08);
+
+      border-radius: 20px;
+
+      padding: 20px;
+
+      height: fit-content;
+
+      position: sticky;
+      top: 95px;
+    }
+
+    .profile-box {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+
+      margin-bottom: 20px;
+    }
+
+    .profile-photo {
+      width: 85px;
+      height: 105px;
+
+      border-radius: 14px;
+
+      object-fit: cover;
+
+      background: #181818;
+    }
+
+    .profile-name {
+      font-size: 23px;
+      font-weight: bold;
+
+      margin-bottom: 7px;
+    }
+
+    .profile-area {
+      color: #999;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+
+      padding: 13px 0;
+
+      border-top: 1px solid rgba(255,255,255,.07);
+
+      font-size: 14px;
+    }
+
+    .summary-label {
+      color: #777;
+    }
+
+    .summary-value {
+      text-align: right;
+      font-weight: bold;
+    }
+
+    .total-box {
+      margin-top: 15px;
+
+      padding: 18px;
+
+      border-radius: 14px;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(139,60,255,.2),
+          rgba(255,46,166,.17)
+        );
+
+      border: 1px solid rgba(255,46,166,.25);
+    }
+
+    .total-label {
+      color: #aaa;
+      font-size: 12px;
+
+      margin-bottom: 5px;
+    }
+
+    .total-price {
+      color: #ff50b7;
+
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    .form-card {
+      background: #0e0e0e;
+
+      border: 1px solid rgba(255,255,255,.08);
+
+      border-radius: 20px;
+
+      padding: 25px;
+    }
+
+    .form-card h2 {
+      font-size: 20px;
+      margin-bottom: 22px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+
+      gap: 18px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      color: #aaa;
+      font-size: 13px;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+
+      background: #171717;
+
+      border: 1px solid #2c2c2c;
+
+      color: #fff;
+
+      padding: 13px 14px;
+
+      border-radius: 10px;
+
+      outline: none;
+
+      font-size: 14px;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: #ff2ea6;
+    }
+
+    .field textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .booking-note {
+      margin-top: 20px;
+
+      padding: 15px;
+
+      background: #151515;
+
+      border-radius: 12px;
+
+      color: #999;
+
+      font-size: 12px;
+
+      line-height: 1.7;
+    }
+
+    .submit-btn {
+      width: 100%;
+
+      margin-top: 20px;
+
+      padding: 15px;
+
+      border: none;
+
+      border-radius: 11px;
+
+      background:
+        linear-gradient(
+          90deg,
+          #833cff,
+          #ff2ea6
+        );
+
+      color: white;
+
+      font-size: 16px;
+      font-weight: bold;
+
+      cursor: pointer;
+    }
+
+    .submit-btn:hover {
+      opacity: .92;
+    }
+
+    .message {
+      display: none;
+
+      margin-top: 18px;
+
+      padding: 15px;
+
+      border-radius: 12px;
+
+      text-align: center;
+
+      line-height: 1.6;
+
+      font-size: 14px;
+    }
+
+    .message.success {
+      display: block;
+
+      background: rgba(29,171,92,.12);
+
+      border: 1px solid rgba(29,171,92,.35);
+
+      color: #8df0b5;
+    }
+
+    .message.error {
+      display: block;
+
+      background: rgba(220,55,80,.12);
+
+      border: 1px solid rgba(220,55,80,.35);
+
+      color: #ff9bad;
+    }
+
+    .not-found {
+      display: none;
+
+      text-align: center;
+
+      padding: 100px 20px;
+    }
+
+    footer {
+      border-top: 1px solid rgba(255,255,255,.07);
+
+      padding: 26px;
+
+      text-align: center;
+
+      color: #666;
+
+      font-size: 12px;
+    }
+
+    @media(max-width:850px) {
+
+      .container {
+        grid-template-columns: 1fr;
+        max-width: 650px;
+      }
+
+      .summary-card {
+        position: static;
+      }
+
+    }
+
+    @media(max-width:560px) {
+
+      .topbar {
+        padding: 13px 15px;
+      }
+
+      .logo {
+        font-size: 23px;
+      }
+
+      .back-link {
+        display: none;
+      }
+
+      .page-header {
+        padding-top: 40px;
+      }
+
+      .page-header h1 {
+        font-size: 32px;
+      }
+
+      .container {
+        padding: 22px 14px 60px;
+      }
+
+      .form-card,
+      .summary-card {
+        padding: 18px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field.full {
+        grid-column: auto;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+  <a href="index.html" class="logo">
+    SABAI <span>GO</span>
+  </a>
+
+  <div class="top-right">
+
+    <a
+      id="backLink"
+      href="companions.html"
+      class="back-link"
+      data-zh="← 返回资料"
+      data-th="← กลับไปโปรไฟล์">
+      ← 返回资料
+    </a>
+
+    <button
+      id="zhBtn"
+      class="lang-btn active"
+      onclick="setLanguage('zh')">
+      中文
+    </button>
+
+    <button
+      id="thBtn"
+      class="lang-btn"
+      onclick="setLanguage('th')">
+      ไทย
+    </button>
+
+  </div>
+
+</header>
+
+
+<div id="bookingPage">
+
+  <section class="page-header">
+
+    <h1
+      data-zh="提交预约"
+      data-th="ส่งคำขอจอง">
+      提交预约
+    </h1>
+
+    <p
+      data-zh="选择日期、时间与预约时长，提交后由 SABAI GO 与你确认最终安排。"
+      data-th="เลือกวันที่ เวลา และจำนวนชั่วโมง หลังจากส่งคำขอ SABAI GO จะติดต่อเพื่อยืนยันรายละเอียด">
+      选择日期、时间与预约时长，提交后由 SABAI GO 与你确认最终安排。
+    </p>
+
+  </section>
+
+
+  <main class="container">
+
+    <aside class="summary-card">
+
+      <div class="profile-box">
+
+        <img
+          id="profilePhoto"
+          class="profile-photo"
+          src=""
+          alt="Companion">
+
+        <div>
+
+          <div
+            id="profileName"
+            class="profile-name">
+          </div>
+
+          <div
+            id="profileArea"
+            class="profile-area">
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="summary-line">
+
+        <span
+          class="summary-label"
+          data-zh="每小时"
+          data-th="ต่อชั่วโมง">
+          每小时
+        </span>
+
+        <span
+          id="hourlyPrice"
+          class="summary-value">
+        </span>
+
+      </div>
+
+
+      <div class="summary-line">
+
+        <span
+          class="summary-label"
+          data-zh="最低预约"
+          data-th="ขั้นต่ำ">
+          最低预约
+        </span>
+
+        <span
+          id="minimumHours"
+          class="summary-value">
+        </span>
+
+      </div>
+
+
+      <div class="summary-line">
+
+        <span
+          class="summary-label"
+          data-zh="预约时长"
+          data-th="จำนวนชั่วโมง">
+          预约时长
+        </span>
+
+        <span
+          id="selectedHours"
+          class="summary-value">
+          -
+        </span>
+
+      </div>
+
+
+      <div class="total-box">
+
+        <div
+          class="total-label"
+          data-zh="预计金额"
+          data-th="ยอดประมาณการ">
+          预计金额
+        </div>
+
+        <div
+          id="totalPrice"
+          class="total-price">
+          RM0
+        </div>
+
+      </div>
+
+    </aside>
+
+
+    <section class="form-card">
+
+      <h2
+        data-zh="预约资料"
+        data-th="รายละเอียดการจอง">
+        预约资料
+      </h2>
+
+
+      <form id="bookingForm">
+
+        <div class="form-grid">
+
+          <div class="field">
+
+            <label
+              for="bookingDate"
+              data-zh="预约日期"
+              data-th="วันที่">
+              预约日期
+            </label>
+
+            <input
+              id="bookingDate"
+              type="date"
+              required>
+
+          </div>
+
+
+          <div class="field">
+
+            <label
+              for="bookingTime"
+              data-zh="开始时间"
+              data-th="เวลาเริ่ม">
+              开始时间
+            </label>
+
+            <input
+              id="bookingTime"
+              type="time"
+              required>
+
+          </div>
+
+
+          <div class="field">
+
+            <label
+              for="hours"
+              data-zh="预约小时数"
+              data-th="จำนวนชั่วโมง">
+              预约小时数
+            </label>
+
+            <select
+              id="hours"
+              required
+              onchange="calculateTotal()">
+            </select>
+
+          </div>
+
+
+          <div class="field">
+
+            <label
+              for="area"
+              data-zh="地区"
+              data-th="พื้นที่">
+              地区
+            </label>
+
+            <select
+              id="area"
+              required>
+
+              <option value="">
+                -
+              </option>
+
+              <option value="Kuala Lumpur">
+                Kuala Lumpur
+              </option>
+
+              <option value="Puchong">
+                Puchong
+              </option>
+
+              <option value="Petaling Jaya">
+                Petaling Jaya
+              </option>
+
+              <option value="Subang Jaya">
+                Subang Jaya
+              </option>
+
+              <option value="Klang">
+                Klang
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div class="field full">
+
+            <label
+              for="meetingPlace"
+              data-zh="见面地点 / 场所"
+              data-th="สถานที่นัดพบ">
+              见面地点 / 场所
+            </label>
+
+            <input
+              id="meetingPlace"
+              type="text"
+              required
+              data-placeholder-zh="例如：Pavilion KL、KTV 店名、餐厅名称"
+              data-placeholder-th="เช่น Pavilion KL, ชื่อ KTV หรือชื่อร้านอาหาร">
+          </div>
+
+
+          <div class="field">
+
+            <label
+              for="customerName"
+              data-zh="你的名字"
+              data-th="ชื่อของคุณ">
+              你的名字
+            </label>
+
+            <input
+              id="customerName"
+              type="text"
+              required>
+          </div>
+
+
+          <div class="field">
+
+            <label
+              for="phone"
+              data-zh="电话号码 / WhatsApp"
+              data-th="เบอร์โทร / WhatsApp">
+              电话号码 / WhatsApp
+            </label>
+
+            <input
+              id="phone"
+              type="tel"
+              required
+              placeholder="01X-XXXXXXX">
+          </div>
+
+
+          <div class="field full">
+
+            <label
+              for="notes"
+              data-zh="备注"
+              data-th="หมายเหตุ">
+              备注
+            </label>
+
+            <textarea
+              id="notes"
+              data-placeholder-zh="可以填写活动类型、人数、KTV / 酒吧名称或其他要求。"
+              data-placeholder-th="สามารถระบุประเภทกิจกรรม จำนวนคน ชื่อ KTV / บาร์ หรือรายละเอียดเพิ่มเติมได้"></textarea>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="booking-note"
+          data-zh="此页面提交的是预约申请，并不代表已经确认。SABAI GO 会根据人员时间与安排与你确认。服务仅限合法社交陪伴及一般娱乐活动。"
+          data-th="แบบฟอร์มนี้เป็นเพียงคำขอจอง ยังไม่ถือว่าการจองได้รับการยืนยัน SABAI GO จะตรวจสอบเวลาและติดต่อกลับ บริการจำกัดเฉพาะกิจกรรมสังคมและความบันเทิงที่ถูกกฎหมายเท่านั้น">
+          此页面提交的是预约申请，并不代表已经确认。SABAI GO 会根据人员时间与安排与你确认。服务仅限合法社交陪伴及一般娱乐活动。
+        </div>
+
+
+        <button
+          type="submit"
+          class="submit-btn"
+          data-zh="提交预约申请"
+          data-th="ส่งคำขอจอง">
+          提交预约申请
+        </button>
+
+
+        <div
+          id="message"
+          class="message">
+        </div>
+
+      </form>
+
+    </section>
+
+  </main>
+
+</div>
+
+
+<div
+  id="notFound"
+  class="not-found">
+
+  <h2
+    data-zh="找不到这个人物资料"
+    data-th="ไม่พบโปรไฟล์นี้">
+    找不到这个人物资料
+  </h2>
+
+  <br>
+
+  <a
+    href="companions.html"
+    style="color:#ff4eb3;"
+    data-zh="返回人物列表"
+    data-th="กลับไปหน้ารายการ">
+    返回人物列表
+  </a>
+
+</div>
+
+
+<footer>
+  © 2026 SABAI GO
+</footer>
+
+
+<script>
+
+const profiles = {
+
+  may: {
+    name: "May 🇹🇭",
+    area: "Kuala Lumpur",
+    price: 120,
+    minimum: 3,
+    photo:
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=85"
+  },
+
+  mint: {
+    name: "Mint 🇹🇭",
+    area: "Puchong",
+    price: 100,
+    minimum: 3,
+    photo:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=85"
+  },
+
+  nana: {
+    name: "Nana 🇹🇭",
+    area: "Petaling Jaya",
+    price: 110,
+    minimum: 4,
+    photo:
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=800&q=85"
+  },
+
+  ploy: {
+    name: "Ploy 🇹🇭",
+    area: "Subang Jaya",
+    price: 130,
+    minimum: 3,
+    photo:
+      "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=800&q=85"
+  },
+
+  jay: {
+    name: "Jay",
+    area: "Kuala Lumpur",
+    price: 100,
+    minimum: 4,
+    photo:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=85"
+  },
+
+  bank: {
+    name: "Bank 🇹🇭",
+    area: "Klang",
+    price: 90,
+    minimum: 3,
+    photo:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=85"
+  }
+
+};
+
+
+let currentLanguage =
+  localStorage.getItem(
+    "sabaigo-language"
+  ) || "zh";
+
+
+const params =
+  new URLSearchParams(
+    window.location.search
+  );
+
+
+const id =
+  params.get("id");
+
+
+const profile =
+  profiles[id];
+
+
+if (!profile) {
+
+  document
+    .getElementById("bookingPage")
+    .style.display = "none";
+
+  document
+    .getElementById("notFound")
+    .style.display = "block";
+
+}
+else {
+
+  initializePage();
+
+}
+
+
+function initializePage() {
+
+  document
+    .getElementById("profilePhoto")
+    .src = profile.photo;
+
+
+  document
+    .getElementById("profileName")
+    .textContent = profile.name;
+
+
+  document
+    .getElementById("profileArea")
+    .textContent =
+      "📍 " + profile.area;
+
+
+  document
+    .getElementById("hourlyPrice")
+    .textContent =
+      "RM" + profile.price;
+
+
+  document
+    .getElementById("area")
+    .value = profile.area;
+
+
+  document
+    .getElementById("backLink")
+    .href =
+      "companion-detail.html?id=" + id;
+
+
+  createHourOptions();
+
+
+  setMinimumDate();
+
+
+  setLanguage(
+    currentLanguage
+  );
+
+
+  calculateTotal();
+
+}
+
+
+function createHourOptions() {
+
+  const select =
+    document.getElementById(
+      "hours"
+    );
+
+
+  select.innerHTML = "";
+
+
+  for (
+    let i = profile.minimum;
+    i <= 12;
+    i++
+  ) {
+
+    const option =
+      document.createElement(
+        "option"
+      );
+
+    option.value = i;
+
+    option.textContent =
+      i + " Hours";
+
+    select.appendChild(
+      option
+    );
+
+  }
+
+}
+
+
+function setMinimumDate() {
+
+  const today =
+    new Date();
+
+
+  const year =
+    today.getFullYear();
+
+
+  const month =
+    String(
+      today.getMonth() + 1
+    ).padStart(
+      2,
+      "0"
+    );
+
+
+  const day =
+    String(
+      today.getDate()
+    ).padStart(
+      2,
+      "0"
+    );
+
+
+  document
+    .getElementById(
+      "bookingDate"
+    )
+    .min =
+      year +
+      "-" +
+      month +
+      "-" +
+      day;
+
+}
+
+
+function calculateTotal() {
+
+  if (!profile) {
+    return;
+  }
+
+
+  const hours =
+    Number(
+      document
+        .getElementById(
+          "hours"
+        )
+        .value
+    );
+
+
+  const total =
+    hours *
+    profile.price;
+
+
+  document
+    .getElementById(
+      "selectedHours"
+    )
+    .textContent =
+      hours
+        ? (
+            currentLanguage === "zh"
+              ? hours + " 小时"
+              : hours + " ชั่วโมง"
+          )
+        : "-";
+
+
+  document
+    .getElementById(
+      "totalPrice"
+    )
+    .textContent =
+      "RM" + total;
+
+}
+
+
+function setLanguage(lang) {
+
+  currentLanguage =
+    lang;
+
+
+  localStorage.setItem(
+    "sabaigo-language",
+    lang
+  );
+
+
+  document
+    .querySelectorAll(
+      "[data-zh]"
+    )
+    .forEach(
+      function(el) {
+
+        const value =
+          el.getAttribute(
+            "data-" + lang
+          );
+
+        if (
+          value !== null
+        ) {
+
+          el.textContent =
+            value;
+
+        }
+
+      }
+    );
+
+
+  document
+    .querySelectorAll(
+      "[data-placeholder-zh]"
+    )
+    .forEach(
+      function(el) {
+
+        const value =
+          el.getAttribute(
+            "data-placeholder-" +
+            lang
+          );
+
+        if (
+          value !== null
+        ) {
+
+          el.placeholder =
+            value;
+
+        }
+
+      }
+    );
+
+
+  document
+    .getElementById(
+      "zhBtn"
+    )
+    .classList
+    .toggle(
+      "active",
+      lang === "zh"
+    );
+
+
+  document
+    .getElementById(
+      "thBtn"
+    )
+    .classList
+    .toggle(
+      "active",
+      lang === "th"
+    );
+
+
+  document.documentElement.lang =
+    lang === "zh"
+      ? "zh"
+      : "th";
+
+
+  if (profile) {
+
+    document
+      .getElementById(
+        "minimumHours"
+      )
+      .textContent =
+        lang === "zh"
+          ? profile.minimum +
+            " 小时"
+          : profile.minimum +
+            " ชั่วโมง";
+
+
+    createHourOptions();
+
+
+    calculateTotal();
+
+  }
+
+}
+
+
+document
+  .getElementById(
+    "bookingForm"
+  )
+  .addEventListener(
+    "submit",
+    function(event) {
+
+      event.preventDefault();
+
+
+      const date =
+        document
+          .getElementById(
+            "bookingDate"
+          )
+          .value;
+
+
+      const time =
+        document
+          .getElementById(
+            "bookingTime"
+          )
+          .value;
+
+
+      const hours =
+        document
+          .getElementById(
+            "hours"
+          )
+          .value;
+
+
+      const area =
+        document
+          .getElementById(
+            "area"
+          )
+          .value;
+
+
+      const meetingPlace =
+        document
+          .getElementById(
+            "meetingPlace"
+          )
+          .value
+          .trim();
+
+
+      const customerName =
+        document
+          .getElementById(
+            "customerName"
+          )
+          .value
+          .trim();
+
+
+      const phone =
+        document
+          .getElementById(
+            "phone"
+          )
+          .value
+          .trim();
+
+
+      const message =
+        document
+          .getElementById(
+            "message"
+          );
+
+
+      if (
+        !date ||
+        !time ||
+        !hours ||
+        !area ||
+        !meetingPlace ||
+        !customerName ||
+        !phone
+      ) {
+
+        message.className =
+          "message error";
+
+
+        message.textContent =
+          currentLanguage === "zh"
+            ? "请填写所有必填资料。"
+            : "กรุณากรอกข้อมูลที่จำเป็นให้ครบ";
+
+        return;
+
+      }
+
+
+      message.className =
+        "message success";
+
+
+      message.textContent =
+        currentLanguage === "zh"
+          ? "预约资料填写成功。下一步接上数据库后，这个订单就会正式发送到 SABAI GO 后台。"
+          : "กรอกข้อมูลเรียบร้อยแล้ว เมื่อเชื่อมต่อฐานข้อมูลในขั้นตอนถัดไป คำขอนี้จะถูกส่งไปยังระบบหลังบ้านของ SABAI GO";
+
+  }
+);
+
+</script>
+
+</body>
+</html>
