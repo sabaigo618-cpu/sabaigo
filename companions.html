@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SABAI GO - Companion</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #050505;
+      color: #fff;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      padding: 15px 6%;
+
+      background: rgba(0,0,0,.92);
+      backdrop-filter: blur(12px);
+
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .logo {
+      font-size: 29px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      cursor: pointer;
+    }
+
+    .logo span {
+      color: #ff2ea6;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .home-link {
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    .home-link:hover {
+      color: #ff4eb3;
+    }
+
+    .lang-switch {
+      display: flex;
+      gap: 7px;
+    }
+
+    .lang-btn {
+      border: 1px solid #ff2ea6;
+      background: transparent;
+      color: #fff;
+
+      padding: 7px 13px;
+
+      border-radius: 20px;
+
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      background: #ff2ea6;
+    }
+
+    /* =========================
+       PAGE HEADER
+    ========================= */
+
+    .page-header {
+      text-align: center;
+
+      padding: 65px 20px 45px;
+
+      background:
+        radial-gradient(
+          circle at top,
+          rgba(139,60,255,.28),
+          transparent 40%
+        ),
+        radial-gradient(
+          circle at right,
+          rgba(255,46,166,.18),
+          transparent 35%
+        );
+    }
+
+    .page-header .small-title {
+      color: #ff56b8;
+
+      text-transform: uppercase;
+
+      font-size: 13px;
+
+      letter-spacing: 3px;
+
+      margin-bottom: 13px;
+    }
+
+    .page-header h1 {
+      font-size: 43px;
+      margin-bottom: 14px;
+    }
+
+    .page-header p {
+      color: #aaa;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    /* =========================
+       SERVICE TABS
+    ========================= */
+
+    .service-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+
+      padding: 25px 20px 10px;
+
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      border: 1px solid rgba(255,255,255,.13);
+
+      background: #111;
+
+      color: #bbb;
+
+      padding: 11px 18px;
+
+      border-radius: 25px;
+
+      cursor: pointer;
+
+      font-size: 14px;
+
+      transition: .2s;
+    }
+
+    .tab-btn:hover {
+      border-color: #ff2ea6;
+      color: white;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(
+        90deg,
+        #8b3cff,
+        #ff2ea6
+      );
+
+      border-color: transparent;
+
+      color: white;
+    }
+
+    /* =========================
+       FILTER
+    ========================= */
+
+    .filter-wrap {
+      max-width: 1200px;
+
+      margin: 20px auto 30px;
+
+      padding: 0 20px;
+    }
+
+    .filter-box {
+      background: #0d0d0d;
+
+      border: 1px solid rgba(255,255,255,.08);
+
+      padding: 18px;
+
+      border-radius: 18px;
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap: 12px;
+    }
+
+    .filter-box select {
+      width: 100%;
+
+      background: #171717;
+
+      border: 1px solid #2b2b2b;
+
+      color: white;
+
+      padding: 12px;
+
+      border-radius: 10px;
+
+      outline: none;
+    }
+
+    .filter-box select:focus {
+      border-color: #ff2ea6;
+    }
+
+    /* =========================
+       RESULTS
+    ========================= */
+
+    .result-info {
+      max-width: 1200px;
+
+      margin: auto;
+
+      padding: 0 20px 16px;
+
+      color: #888;
+
+      font-size: 14px;
+    }
+
+    /* =========================
+       CARDS
+    ========================= */
+
+    .cards {
+      max-width: 1200px;
+
+      margin: auto;
+
+      padding: 0 20px 70px;
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap: 22px;
+    }
+
+    .card {
+      background: #101010;
+
+      border-radius: 18px;
+
+      overflow: hidden;
+
+      border: 1px solid rgba(255,255,255,.08);
+
+      transition: .25s;
+
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+
+      border-color:
+        rgba(255,46,166,.45);
+
+      box-shadow:
+        0 18px 45px
+        rgba(255,46,166,.11);
+    }
+
+    .photo-wrap {
+      position: relative;
+
+      width: 100%;
+
+      aspect-ratio: 3 / 4;
+
+      overflow: hidden;
+
+      background:
+        linear-gradient(
+          135deg,
+          #26102c,
+          #0d0d0d
+        );
+    }
+
+    .photo-wrap img {
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+
+      display: block;
+    }
+
+    .status {
+      position: absolute;
+
+      top: 12px;
+      left: 12px;
+
+      padding: 7px 11px;
+
+      border-radius: 20px;
+
+      font-size: 12px;
+
+      font-weight: bold;
+
+      backdrop-filter: blur(8px);
+    }
+
+    .available {
+      background:
+        rgba(24,180,100,.9);
+
+      color: white;
+    }
+
+    .busy {
+      background:
+        rgba(235,150,20,.92);
+
+      color: white;
+    }
+
+    .off {
+      background:
+        rgba(90,90,90,.9);
+
+      color: white;
+    }
+
+    .type-badge {
+      position: absolute;
+
+      right: 12px;
+      bottom: 12px;
+
+      background:
+        rgba(0,0,0,.75);
+
+      padding: 7px 10px;
+
+      border-radius: 15px;
+
+      font-size: 11px;
+
+      color: #eee;
+    }
+
+    .card-body {
+      padding: 17px;
+    }
+
+    .name-row {
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 10px;
+
+      margin-bottom: 9px;
+    }
+
+    .name {
+      font-size: 21px;
+      font-weight: bold;
+    }
+
+    .age {
+      color: #999;
+      font-size: 13px;
+    }
+
+    .location {
+      color: #aaa;
+
+      font-size: 13px;
+
+      margin-bottom: 12px;
+    }
+
+    .tags {
+      display: flex;
+
+      flex-wrap: wrap;
+
+      gap: 6px;
+
+      min-height: 54px;
+
+      margin-bottom: 13px;
+    }
+
+    .tag {
+      background: #1b1b1b;
+
+      border: 1px solid #292929;
+
+      padding: 6px 9px;
+
+      border-radius: 15px;
+
+      color: #bbb;
+
+      font-size: 11px;
+    }
+
+    .price-row {
+      display: flex;
+
+      justify-content: space-between;
+
+      align-items: end;
+
+      padding-top: 13px;
+
+      border-top:
+        1px solid rgba(255,255,255,.07);
+    }
+
+    .price-label {
+      color: #777;
+
+      font-size: 11px;
+
+      margin-bottom: 3px;
+    }
+
+    .price {
+      color: #ff4eb3;
+
+      font-size: 21px;
+
+      font-weight: bold;
+    }
+
+    .minimum {
+      color: #888;
+
+      font-size: 11px;
+
+      text-align: right;
+    }
+
+    .view-btn {
+      display: block;
+
+      width: 100%;
+
+      margin-top: 15px;
+
+      padding: 11px;
+
+      border-radius: 9px;
+
+      text-align: center;
+
+      background:
+        linear-gradient(
+          90deg,
+          #873cff,
+          #ff2ea6
+        );
+
+      font-weight: bold;
+
+      font-size: 13px;
+    }
+
+    .view-btn.disabled {
+      background: #292929;
+      color: #777;
+
+      pointer-events: none;
+    }
+
+    /* =========================
+       EMPTY
+    ========================= */
+
+    .empty {
+      display: none;
+
+      max-width: 1200px;
+
+      margin: auto;
+
+      padding: 50px 20px 90px;
+
+      text-align: center;
+
+      color: #777;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer {
+      border-top:
+        1px solid rgba(255,255,255,.07);
+
+      padding: 28px 20px;
+
+      text-align: center;
+
+      color: #666;
+
+      font-size: 12px;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media(max-width:1000px) {
+
+      .cards {
+        grid-template-columns:
+          repeat(3, 1fr);
+      }
+
+      .filter-box {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+    }
+
+    @media(max-width:750px) {
+
+      .cards {
+        grid-template-columns:
+          repeat(2, 1fr);
+
+        gap: 13px;
+
+        padding-left: 13px;
+        padding-right: 13px;
+      }
+
+      .filter-wrap {
+        padding: 0 13px;
+      }
+
+      .page-header {
+        padding-top: 45px;
+      }
+
+      .page-header h1 {
+        font-size: 34px;
+      }
+
+      .topbar {
+        padding:
+          13px 15px;
+      }
+
+      .logo {
+        font-size: 23px;
+      }
+
+      .home-link {
+        display: none;
+      }
+
+    }
+
+    @media(max-width:480px) {
+
+      .filter-box {
+        grid-template-columns: 1fr;
+      }
+
+      .card-body {
+        padding: 13px;
+      }
+
+      .name {
+        font-size: 18px;
+      }
+
+      .price {
+        font-size: 18px;
+      }
+
+      .tags {
+        min-height: auto;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+  <a href="index.html" class="logo">
+    SABAI <span>GO</span>
+  </a>
+
+  <div class="top-right">
+
+    <a
+      href="index.html"
+      class="home-link"
+      data-zh="首页"
+      data-th="หน้าหลัก">
+      首页
+    </a>
+
+    <div class="lang-switch">
+
+      <button
+        id="zhBtn"
+        class="lang-btn active"
+        onclick="setLanguage('zh')">
+        中文
+      </button>
+
+      <button
+        id="thBtn"
+        class="lang-btn"
+        onclick="setLanguage('th')">
+        ไทย
+      </button>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<section class="page-header">
+
+  <div class="small-title">
+    SABAI GO COMPANION
+  </div>
+
+  <h1
+    data-zh="找到今晚适合你的陪伴"
+    data-th="ค้นหาเพื่อนที่เหมาะกับคืนนี้">
+    找到今晚适合你的陪伴
+  </h1>
+
+  <p
+    data-zh="浏览资料、地区、语言、服务类型与价格，再选择适合你的陪伴。"
+    data-th="ดูโปรไฟล์ พื้นที่ ภาษา ประเภทบริการ และราคา ก่อนเลือกเพื่อนที่เหมาะกับคุณ">
+    浏览资料、地区、语言、服务类型与价格，再选择适合你的陪伴。
+  </p>
+
+</section>
+
+
+<div class="service-tabs">
+
+  <button
+    class="tab-btn active"
+    data-type="all"
+    onclick="setType('all',this)"
+    data-zh="全部"
+    data-th="ทั้งหมด">
+    全部
+  </button>
+
+  <button
+    class="tab-btn"
+    data-type="party"
+    onclick="setType('party',this)"
+    data-zh="Party Companion"
+    data-th="เพื่อนปาร์ตี้">
+    Party Companion
+  </button>
+
+  <button
+    class="tab-btn"
+    data-type="girlfriend"
+    onclick="setType('girlfriend',this)"
+    data-zh="1日女友"
+    data-th="แฟน 1 วัน">
+    1日女友
+  </button>
+
+  <button
+    class="tab-btn"
+    data-type="boyfriend"
+    onclick="setType('boyfriend',this)"
+    data-zh="1日男友"
+    data-th="แฟน 1 วัน (ผู้ชาย)">
+    1日男友
+  </button>
+
+</div>
+
+
+<div class="filter-wrap">
+
+  <div class="filter-box">
+
+    <select id="areaFilter" onchange="filterCards()">
+
+      <option
+        value="all"
+        data-zh="全部地区"
+        data-th="ทุกพื้นที่">
+        全部地区
+      </option>
+
+      <option value="Kuala Lumpur">
+        Kuala Lumpur
+      </option>
+
+      <option value="Puchong">
+        Puchong
+      </option>
+
+      <option value="Petaling Jaya">
+        Petaling Jaya
+      </option>
+
+      <option value="Subang Jaya">
+        Subang Jaya
+      </option>
+
+      <option value="Klang">
+        Klang
+      </option>
+
+    </select>
+
+
+    <select id="genderFilter" onchange="filterCards()">
+
+      <option
+        value="all"
+        data-zh="全部性别"
+        data-th="ทุกเพศ">
+        全部性别
+      </option>
+
+      <option
+        value="female"
+        data-zh="女生"
+        data-th="ผู้หญิง">
+        女生
+      </option>
+
+      <option
+        value="male"
+        data-zh="男生"
+        data-th="ผู้ชาย">
+        男生
+      </option>
+
+    </select>
+
+
+    <select id="languageFilter" onchange="filterCards()">
+
+      <option
+        value="all"
+        data-zh="全部语言"
+        data-th="ทุกภาษา">
+        全部语言
+      </option>
+
+      <option value="thai"
+        data-zh="泰语"
+        data-th="ภาษาไทย">
+        泰语
+      </option>
+
+      <option value="chinese"
+        data-zh="华语"
+        data-th="ภาษาจีน">
+        华语
+      </option>
+
+      <option value="english"
+        data-zh="英语"
+        data-th="ภาษาอังกฤษ">
+        英语
+      </option>
+
+    </select>
+
+
+    <select id="statusFilter" onchange="filterCards()">
+
+      <option
+        value="all"
+        data-zh="全部状态"
+        data-th="ทุกสถานะ">
+        全部状态
+      </option>
+
+      <option
+        value="available"
+        data-zh="Available"
+        data-th="ว่าง">
+        Available
+      </option>
+
+      <option
+        value="busy"
+        data-zh="Busy"
+        data-th="ไม่ว่าง">
+        Busy
+      </option>
+
+    </select>
+
+  </div>
+
+</div>
+
+
+<div class="result-info">
+
+  <span
+    data-zh="找到"
+    data-th="พบ">
+    找到
+  </span>
+
+  <strong id="resultCount">
+    6
+  </strong>
+
+  <span
+    data-zh="位陪伴"
+    data-th="โปรไฟล์">
+    位陪伴
+  </span>
+
+</div>
+
+
+<main class="cards" id="cards">
+
+
+  <!-- MAY -->
+
+  <article
+    class="card"
+    data-type="party girlfriend"
+    data-area="Kuala Lumpur"
+    data-gender="female"
+    data-language="thai english"
+    data-status="available">
+
+    <div class="photo-wrap">
+
+      <img
+        src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80"
+        alt="May">
+
+      <span
+        class="status available"
+        data-zh="● Available"
+        data-th="● ว่าง">
+        ● Available
+      </span>
+
+      <span
+        class="type-badge"
+        data-zh="Party · 1日女友"
+        data-th="ปาร์ตี้ · แฟน 1 วัน">
+        Party · 1日女友
+      </span>
+
+    </div>
+
+    <div class="card-body">
+
+      <div class="name-row">
+
+        <div class="name">
+          May 🇹🇭
+        </div>
+
+        <div class="age">
+          24
+        </div>
+
+      </div>
+
+      <div class="location">
+        📍 Kuala Lumpur
+      </div>
+
+      <div class="tags">
+
+        <span
+          class="tag"
+          data-zh="泰语"
+          data-th="ไทย">
+          泰语
+        </span>
+
+        <span
+          class="tag"
+          data-zh="英语"
+          data-th="อังกฤษ">
+          英语
+        </span>
+
+        <span
+          class="tag"
+          data-zh="陪喝酒"
+          data-th="เพื่อนดื่ม">
+          陪喝酒
+        </span>
+
+        <span class="tag">
+          KTV
+        </span>
+
+      </div>
+
+      <div class="price-row">
+
+        <div>
+
+          <div
+            class="price-label"
+            data-zh="每小时"
+            data-th="ต่อชั่วโมง">
+            每小时
+          </div>
+
+          <div class="price">
+            RM120
+          </div>
+
+        </div>
+
+        <div
+          class="minimum"
+          data-zh="最低 3 小时"
+          data-th="ขั้นต่ำ 3 ชั่วโมง">
+          最低 3 小时
+        </div>
+
+      </div>
+
+      <a
+        href="companion-detail.html?id=may"
+        class="view-btn"
+        data-zh="查看资料"
+        data-th="ดูโปรไฟล์">
+        查看资料
+      </a>
+
+    </div>
+
+  </article>
+
+
+  <!-- MINT -->
+
+  <article
+    class="card"
+    data-type="party girlfriend"
+    data-area="Puchong"
+    data-gender="female"
+    data-language="thai chinese"
+    data-status="available">
+
+    <div class="photo-wrap">
+
+      <img
+        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80"
+        alt="Mint">
+
+      <span
+        class="status available"
+        data-zh="● Available"
+        data-th="● ว่าง">
+        ● Available
+      </span>
+
+      <span
+        class="type-badge"
+        data-zh="Party"
+        data-th="ปาร์ตี้">
+        Party
+      </span>
+
+    </div>
+
+    <div class="card-body">
+
+      <div class="name-row">
+
+        <div class="name">
+          Mint 🇹🇭
+        </div>
+
+        <div class="age">
+          23
+        </div>
+
+      </div>
+
+      <div class="location">
+        📍 Puchong
+      </div>
+
+      <div class="tags">
+
+        <span
+          class="tag"
+          data-zh="泰语"
+          data-th="ไทย">
+          泰语
+        </span>
+
+        <span
+          class="tag"
+          data-zh="华语"
+          data-th="จีน">
+          华语
+        </span>
+
+        <span
+          class="tag"
+          data-zh="聚会"
+          data-th="ปาร์ตี้">
+          聚会
+        </span>
+
+        <span class="tag">
+          KTV
+        </span>
+
+      </div>
+
+      <div class="price-row">
+
+        <div>
+
+          <div
+            class="price-label"
+            data-zh="每小时"
+            data-th="ต่อชั่วโมง">
+            每小时
+          </div>
+
+          <div class="price">
+            RM100
+          </div>
+
+        </div>
+
+        <div
+          class="minimum"
+          data-zh="最低 3 小时"
+          data-th="ขั้นต่ำ 3 ชั่วโมง">
+          最低 3 小时
+        </div>
+
+      </div>
+
+      <a
+        href="companion-detail.html?id=mint"
+        class="view-btn"
+        data-zh="查看资料"
+        data-th="ดูโปรไฟล์">
+        查看资料
+      </a>
+
+    </div>
+
+  </article>
+
+
+  <!-- NANA -->
+
+  <article
+    class="card"
+    data-type="girlfriend"
+    data-area="Petaling Jaya"
+    data-gender="female"
+    data-language="thai english"
+    data-status="busy">
+
+    <div class="photo-wrap">
+
+      <img
+        src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=800&q=80"
+        alt="Nana">
+
+      <span
+        class="status busy"
+        data-zh="● Busy"
+        data-th="● ไม่ว่าง">
+        ● Busy
+      </span>
+
+      <span
+        class="type-badge"
+        data-zh="1日女友"
+        data-th="แฟน 1 วัน">
+        1日女友
+      </span>
+
+    </div>
+
+    <div class="card-body">
+
+      <div class="name-row">
+
+        <div class="name">
+          Nana 🇹🇭
+        </div>
+
+        <div class="age">
+          25
+        </div>
+
+      </div>
+
+      <div class="location">
+        📍 Petaling Jaya
+      </div>
+
+      <div class="tags">
+
+        <span
+          class="tag"
+          data-zh="泰语"
+          data-th="ไทย">
+          泰语
+        </span>
+
+        <span
+          class="tag"
+          data-zh="英语"
+          data-th="อังกฤษ">
+          英语
+        </span>
+
+        <span
+          class="tag"
+          data-zh="吃饭"
+          data-th="ทานข้าว">
+          吃饭
+        </span>
+
+        <span
+          class="tag"
+          data-zh="电影"
+          data-th="ดูหนัง">
+          电影
+        </span>
+
+      </div>
+
+      <div class="price-row">
+
+        <div>
+
+          <div
+            class="price-label"
+            data-zh="每小时"
+            data-th="ต่อชั่วโมง">
+            每小时
+          </div>
+
+          <div class="price">
+            RM110
+          </div>
+
+        </div>
+
+        <div
+          class="minimum"
+          data-zh="最低 4 小时"
+          data-th="ขั้นต่ำ 4 ชั่วโมง">
+          最低 4 小时
+        </div>
+
+      </div>
+
+      <a
+        href="companion-detail.html?id=nana"
+        class="view-btn"
+        data-zh="查看资料"
+        data-th="ดูโปรไฟล์">
+        查看资料
+      </a>
+
+    </div>
+
+  </article>
+
+
+  <!-- PLOY -->
+
+  <article
+    class="card"
+    data-type="party girlfriend"
+    data-area="Subang Jaya"
+    data-gender="female"
+    data-language="thai chinese english"
+    data-status="available">
+
+    <div class="photo-wrap">
+
+      <img
+        src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=800&q=80"
+        alt="Ploy">
+
+      <span
+        class="status available"
+        data-zh="● Available"
+        data-th="● ว่าง">
+        ● Available
+      </span>
+
+      <span
+        class="type-badge"
+        data-zh="Party · 1日女友"
+        data-th="ปาร์ตี้ · แฟน 1 วัน">
+        Party · 1日女友
+      </span>
+
+    </div>
+
+    <div class="card-body">
+
+      <div class="name-row">
+
+        <div class="name">
+          Ploy 🇹🇭
+        </div>
+
+        <div class="age">
+          26
+        </div>
+
+      </div>
+
+      <div class="location">
+        📍 Subang Jaya
+      </div>
+
+      <div class="tags">
+
+        <span
+          class="tag"
+          data-zh="泰语"
+          data-th="ไทย">
+          泰语
+        </span>
+
+        <span
+          class="tag"
+          data-zh="华语"
+          data-th="จีน">
+          华语
+        </span>
+
+        <span
+          class="tag"
+          data-zh="英语"
+          data-th="อังกฤษ">
+          英语
+        </span>
+
+        <span
+          class="tag"
+          data-zh="活动陪同"
+          data-th="ร่วมกิจกรรม">
+          活动陪同
+        </span>
+
+      </div>
+
+      <div class="price-row">
+
+        <div>
+
+          <div
+            class="price-label"
+            data-zh="每小时"
+            data-th="ต่อชั่วโมง">
+            每小时
+          </div>
+
+          <div class="price">
+            RM130
+          </div>
+
+        </div>
+
+        <div
+          class="minimum"
+          data-zh="最低 3 小时"
+          data-th="ขั้นต่ำ 3 ชั่วโมง">
+          最低 3 小时
+        </div>
+
+      </div>
+
+      <a
+        href="companion-detail.html?id=ploy"
+        class="view-btn"
+        data-zh="查看资料"
+        data-th="ดูโปรไฟล์">
+        查看资料
+      </a>
+
+    </div>
+
+  </article>
+
+
+  <!-- JAY -->
+
+  <article
+    class="card"
+    data-type="boyfriend"
+    data-area="Kuala Lumpur"
+    data-gender="male"
+    data-language="chinese english"
+    data-status="available">
+
+    <div class="photo-wrap">
+
+      <img
+        src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80"
+        alt="Jay">
+
+      <span
+        class="status available"
+        data-zh="● Available"
+        data-th="● ว่าง">
+        ● Available
+      </span>
+
+      <span
+        class="type-badge"
+        data-zh="1日男友"
+        data-th="แฟน 1 วัน">
+        1日男友
+      </span>
+
+    </div>
+
+    <div class="card-body">
+
+      <div class="name-row">
+
+        <div class="name">
+          Jay
+        </div>
+
+        <div class="age">
+          27
+        </div>
+
+      </div>
+
+      <div class="location">
+        📍 Kuala Lumpur
+      </div>
+
+      <div class="tags">
+
+        <span
+          class="tag"
+          data-zh="华语"
+          data-th="จีน">
+          华语
+        </span>
+
+        <span
+          class="tag"
+          data-zh="英语"
+          data-th="อังกฤษ">
+          英语
+        </span>
+
+        <span
+          class="tag"
+          data-zh="吃饭"
+          data-th="ทานข้าว">
+          吃饭
+        </span>
+
+        <span
+          class="tag"
+          data-zh="逛街"
+          data-th="ช้อปปิ้ง">
+          逛街
+        </span>
+
+      </div>
+
+      <div class="price-row">
+
+        <div>
+
+          <div
+            class="price-label"
+            data-zh="每小时"
+            data-th="ต่อชั่วโมง">
+            每小时
+          </div>
+
+          <div class="price">
+            RM100
+          </div>
+
+        </div>
+
+        <div
+          class="minimum"
+          data-zh="最低 4 小时"
+          data-th="ขั้นต่ำ 4 ชั่วโมง">
+          最低 4 小时
+        </div>
+
+      </div>
+
+      <a
+        href="companion-detail.html?id=jay"
+        class="view-btn"
+        data-zh="查看资料"
+        data-th="ดูโปรไฟล์">
+        查看资料
+      </a>
+
+    </div>
+
+  </article>
+
+
+  <!-- BANK -->
+
+  <article
+    class="card"
+    data-type="boyfriend party"
+    data-area="Klang"
+    data-gender="male"
+    data-language="thai english"
+    data-status="available">
+
+    <div class="photo-wrap">
+
+      <img
+        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80"
+        alt="Bank">
+
+      <span
+        class="status available"
+        data-zh="● Available"
+        data-th="● ว่าง">
+        ● Available
+      </span>
+
+      <span
+        class="type-badge"
+        data-zh="Party · 1日男友"
+        data-th="ปาร์ตี้ · แฟน 1 วัน">
+        Party · 1日男友
+      </span>
+
+    </div>
+
+    <div class="card-body">
+
+      <div class="name-row">
+
+        <div class="name">
+          Bank 🇹🇭
+        </div>
+
+        <div class="age">
+          25
+        </div>
+
+      </div>
+
+      <div class="location">
+        📍 Klang
+      </div>
+
+      <div class="tags">
+
+        <span
+          class="tag"
+          data-zh="泰语"
+          data-th="ไทย">
+          泰语
+        </span>
+
+        <span
+          class="tag"
+          data-zh="英语"
+          data-th="อังกฤษ">
+          英语
+        </span>
+
+        <span
+          class="tag"
+          data-zh="聚会"
+          data-th="ปาร์ตี้">
+          聚会
+        </span>
+
+        <span class="tag">
+          KTV
+        </span>
+
+      </div>
+
+      <div class="price-row">
+
+        <div>
+
+          <div
+            class="price-label"
+            data-zh="每小时"
+            data-th="ต่อชั่วโมง">
+            每小时
+          </div>
+
+          <div class="price">
+            RM90
+          </div>
+
+        </div>
+
+        <div
+          class="minimum"
+          data-zh="最低 3 小时"
+          data-th="ขั้นต่ำ 3 ชั่วโมง">
+          最低 3 小时
+        </div>
+
+      </div>
+
+      <a
+        href="companion-detail.html?id=bank"
+        class="view-btn"
+        data-zh="查看资料"
+        data-th="ดูโปรไฟล์">
+        查看资料
+      </a>
+
+    </div>
+
+  </article>
+
+
+</main>
+
+
+<div class="empty" id="empty">
+
+  <h2
+    data-zh="暂时没有符合条件的资料"
+    data-th="ยังไม่มีโปรไฟล์ที่ตรงกับเงื่อนไข">
+    暂时没有符合条件的资料
+  </h2>
+
+</div>
+
+
+<footer>
+  © 2026 SABAI GO
+</footer>
+
+
+<script>
+
+  let currentType = "all";
+
+
+  /* =========================
+     LANGUAGE
+  ========================= */
+
+  function setLanguage(lang) {
+
+    localStorage.setItem(
+      "sabaigo-language",
+      lang
+    );
+
+
+    document
+      .querySelectorAll("[data-zh]")
+      .forEach(function(el) {
+
+        const value =
+          el.getAttribute(
+            "data-" + lang
+          );
+
+        if (value !== null) {
+          el.textContent = value;
+        }
+
+      });
+
+
+    document
+      .getElementById("zhBtn")
+      .classList
+      .toggle(
+        "active",
+        lang === "zh"
+      );
+
+
+    document
+      .getElementById("thBtn")
+      .classList
+      .toggle(
+        "active",
+        lang === "th"
+      );
+
+
+    document.documentElement.lang =
+      lang === "zh"
+      ? "zh"
+      : "th";
+
+  }
+
+
+  /* =========================
+     SERVICE TYPE
+  ========================= */
+
+  function setType(type, button) {
+
+    currentType = type;
+
+
+    document
+      .querySelectorAll(".tab-btn")
+      .forEach(function(btn) {
+
+        btn.classList.remove(
+          "active"
+        );
+
+      });
+
+
+    button.classList.add(
+      "active"
+    );
+
+
+    filterCards();
+
+  }
+
+
+  /* =========================
+     FILTER
+  ========================= */
+
+  function filterCards() {
+
+    const area =
+      document
+        .getElementById(
+          "areaFilter"
+        )
+        .value;
+
+
+    const gender =
+      document
+        .getElementById(
+          "genderFilter"
+        )
+        .value;
+
+
+    const language =
+      document
+        .getElementById(
+          "languageFilter"
+        )
+        .value;
+
+
+    const status =
+      document
+        .getElementById(
+          "statusFilter"
+        )
+        .value;
+
+
+    let count = 0;
+
+
+    document
+      .querySelectorAll(".card")
+      .forEach(function(card) {
+
+        const types =
+          card.dataset.type || "";
+
+        const cardArea =
+          card.dataset.area;
+
+        const cardGender =
+          card.dataset.gender;
+
+        const languages =
+          card.dataset.language || "";
+
+        const cardStatus =
+          card.dataset.status;
+
+
+        const typeMatch =
+          currentType === "all" ||
+          types.includes(
+            currentType
+          );
+
+
+        const areaMatch =
+          area === "all" ||
+          cardArea === area;
+
+
+        const genderMatch =
+          gender === "all" ||
+          cardGender === gender;
+
+
+        const languageMatch =
+          language === "all" ||
+          languages.includes(
+            language
+          );
+
+
+        const statusMatch =
+          status === "all" ||
+          cardStatus === status;
+
+
+        const show =
+          typeMatch &&
+          areaMatch &&
+          genderMatch &&
+          languageMatch &&
+          statusMatch;
+
+
+        card.style.display =
+          show
+          ? "block"
+          : "none";
+
+
+        if (show) {
+          count++;
+        }
+
+      });
+
+
+    document
+      .getElementById(
+        "resultCount"
+      )
+      .textContent = count;
+
+
+    document
+      .getElementById(
+        "empty"
+      )
+      .style.display =
+        count === 0
+        ? "block"
+        : "none";
+
+  }
+
+
+  /* =========================
+     LOAD
+  ========================= */
+
+  const savedLanguage =
+    localStorage.getItem(
+      "sabaigo-language"
+    ) || "zh";
+
+
+  setLanguage(
+    savedLanguage
+  );
+
+
+  /*
+    首页进入：
+    companions.html?type=day
+
+    自动显示 1日女友/男友
+  */
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+
+  const typeFromUrl =
+    params.get("type");
+
+
+  if (typeFromUrl === "day") {
+
+    currentType = "day";
+
+
+    document
+      .querySelectorAll(".tab-btn")
+      .forEach(function(btn) {
+
+        btn.classList.remove(
+          "active"
+        );
+
+      });
+
+
+    /*
+      day 模式同时显示
+      girlfriend + boyfriend
+    */
+
+    document
+      .querySelectorAll(".card")
+      .forEach(function(card) {
+
+        const types =
+          card.dataset.type || "";
+
+        const show =
+          types.includes(
+            "girlfriend"
+          ) ||
+          types.includes(
+            "boyfriend"
+          );
+
+        card.style.display =
+          show
+          ? "block"
+          : "none";
+
+      });
+
+  }
+
+</script>
+
+</body>
+</html>
