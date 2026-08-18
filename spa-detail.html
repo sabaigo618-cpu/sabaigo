@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SABAI GO - SPA Detail</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #050505;
+      color: white;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      padding: 15px 6%;
+
+      background: rgba(0,0,0,.94);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      font-size: 29px;
+      font-weight: 900;
+    }
+
+    .logo span {
+      color: #ff2ea6;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      color: #ccc;
+      font-size: 14px;
+    }
+
+    .lang-btn {
+      border: 1px solid #ff2ea6;
+      background: transparent;
+      color: white;
+
+      padding: 7px 13px;
+
+      border-radius: 20px;
+
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      background: #ff2ea6;
+    }
+
+    .loading,
+    .not-found {
+      padding: 100px 20px;
+      text-align: center;
+      color: #888;
+    }
+
+    .not-found {
+      display: none;
+    }
+
+    .hero {
+      max-width: 1200px;
+      margin: auto;
+
+      padding: 35px 20px 20px;
+    }
+
+    .cover-wrap {
+      position: relative;
+
+      width: 100%;
+      height: 480px;
+
+      border-radius: 24px;
+
+      overflow: hidden;
+
+      background:
+        linear-gradient(
+          135deg,
+          #25102c,
+          #111
+        );
+
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .cover-wrap img {
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+    }
+
+    .cover-placeholder {
+      width: 100%;
+      height: 100%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: #666;
+    }
+
+    .status {
+      position: absolute;
+
+      top: 18px;
+      left: 18px;
+
+      padding: 8px 13px;
+
+      border-radius: 20px;
+
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .available {
+      background: rgba(24,180,100,.92);
+    }
+
+    .off {
+      background: rgba(90,90,90,.92);
+    }
+
+    .content {
+      max-width: 1100px;
+      margin: auto;
+
+      padding: 25px 20px 80px;
+    }
+
+    .title-row {
+      margin-bottom: 22px;
+    }
+
+    .spa-name {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    .location {
+      color: #aaa;
+      font-size: 15px;
+
+      line-height: 1.7;
+    }
+
+    .section {
+      background: #0e0e0e;
+
+      border: 1px solid rgba(255,255,255,.07);
+
+      border-radius: 18px;
+
+      padding: 23px;
+
+      margin-bottom: 18px;
+    }
+
+    .section h2 {
+      font-size: 19px;
+      margin-bottom: 17px;
+    }
+
+    .info-grid {
+      display: grid;
+
+      grid-template-columns: repeat(2, 1fr);
+
+      gap: 14px;
+    }
+
+    .info-box {
+      background: #151515;
+
+      border-radius: 12px;
+
+      padding: 14px;
+    }
+
+    .label {
+      color: #777;
+      font-size: 11px;
+
+      margin-bottom: 6px;
+    }
+
+    .value {
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+
+      gap: 8px;
+    }
+
+    .tag {
+      background: #191919;
+
+      border: 1px solid #292929;
+
+      padding: 8px 11px;
+
+      border-radius: 18px;
+
+      color: #ccc;
+
+      font-size: 13px;
+    }
+
+    .price-grid {
+      display: grid;
+
+      grid-template-columns: repeat(3, 1fr);
+
+      gap: 12px;
+    }
+
+    .price-box {
+      padding: 18px;
+
+      border-radius: 14px;
+
+      text-align: center;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(139,60,255,.15),
+          rgba(255,46,166,.12)
+        );
+
+      border: 1px solid rgba(255,46,166,.18);
+    }
+
+    .duration {
+      color: #888;
+      font-size: 12px;
+
+      margin-bottom: 6px;
+    }
+
+    .price {
+      color: #ff50b7;
+
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .description {
+      color: #bbb;
+
+      font-size: 15px;
+
+      line-height: 1.8;
+
+      white-space: pre-line;
+    }
+
+    .gallery-grid {
+      display: grid;
+
+      grid-template-columns: repeat(3, 1fr);
+
+      gap: 12px;
+    }
+
+    .gallery-item {
+      aspect-ratio: 4 / 3;
+
+      border-radius: 12px;
+
+      overflow: hidden;
+
+      background: #171717;
+
+      cursor: pointer;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+
+      transition: .2s;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.03);
+    }
+
+    .whatsapp-btn {
+      display: block;
+
+      width: 100%;
+
+      margin-top: 20px;
+
+      padding: 16px;
+
+      border-radius: 12px;
+
+      text-align: center;
+
+      background:
+        linear-gradient(
+          90deg,
+          #25D366,
+          #16a34a
+        );
+
+      color: white;
+
+      font-size: 17px;
+      font-weight: bold;
+    }
+
+    .contact-note {
+      margin-top: 12px;
+
+      text-align: center;
+
+      color: #777;
+
+      font-size: 11px;
+
+      line-height: 1.6;
+    }
+
+    .lightbox {
+      display: none;
+
+      position: fixed;
+
+      inset: 0;
+
+      z-index: 3000;
+
+      background: rgba(0,0,0,.92);
+
+      align-items: center;
+      justify-content: center;
+
+      padding: 25px;
+    }
+
+    .lightbox.show {
+      display: flex;
+    }
+
+    .lightbox img {
+      max-width: 95%;
+      max-height: 90vh;
+
+      object-fit: contain;
+
+      border-radius: 12px;
+    }
+
+    .lightbox-close {
+      position: absolute;
+
+      top: 20px;
+      right: 25px;
+
+      border: none;
+
+      background: rgba(0,0,0,.65);
+
+      color: white;
+
+      width: 42px;
+      height: 42px;
+
+      border-radius: 50%;
+
+      font-size: 24px;
+
+      cursor: pointer;
+    }
+
+    footer {
+      border-top: 1px solid rgba(255,255,255,.07);
+
+      padding: 26px;
+
+      text-align: center;
+
+      color: #666;
+
+      font-size: 12px;
+    }
+
+    @media(max-width:800px) {
+
+      .cover-wrap {
+        height: 360px;
+      }
+
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+    }
+
+    @media(max-width:560px) {
+
+      .topbar {
+        padding: 13px 15px;
+      }
+
+      .logo {
+        font-size: 23px;
+      }
+
+      .back-btn {
+        display: none;
+      }
+
+      .hero {
+        padding:
+          20px 13px 10px;
+      }
+
+      .cover-wrap {
+        height: 300px;
+        border-radius: 18px;
+      }
+
+      .content {
+        padding:
+          20px 13px 60px;
+      }
+
+      .spa-name {
+        font-size: 31px;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .price-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+
+
+<header class="topbar">
+
+  <a
+    href="index.html"
+    class="logo">
+    SABAI <span>GO</span>
+  </a>
+
+  <div class="top-right">
+
+    <a
+      href="spa.html"
+      class="back-btn"
+      data-zh="← 返回 SPA"
+      data-th="← กลับไปร้าน SPA">
+      ← 返回 SPA
+    </a>
+
+    <button
+      id="zhBtn"
+      class="lang-btn active"
+      onclick="setLanguage('zh')">
+      中文
+    </button>
+
+    <button
+      id="thBtn"
+      class="lang-btn"
+      onclick="setLanguage('th')">
+      ไทย
+    </button>
+
+  </div>
+
+</header>
+
+
+<div
+  id="loading"
+  class="loading">
+  Loading...
+</div>
+
+
+<div
+  id="detailPage"
+  style="display:none;">
+
+
+  <section class="hero">
+
+    <div class="cover-wrap">
+
+      <div id="coverBox"></div>
+
+      <span
+        id="status"
+        class="status">
+      </span>
+
+    </div>
+
+  </section>
+
+
+  <main class="content">
+
+
+    <div class="title-row">
+
+      <h1
+        id="spaName"
+        class="spa-name">
+      </h1>
+
+      <div
+        id="spaLocation"
+        class="location">
+      </div>
+
+    </div>
+
+
+    <section class="section">
+
+      <h2
+        data-zh="店铺资料"
+        data-th="ข้อมูลร้าน">
+        店铺资料
+      </h2>
+
+
+      <div class="info-grid">
+
+        <div class="info-box">
+
+          <div
+            class="label"
+            data-zh="地区"
+            data-th="พื้นที่">
+            地区
+          </div>
+
+          <div
+            id="area"
+            class="value">
+          </div>
+
+        </div>
+
+
+        <div class="info-box">
+
+          <div
+            class="label"
+            data-zh="营业时间"
+            data-th="เวลาเปิด">
+            营业时间
+          </div>
+
+          <div
+            id="openingHours"
+            class="value">
+          </div>
+
+        </div>
+
+
+        <div class="info-box"
+             style="grid-column:1/-1;">
+
+          <div
+            class="label"
+            data-zh="地址"
+            data-th="ที่อยู่">
+            地址
+          </div>
+
+          <div
+            id="address"
+            class="value">
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="section">
+
+      <h2
+        data-zh="按摩项目"
+        data-th="ประเภทนวด">
+        按摩项目
+      </h2>
+
+      <div
+        id="massageTypes"
+        class="tags">
+      </div>
+
+    </section>
+
+
+    <section class="section">
+
+      <h2
+        data-zh="价格"
+        data-th="ราคา">
+        价格
+      </h2>
+
+
+      <div class="price-grid">
+
+        <div class="price-box">
+
+          <div class="duration">
+            60 MIN
+          </div>
+
+          <div
+            id="price60"
+            class="price">
+            -
+          </div>
+
+        </div>
+
+
+        <div class="price-box">
+
+          <div class="duration">
+            90 MIN
+          </div>
+
+          <div
+            id="price90"
+            class="price">
+            -
+          </div>
+
+        </div>
+
+
+        <div class="price-box">
+
+          <div class="duration">
+            120 MIN
+          </div>
+
+          <div
+            id="price120"
+            class="price">
+            -
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section class="section">
+
+      <h2
+        data-zh="店铺介绍"
+        data-th="รายละเอียดร้าน">
+        店铺介绍
+      </h2>
+
+      <p
+        id="description"
+        class="description">
+      </p>
+
+    </section>
+
+
+    <section
+      id="gallerySection"
+      class="section"
+      style="display:none;">
+
+      <h2
+        data-zh="环境照片"
+        data-th="รูปภาพร้าน">
+        环境照片
+      </h2>
+
+      <div
+        id="galleryGrid"
+        class="gallery-grid">
+      </div>
+
+    </section>
+
+
+    <a
+      href="#"
+      id="whatsappBtn"
+      class="whatsapp-btn"
+      onclick="contactWhatsApp(); return false;"
+      data-zh="💬 WhatsApp 咨询"
+      data-th="💬 ติดต่อผ่าน WhatsApp">
+      💬 WhatsApp 咨询
+    </a>
+
+
+    <div
+      class="contact-note"
+      data-zh="点击后将直接打开 WhatsApp 联系 SABAI GO。"
+      data-th="กดเพื่อเปิด WhatsApp และติดต่อ SABAI GO">
+      点击后将直接打开 WhatsApp 联系 SABAI GO。
+    </div>
+
+  </main>
+
+</div>
+
+
+<div
+  id="notFound"
+  class="not-found">
+
+  <h2
+    data-zh="找不到这家 SPA"
+    data-th="ไม่พบร้าน SPA นี้">
+    找不到这家 SPA
+  </h2>
+
+  <br>
+
+  <a
+    href="spa.html"
+    style="color:#ff4eb3;"
+    data-zh="返回 SPA 列表"
+    data-th="กลับไปหน้าร้าน SPA">
+    返回 SPA 列表
+  </a>
+
+</div>
+
+
+<div
+  id="lightbox"
+  class="lightbox"
+  onclick="closeLightbox()">
+
+  <button
+    class="lightbox-close"
+    onclick="closeLightbox()">
+    ×
+  </button>
+
+  <img
+    id="lightboxImage"
+    src=""
+    alt="SPA">
+
+</div>
+
+
+<footer>
+  © 2026 SABAI GO
+</footer>
+
+
+<script>
+
+  /* =========================================
+     SUPABASE
+  ========================================= */
+
+  const SUPABASE_URL =
+    "https://xfezhdqakmyecregqesn.supabase.co";
+
+
+  const SUPABASE_KEY =
+    "sb_publishable_AuNzm5CWOK2B2Pa7Pn_wBA_pAqHVpI2";
+
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  const WHATSAPP_NUMBER =
+    "601163803627";
+
+
+  let spa = null;
+
+  let galleryImages = [];
+
+
+  let currentLanguage =
+    localStorage.getItem(
+      "sabaigo-language"
+    ) || "zh";
+
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+
+  const slug =
+    params.get("id");
+
+
+  /* =========================================
+     LOAD SPA
+  ========================================= */
+
+  async function loadSpa() {
+
+    if (!slug) {
+
+      showNotFound();
+
+      return;
+
+    }
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("spas")
+        .select("*")
+        .eq(
+          "slug",
+          slug
+        )
+        .eq(
+          "is_published",
+          true
+        )
+        .maybeSingle();
+
+
+    if (
+      error ||
+      !data
+    ) {
+
+      console.error(
+        error
+      );
+
+      showNotFound();
+
+      return;
+
+    }
+
+
+    spa =
+      data;
+
+
+    await loadGallery();
+
+
+    document
+      .getElementById(
+        "loading"
+      )
+      .style.display =
+        "none";
+
+
+    document
+      .getElementById(
+        "detailPage"
+      )
+      .style.display =
+        "block";
+
+
+    renderSpa();
+
+  }
+
+
+  /* =========================================
+     GALLERY
+  ========================================= */
+
+  async function loadGallery() {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from(
+          "spa_images"
+        )
+        .select("*")
+        .eq(
+          "spa_id",
+          spa.id
+        )
+        .order(
+          "sort_order",
+          {
+            ascending: true
+          }
+        );
+
+
+    if (error) {
+
+      console.error(
+        error
+      );
+
+      galleryImages =
+        [];
+
+      return;
+
+    }
+
+
+    galleryImages =
+      data || [];
+
+  }
+
+
+  /* =========================================
+     RENDER SPA
+  ========================================= */
+
+  function renderSpa() {
+
+    if (!spa) {
+      return;
+    }
+
+
+    renderCover();
+
+
+    document
+      .getElementById(
+        "spaName"
+      )
+      .textContent =
+        spa.name || "-";
+
+
+    document
+      .getElementById(
+        "spaLocation"
+      )
+      .textContent =
+        "📍 " +
+        (
+          spa.area ||
+          "-"
+        ) +
+        " · " +
+        (
+          spa.address ||
+          "-"
+        );
+
+
+    document
+      .getElementById(
+        "area"
+      )
+      .textContent =
+        spa.area || "-";
+
+
+    document
+      .getElementById(
+        "address"
+      )
+      .textContent =
+        spa.address || "-";
+
+
+    document
+      .getElementById(
+        "openingHours"
+      )
+      .textContent =
+        spa.opening_hours || "-";
+
+
+    document
+      .getElementById(
+        "price60"
+      )
+      .textContent =
+        priceText(
+          spa.price_60
+        );
+
+
+    document
+      .getElementById(
+        "price90"
+      )
+      .textContent =
+        priceText(
+          spa.price_90
+        );
+
+
+    document
+      .getElementById(
+        "price120"
+      )
+      .textContent =
+        priceText(
+          spa.price_120
+        );
+
+
+    document
+      .getElementById(
+        "description"
+      )
+      .textContent =
+        currentLanguage === "zh"
+          ? (
+              spa.description_zh ||
+              ""
+            )
+          : (
+              spa.description_th ||
+              ""
+            );
+
+
+    renderMassageTypes();
+
+    renderStatus();
+
+    renderGallery();
+
+  }
+
+
+  /* =========================================
+     COVER
+  ========================================= */
+
+  function renderCover() {
+
+    const coverBox =
+      document
+        .getElementById(
+          "coverBox"
+        );
+
+
+    if (
+      spa.cover_image
+    ) {
+
+      coverBox.innerHTML = `
+        <img
+          src="${escapeHtml(spa.cover_image)}"
+          alt="${escapeHtml(spa.name || "")}">
+      `;
+
+    }
+    else {
+
+      coverBox.innerHTML = `
+        <div class="cover-placeholder">
+          No Image
+        </div>
+      `;
+
+    }
+
+  }
+
+
+  /* =========================================
+     MASSAGE TYPES
+  ========================================= */
+
+  function renderMassageTypes() {
+
+    const box =
+      document
+        .getElementById(
+          "massageTypes"
+        );
+
+
+    box.innerHTML =
+      "";
+
+
+    if (
+      !spa.massage_types
+    ) {
+
+      return;
+
+    }
+
+
+    spa.massage_types
+      .split(",")
+      .map(
+        item =>
+          item.trim()
+      )
+      .filter(Boolean)
+      .forEach(
+        function(item) {
+
+          const span =
+            document.createElement(
+              "span"
+            );
+
+
+          span.className =
+            "tag";
+
+
+          span.textContent =
+            item;
+
+
+          box.appendChild(
+            span
+          );
+
+        }
+      );
+
+  }
+
+
+  /* =========================================
+     STATUS
+  ========================================= */
+
+  function renderStatus() {
+
+    const status =
+      document
+        .getElementById(
+          "status"
+        );
+
+
+    if (
+      spa.status ===
+      "available"
+    ) {
+
+      status.className =
+        "status available";
+
+
+      status.textContent =
+        currentLanguage === "zh"
+          ? "● Available"
+          : "● เปิดบริการ";
+
+    }
+    else {
+
+      status.className =
+        "status off";
+
+
+      status.textContent =
+        currentLanguage === "zh"
+          ? "● Off"
+          : "● ปิด";
+
+    }
+
+  }
+
+
+  /* =========================================
+     GALLERY
+  ========================================= */
+
+  function renderGallery() {
+
+    const section =
+      document
+        .getElementById(
+          "gallerySection"
+        );
+
+
+    const grid =
+      document
+        .getElementById(
+          "galleryGrid"
+        );
+
+
+    grid.innerHTML =
+      "";
+
+
+    if (
+      galleryImages.length === 0
+    ) {
+
+      section.style.display =
+        "none";
+
+
+      return;
+
+    }
+
+
+    section.style.display =
+      "block";
+
+
+    galleryImages.forEach(
+      function(image) {
+
+        const div =
+          document.createElement(
+            "div"
+          );
+
+
+        div.className =
+          "gallery-item";
+
+
+        div.innerHTML = `
+          <img
+            src="${escapeHtml(image.image_url)}"
+            alt="SPA">
+        `;
+
+
+        div.addEventListener(
+          "click",
+          function(event) {
+
+            event.stopPropagation();
+
+            openLightbox(
+              image.image_url
+            );
+
+          }
+        );
+
+
+        grid.appendChild(
+          div
+        );
+
+      }
+    );
+
+  }
+
+
+  /* =========================================
+     LIGHTBOX
+  ========================================= */
+
+  function openLightbox(
+    url
+  ) {
+
+    document
+      .getElementById(
+        "lightboxImage"
+      )
+      .src =
+        url;
+
+
+    document
+      .getElementById(
+        "lightbox"
+      )
+      .classList
+      .add(
+        "show"
+      );
+
+  }
+
+
+  function closeLightbox() {
+
+    document
+      .getElementById(
+        "lightbox"
+      )
+      .classList
+      .remove(
+        "show"
+      );
+
+  }
+
+
+  /* =========================================
+     WHATSAPP
+  ========================================= */
+
+  function contactWhatsApp() {
+
+    if (!spa) {
+      return;
+    }
+
+
+    let message;
+
+
+    if (
+      currentLanguage === "zh"
+    ) {
+
+      message =
+`你好 SABAI GO，我想咨询这家 Massage & SPA。
+
+店名：${spa.name || "-"}
+地区：${spa.area || "-"}
+地址：${spa.address || "-"}
+营业时间：${spa.opening_hours || "-"}
+
+60分钟：${priceText(spa.price_60)}
+90分钟：${priceText(spa.price_90)}
+120分钟：${priceText(spa.price_120)}
+
+请问现在可以安排吗？`;
+
+    }
+    else {
+
+      message =
+`สวัสดี SABAI GO ฉันต้องการสอบถามร้าน Massage & SPA นี้
+
+ร้าน: ${spa.name || "-"}
+พื้นที่: ${spa.area || "-"}
+ที่อยู่: ${spa.address || "-"}
+เวลาเปิด: ${spa.opening_hours || "-"}
+
+60 นาที: ${priceText(spa.price_60)}
+90 นาที: ${priceText(spa.price_90)}
+120 นาที: ${priceText(spa.price_120)}
+
+ตอนนี้สามารถนัดได้ไหม?`;
+
+    }
+
+
+    const url =
+      "https://wa.me/" +
+      WHATSAPP_NUMBER +
+      "?text=" +
+      encodeURIComponent(
+        message
+      );
+
+
+    window.location.href =
+      url;
+
+  }
+
+
+  /* =========================================
+     LANGUAGE
+  ========================================= */
+
+  function setLanguage(
+    lang
+  ) {
+
+    currentLanguage =
+      lang;
+
+
+    localStorage.setItem(
+      "sabaigo-language",
+      lang
+    );
+
+
+    document
+      .querySelectorAll(
+        "[data-zh]"
+      )
+      .forEach(
+        function(el) {
+
+          const value =
+            el.getAttribute(
+              "data-" +
+              lang
+            );
+
+
+          if (
+            value !== null
+          ) {
+
+            el.textContent =
+              value;
+
+          }
+
+        }
+      );
+
+
+    document
+      .getElementById(
+        "zhBtn"
+      )
+      .classList
+      .toggle(
+        "active",
+        lang === "zh"
+      );
+
+
+    document
+      .getElementById(
+        "thBtn"
+      )
+      .classList
+      .toggle(
+        "active",
+        lang === "th"
+      );
+
+
+    document.documentElement.lang =
+      lang === "zh"
+        ? "zh"
+        : "th";
+
+
+    if (
+      spa
+    ) {
+
+      renderSpa();
+
+    }
+
+  }
+
+
+  /* =========================================
+     PRICE
+  ========================================= */
+
+  function priceText(
+    value
+  ) {
+
+    if (
+      value === null ||
+      value === undefined ||
+      value === ""
+    ) {
+
+      return "-";
+
+    }
+
+
+    return "RM" + value;
+
+  }
+
+
+  /* =========================================
+     NOT FOUND
+  ========================================= */
+
+  function showNotFound() {
+
+    document
+      .getElementById(
+        "loading"
+      )
+      .style.display =
+        "none";
+
+
+    document
+      .getElementById(
+        "detailPage"
+      )
+      .style.display =
+        "none";
+
+
+    document
+      .getElementById(
+        "notFound"
+      )
+      .style.display =
+        "block";
+
+  }
+
+
+  /* =========================================
+     SAFE HTML
+  ========================================= */
+
+  function escapeHtml(
+    value
+  ) {
+
+    return String(
+      value ?? ""
+    )
+      .replaceAll(
+        "&",
+        "&amp;"
+      )
+      .replaceAll(
+        "<",
+        "&lt;"
+      )
+      .replaceAll(
+        ">",
+        "&gt;"
+      )
+      .replaceAll(
+        '"',
+        "&quot;"
+      )
+      .replaceAll(
+        "'",
+        "&#039;"
+      );
+
+  }
+
+
+  /* =========================================
+     START
+  ========================================= */
+
+  setLanguage(
+    currentLanguage
+  );
+
+
+  loadSpa();
+
+</script>
+
+</body>
+</html>
