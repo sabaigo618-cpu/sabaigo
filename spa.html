@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SABAI GO - Massage & SPA</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #050505;
+      color: #fff;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      padding: 15px 6%;
+
+      background: rgba(0,0,0,.93);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      font-size: 29px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .logo span {
+      color: #ff2ea6;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .home-link {
+      color: #ccc;
+      font-size: 14px;
+    }
+
+    .lang-switch {
+      display: flex;
+      gap: 7px;
+    }
+
+    .lang-btn {
+      border: 1px solid #ff2ea6;
+      background: transparent;
+      color: white;
+
+      padding: 7px 13px;
+      border-radius: 20px;
+
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      background: #ff2ea6;
+    }
+
+    .page-header {
+      text-align: center;
+
+      padding: 65px 20px 45px;
+
+      background:
+        radial-gradient(
+          circle at top,
+          rgba(139,60,255,.28),
+          transparent 40%
+        ),
+        radial-gradient(
+          circle at right,
+          rgba(255,46,166,.18),
+          transparent 35%
+        );
+    }
+
+    .small-title {
+      color: #ff56b8;
+      font-size: 13px;
+      letter-spacing: 3px;
+      margin-bottom: 13px;
+    }
+
+    .page-header h1 {
+      font-size: 43px;
+      margin-bottom: 14px;
+    }
+
+    .page-header p {
+      color: #aaa;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    .filter-wrap {
+      max-width: 1200px;
+
+      margin: 28px auto 30px;
+
+      padding: 0 20px;
+    }
+
+    .filter-box {
+      background: #0d0d0d;
+
+      border: 1px solid rgba(255,255,255,.08);
+
+      padding: 18px;
+
+      border-radius: 18px;
+
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+
+      gap: 12px;
+    }
+
+    .filter-box select,
+    .filter-box input {
+      width: 100%;
+
+      background: #171717;
+      border: 1px solid #2b2b2b;
+
+      color: white;
+
+      padding: 12px;
+
+      border-radius: 10px;
+
+      outline: none;
+    }
+
+    .result-info {
+      max-width: 1200px;
+      margin: auto;
+
+      padding: 0 20px 16px;
+
+      color: #888;
+      font-size: 14px;
+    }
+
+    .cards {
+      max-width: 1200px;
+      margin: auto;
+
+      padding: 0 20px 70px;
+
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+
+      gap: 22px;
+    }
+
+    .card {
+      background: #101010;
+
+      border-radius: 18px;
+      overflow: hidden;
+
+      border: 1px solid rgba(255,255,255,.08);
+
+      transition: .25s;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+
+      border-color: rgba(255,46,166,.45);
+
+      box-shadow:
+        0 18px 45px rgba(255,46,166,.11);
+    }
+
+    .photo-wrap {
+      position: relative;
+
+      width: 100%;
+      aspect-ratio: 4 / 3;
+
+      overflow: hidden;
+
+      background:
+        linear-gradient(
+          135deg,
+          #26102c,
+          #0d0d0d
+        );
+    }
+
+    .photo-wrap img {
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+
+      display: block;
+    }
+
+    .status {
+      position: absolute;
+
+      top: 12px;
+      left: 12px;
+
+      padding: 7px 11px;
+
+      border-radius: 20px;
+
+      font-size: 12px;
+      font-weight: bold;
+
+      backdrop-filter: blur(8px);
+    }
+
+    .available {
+      background: rgba(24,180,100,.9);
+    }
+
+    .off {
+      background: rgba(90,90,90,.9);
+    }
+
+    .card-body {
+      padding: 18px;
+    }
+
+    .name {
+      font-size: 22px;
+      font-weight: bold;
+
+      margin-bottom: 9px;
+    }
+
+    .location {
+      color: #aaa;
+      font-size: 13px;
+
+      margin-bottom: 8px;
+    }
+
+    .address {
+      color: #777;
+      font-size: 12px;
+      line-height: 1.5;
+
+      margin-bottom: 12px;
+    }
+
+    .hours {
+      color: #bbb;
+      font-size: 13px;
+
+      margin-bottom: 13px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+
+      gap: 6px;
+
+      margin-bottom: 15px;
+    }
+
+    .tag {
+      background: #1b1b1b;
+      border: 1px solid #292929;
+
+      padding: 6px 9px;
+
+      border-radius: 15px;
+
+      color: #bbb;
+      font-size: 11px;
+    }
+
+    .price-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+
+      gap: 8px;
+
+      padding-top: 14px;
+
+      border-top: 1px solid rgba(255,255,255,.07);
+    }
+
+    .price-box {
+      background: #151515;
+
+      border-radius: 10px;
+
+      padding: 10px;
+
+      text-align: center;
+    }
+
+    .duration {
+      color: #777;
+      font-size: 10px;
+
+      margin-bottom: 4px;
+    }
+
+    .price {
+      color: #ff4eb3;
+
+      font-size: 17px;
+      font-weight: bold;
+    }
+
+    .view-btn {
+      display: block;
+
+      width: 100%;
+
+      margin-top: 15px;
+
+      padding: 11px;
+
+      border-radius: 9px;
+
+      text-align: center;
+
+      background:
+        linear-gradient(
+          90deg,
+          #873cff,
+          #ff2ea6
+        );
+
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    .loading,
+    .empty {
+      max-width: 1200px;
+
+      margin: auto;
+
+      padding: 60px 20px 90px;
+
+      text-align: center;
+
+      color: #777;
+    }
+
+    footer {
+      border-top: 1px solid rgba(255,255,255,.07);
+
+      padding: 28px 20px;
+
+      text-align: center;
+
+      color: #666;
+
+      font-size: 12px;
+    }
+
+    @media(max-width:1000px) {
+
+      .cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .filter-box {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+    }
+
+    @media(max-width:650px) {
+
+      .topbar {
+        padding: 13px 15px;
+      }
+
+      .logo {
+        font-size: 23px;
+      }
+
+      .home-link {
+        display: none;
+      }
+
+      .page-header {
+        padding-top: 45px;
+      }
+
+      .page-header h1 {
+        font-size: 34px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+
+        gap: 15px;
+
+        padding-left: 13px;
+        padding-right: 13px;
+      }
+
+      .filter-wrap {
+        padding: 0 13px;
+      }
+
+      .filter-box {
+        grid-template-columns: 1fr;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+  <a
+    href="index.html"
+    class="logo">
+    SABAI <span>GO</span>
+  </a>
+
+  <div class="top-right">
+
+    <a
+      href="index.html"
+      class="home-link"
+      data-zh="首页"
+      data-th="หน้าหลัก">
+      首页
+    </a>
+
+    <div class="lang-switch">
+
+      <button
+        id="zhBtn"
+        class="lang-btn active"
+        onclick="setLanguage('zh')">
+        中文
+      </button>
+
+      <button
+        id="thBtn"
+        class="lang-btn"
+        onclick="setLanguage('th')">
+        ไทย
+      </button>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<section class="page-header">
+
+  <div class="small-title">
+    SABAI GO MASSAGE & SPA
+  </div>
+
+  <h1
+    data-zh="寻找适合你的 Massage & SPA"
+    data-th="ค้นหาร้านนวด & SPA ที่เหมาะกับคุณ">
+    寻找适合你的 Massage & SPA
+  </h1>
+
+  <p
+    data-zh="浏览店铺环境、营业时间、按摩项目和价格。"
+    data-th="ดูร้าน บรรยากาศ เวลาเปิดบริการ ประเภทนวด และราคา">
+    浏览店铺环境、营业时间、按摩项目和价格。
+  </p>
+
+</section>
+
+
+<div class="filter-wrap">
+
+  <div class="filter-box">
+
+    <select
+      id="areaFilter"
+      onchange="renderCards()">
+
+      <option
+        value="all"
+        data-zh="全部地区"
+        data-th="ทุกพื้นที่">
+        全部地区
+      </option>
+
+      <option value="Kuala Lumpur">
+        Kuala Lumpur
+      </option>
+
+      <option value="Puchong">
+        Puchong
+      </option>
+
+      <option value="Petaling Jaya">
+        Petaling Jaya
+      </option>
+
+      <option value="Subang Jaya">
+        Subang Jaya
+      </option>
+
+      <option value="Klang">
+        Klang
+      </option>
+
+      <option value="Shah Alam">
+        Shah Alam
+      </option>
+
+      <option value="Setia Alam">
+        Setia Alam
+      </option>
+
+    </select>
+
+
+    <select
+      id="statusFilter"
+      onchange="renderCards()">
+
+      <option
+        value="all"
+        data-zh="全部状态"
+        data-th="ทุกสถานะ">
+        全部状态
+      </option>
+
+      <option value="available">
+        Available
+      </option>
+
+      <option value="off">
+        Off
+      </option>
+
+    </select>
+
+
+    <input
+      id="searchInput"
+      type="text"
+      oninput="renderCards()"
+      data-placeholder-zh="搜索店名 / 地址..."
+      data-placeholder-th="ค้นหาชื่อร้าน / ที่อยู่...">
+
+  </div>
+
+</div>
+
+
+<div class="result-info">
+
+  <span
+    data-zh="找到"
+    data-th="พบ">
+    找到
+  </span>
+
+  <strong id="resultCount">
+    0
+  </strong>
+
+  <span
+    data-zh="家 SPA"
+    data-th="ร้าน">
+    家 SPA
+  </span>
+
+</div>
+
+
+<div
+  id="loading"
+  class="loading">
+  Loading...
+</div>
+
+
+<main
+  class="cards"
+  id="cards"
+  style="display:none;">
+</main>
+
+
+<div
+  class="empty"
+  id="empty"
+  style="display:none;">
+
+  <h2
+    data-zh="暂时没有符合条件的 SPA"
+    data-th="ยังไม่มีร้านที่ตรงกับเงื่อนไข">
+    暂时没有符合条件的 SPA
+  </h2>
+
+</div>
+
+
+<footer>
+  © 2026 SABAI GO
+</footer>
+
+
+<script>
+
+  /* =========================================
+     SUPABASE
+  ========================================= */
+
+  const SUPABASE_URL =
+    "https://xfezhdqakmyecregqesn.supabase.co";
+
+
+  const SUPABASE_KEY =
+    "sb_publishable_AuNzm5CWOK2B2Pa7Pn_wBA_pAqHVpI2";
+
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  let spas = [];
+
+
+  let currentLanguage =
+    localStorage.getItem(
+      "sabaigo-language"
+    ) || "zh";
+
+
+  /* =========================================
+     LOAD SPAS
+  ========================================= */
+
+  async function loadSpas() {
+
+    document
+      .getElementById(
+        "loading"
+      )
+      .style.display =
+        "block";
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("spas")
+        .select("*")
+        .eq(
+          "is_published",
+          true
+        )
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        );
+
+
+    document
+      .getElementById(
+        "loading"
+      )
+      .style.display =
+        "none";
+
+
+    if (
+      error
+    ) {
+
+      console.error(
+        error
+      );
+
+
+      document
+        .getElementById(
+          "empty"
+        )
+        .style.display =
+          "block";
+
+
+      document
+        .getElementById(
+          "empty"
+        )
+        .innerHTML =
+          currentLanguage === "zh"
+            ? "<h2>暂时无法读取 SPA 资料</h2>"
+            : "<h2>ไม่สามารถโหลดข้อมูล SPA ได้</h2>";
+
+
+      return;
+
+    }
+
+
+    spas =
+      data || [];
+
+
+    renderCards();
+
+  }
+
+
+  /* =========================================
+     RENDER
+  ========================================= */
+
+  function renderCards() {
+
+    const cardsBox =
+      document
+        .getElementById(
+          "cards"
+        );
+
+
+    const empty =
+      document
+        .getElementById(
+          "empty"
+        );
+
+
+    const area =
+      document
+        .getElementById(
+          "areaFilter"
+        )
+        .value;
+
+
+    const status =
+      document
+        .getElementById(
+          "statusFilter"
+        )
+        .value;
+
+
+    const search =
+      document
+        .getElementById(
+          "searchInput"
+        )
+        .value
+        .trim()
+        .toLowerCase();
+
+
+    const filtered =
+      spas.filter(
+        function(item) {
+
+          const areaMatch =
+            area === "all" ||
+            item.area ===
+              area;
+
+
+          const statusMatch =
+            status === "all" ||
+            item.status ===
+              status;
+
+
+          const searchable =
+            (
+              (item.name || "") +
+              " " +
+              (item.address || "") +
+              " " +
+              (item.area || "")
+            )
+            .toLowerCase();
+
+
+          const searchMatch =
+            !search ||
+            searchable.includes(
+              search
+            );
+
+
+          return (
+            areaMatch &&
+            statusMatch &&
+            searchMatch
+          );
+
+        }
+      );
+
+
+    document
+      .getElementById(
+        "resultCount"
+      )
+      .textContent =
+        filtered.length;
+
+
+    cardsBox.innerHTML =
+      "";
+
+
+    if (
+      filtered.length === 0
+    ) {
+
+      cardsBox.style.display =
+        "none";
+
+
+      empty.style.display =
+        "block";
+
+
+      empty.innerHTML =
+        currentLanguage === "zh"
+          ? "<h2>暂时没有符合条件的 SPA</h2>"
+          : "<h2>ยังไม่มีร้านที่ตรงกับเงื่อนไข</h2>";
+
+
+      return;
+
+    }
+
+
+    empty.style.display =
+      "none";
+
+
+    cardsBox.style.display =
+      "grid";
+
+
+    filtered.forEach(
+      function(item) {
+
+        const card =
+          document.createElement(
+            "article"
+          );
+
+
+        card.className =
+          "card";
+
+
+        card.innerHTML = `
+
+          <div class="photo-wrap">
+
+            ${
+              item.cover_image
+                ? `
+                  <img
+                    src="${escapeHtml(item.cover_image)}"
+                    alt="${escapeHtml(item.name || "")}">
+                `
+                : `
+                  <div
+                    style="
+                      width:100%;
+                      height:100%;
+                      display:flex;
+                      align-items:center;
+                      justify-content:center;
+                      color:#666;
+                    ">
+                    No Image
+                  </div>
+                `
+            }
+
+
+            <span
+              class="status ${statusClass(item.status)}">
+
+              ${statusText(item.status)}
+
+            </span>
+
+          </div>
+
+
+          <div class="card-body">
+
+            <div class="name">
+              ${escapeHtml(item.name || "-")}
+            </div>
+
+
+            <div class="location">
+              📍 ${escapeHtml(item.area || "-")}
+            </div>
+
+
+            <div class="address">
+              ${escapeHtml(item.address || "-")}
+            </div>
+
+
+            <div class="hours">
+
+              🕒
+              ${
+                escapeHtml(
+                  item.opening_hours ||
+                  "-"
+                )
+              }
+
+            </div>
+
+
+            <div class="tags">
+
+              ${createMassageTags(
+                item.massage_types
+              )}
+
+            </div>
+
+
+            <div class="price-grid">
+
+              <div class="price-box">
+
+                <div class="duration">
+                  60 MIN
+                </div>
+
+                <div class="price">
+                  ${
+                    item.price_60 !== null &&
+                    item.price_60 !== undefined
+                      ? "RM" + item.price_60
+                      : "-"
+                  }
+                </div>
+
+              </div>
+
+
+              <div class="price-box">
+
+                <div class="duration">
+                  90 MIN
+                </div>
+
+                <div class="price">
+                  ${
+                    item.price_90 !== null &&
+                    item.price_90 !== undefined
+                      ? "RM" + item.price_90
+                      : "-"
+                  }
+                </div>
+
+              </div>
+
+
+              <div class="price-box">
+
+                <div class="duration">
+                  120 MIN
+                </div>
+
+                <div class="price">
+                  ${
+                    item.price_120 !== null &&
+                    item.price_120 !== undefined
+                      ? "RM" + item.price_120
+                      : "-"
+                  }
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <a
+              href="spa-detail.html?id=${encodeURIComponent(item.slug)}"
+              class="view-btn">
+
+              ${
+                currentLanguage === "zh"
+                  ? "查看详情"
+                  : "ดูรายละเอียด"
+              }
+
+            </a>
+
+          </div>
+
+        `;
+
+
+        cardsBox.appendChild(
+          card
+        );
+
+      }
+    );
+
+  }
+
+
+  /* =========================================
+     MASSAGE TAGS
+  ========================================= */
+
+  function createMassageTags(
+    value
+  ) {
+
+    if (!value) {
+      return "";
+    }
+
+
+    return value
+      .split(",")
+      .map(
+        item =>
+          item.trim()
+      )
+      .filter(Boolean)
+      .map(
+        function(item) {
+
+          return `
+            <span class="tag">
+              ${escapeHtml(item)}
+            </span>
+          `;
+
+        }
+      )
+      .join("");
+
+  }
+
+
+  /* =========================================
+     STATUS
+  ========================================= */
+
+  function statusClass(
+    value
+  ) {
+
+    return value ===
+      "available"
+        ? "available"
+        : "off";
+
+  }
+
+
+  function statusText(
+    value
+  ) {
+
+    if (
+      value ===
+      "available"
+    ) {
+
+      return currentLanguage === "zh"
+        ? "● Available"
+        : "● เปิดบริการ";
+
+    }
+
+
+    return currentLanguage === "zh"
+      ? "● Off"
+      : "● ปิด";
+
+  }
+
+
+  /* =========================================
+     LANGUAGE
+  ========================================= */
+
+  function setLanguage(
+    lang
+  ) {
+
+    currentLanguage =
+      lang;
+
+
+    localStorage.setItem(
+      "sabaigo-language",
+      lang
+    );
+
+
+    document
+      .querySelectorAll(
+        "[data-zh]"
+      )
+      .forEach(
+        function(el) {
+
+          const value =
+            el.getAttribute(
+              "data-" +
+              lang
+            );
+
+
+          if (
+            value !== null
+          ) {
+
+            el.textContent =
+              value;
+
+          }
+
+        }
+      );
+
+
+    document
+      .querySelectorAll(
+        "[data-placeholder-zh]"
+      )
+      .forEach(
+        function(el) {
+
+          const value =
+            el.getAttribute(
+              "data-placeholder-" +
+              lang
+            );
+
+
+          if (
+            value !== null
+          ) {
+
+            el.placeholder =
+              value;
+
+          }
+
+        }
+      );
+
+
+    document
+      .getElementById(
+        "zhBtn"
+      )
+      .classList
+      .toggle(
+        "active",
+        lang === "zh"
+      );
+
+
+    document
+      .getElementById(
+        "thBtn"
+      )
+      .classList
+      .toggle(
+        "active",
+        lang === "th"
+      );
+
+
+    document.documentElement.lang =
+      lang === "zh"
+        ? "zh"
+        : "th";
+
+
+    renderCards();
+
+  }
+
+
+  /* =========================================
+     SAFE HTML
+  ========================================= */
+
+  function escapeHtml(
+    value
+  ) {
+
+    return String(
+      value ?? ""
+    )
+      .replaceAll(
+        "&",
+        "&amp;"
+      )
+      .replaceAll(
+        "<",
+        "&lt;"
+      )
+      .replaceAll(
+        ">",
+        "&gt;"
+      )
+      .replaceAll(
+        '"',
+        "&quot;"
+      )
+      .replaceAll(
+        "'",
+        "&#039;"
+      );
+
+  }
+
+
+  /* =========================================
+     START
+  ========================================= */
+
+  setLanguage(
+    currentLanguage
+  );
+
+
+  loadSpas();
+
+</script>
+
+</body>
+</html>
