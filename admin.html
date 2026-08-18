@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SABAI GO Admin</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(132, 60, 255, .22), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(255, 46, 166, .20), transparent 30%),
+        #050505;
+      color: white;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 25px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 430px;
+
+      background: rgba(15,15,15,.96);
+
+      border: 1px solid rgba(255,255,255,.09);
+
+      border-radius: 24px;
+
+      padding: 35px;
+
+      box-shadow:
+        0 25px 70px rgba(0,0,0,.45);
+    }
+
+    .logo {
+      text-align: center;
+
+      font-size: 30px;
+      font-weight: 900;
+
+      margin-bottom: 7px;
+    }
+
+    .logo span {
+      color: #ff2ea6;
+    }
+
+    .admin-title {
+      text-align: center;
+
+      color: #888;
+
+      font-size: 12px;
+
+      letter-spacing: 4px;
+
+      margin-bottom: 35px;
+    }
+
+    .lang-switch {
+      display: flex;
+      justify-content: center;
+
+      gap: 8px;
+
+      margin-bottom: 28px;
+    }
+
+    .lang-btn {
+      border: 1px solid #ff2ea6;
+
+      background: transparent;
+
+      color: white;
+
+      padding: 7px 14px;
+
+      border-radius: 20px;
+
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      background: #ff2ea6;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field label {
+      display: block;
+
+      color: #aaa;
+
+      font-size: 13px;
+
+      margin-bottom: 8px;
+    }
+
+    .field input {
+      width: 100%;
+
+      padding: 14px;
+
+      background: #171717;
+
+      border: 1px solid #303030;
+
+      border-radius: 11px;
+
+      color: white;
+
+      outline: none;
+
+      font-size: 15px;
+    }
+
+    .field input:focus {
+      border-color: #ff2ea6;
+    }
+
+    .login-btn {
+      width: 100%;
+
+      margin-top: 8px;
+
+      padding: 15px;
+
+      border: none;
+
+      border-radius: 11px;
+
+      background:
+        linear-gradient(
+          90deg,
+          #843cff,
+          #ff2ea6
+        );
+
+      color: white;
+
+      font-size: 16px;
+      font-weight: bold;
+
+      cursor: pointer;
+    }
+
+    .login-btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .message {
+      display: none;
+
+      margin-top: 17px;
+
+      padding: 13px;
+
+      border-radius: 10px;
+
+      font-size: 13px;
+
+      line-height: 1.6;
+
+      text-align: center;
+    }
+
+    .message.error {
+      display: block;
+
+      background: rgba(220,50,80,.12);
+
+      border: 1px solid rgba(220,50,80,.35);
+
+      color: #ff9bad;
+    }
+
+    .message.success {
+      display: block;
+
+      background: rgba(30,180,100,.12);
+
+      border: 1px solid rgba(30,180,100,.35);
+
+      color: #90f0b7;
+    }
+
+    .footer {
+      text-align: center;
+
+      margin-top: 24px;
+
+      color: #555;
+
+      font-size: 11px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="login-box">
+
+    <div class="logo">
+      SABAI <span>GO</span>
+    </div>
+
+    <div class="admin-title">
+      ADMIN
+    </div>
+
+
+    <div class="lang-switch">
+
+      <button
+        id="zhBtn"
+        class="lang-btn active"
+        onclick="setLanguage('zh')">
+        中文
+      </button>
+
+      <button
+        id="thBtn"
+        class="lang-btn"
+        onclick="setLanguage('th')">
+        ไทย
+      </button>
+
+    </div>
+
+
+    <form id="loginForm">
+
+      <div class="field">
+
+        <label
+          for="adminId"
+          data-zh="管理员 ID"
+          data-th="รหัสผู้ดูแล">
+          管理员 ID
+        </label>
+
+        <input
+          id="adminId"
+          type="text"
+          autocomplete="username"
+          required>
+
+      </div>
+
+
+      <div class="field">
+
+        <label
+          for="password"
+          data-zh="密码"
+          data-th="รหัสผ่าน">
+          密码
+        </label>
+
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          required>
+
+      </div>
+
+
+      <button
+        id="loginBtn"
+        type="submit"
+        class="login-btn"
+        data-zh="登入后台"
+        data-th="เข้าสู่ระบบ">
+        登入后台
+      </button>
+
+
+      <div
+        id="message"
+        class="message">
+      </div>
+
+    </form>
+
+
+    <div class="footer">
+      © 2026 SABAI GO
+    </div>
+
+  </div>
+
+
+<script>
+
+  /* =====================================
+     1. 填入你的 Supabase 资料
+  ===================================== */
+
+  const SUPABASE_URL =
+    "YOUR_SUPABASE_URL";
+
+  const SUPABASE_KEY =
+    "YOUR_SUPABASE_PUBLISHABLE_KEY";
+
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  /* =====================================
+     2. 管理员 ID 对应内部 Email
+
+     你现在 Supabase Users 里面的 Email 是：
+     sabai618@gmail.com
+
+     所以这里先把后台 ID 设成：
+     admin618
+
+     以后你登录只需要：
+     ID: admin618
+     Password: 你在 Supabase 建用户时设的密码
+  ===================================== */
+
+  const ADMIN_ACCOUNTS = {
+
+    admin618:
+      "sabai618@gmail.com"
+
+  };
+
+
+  let currentLanguage =
+    localStorage.getItem(
+      "sabaigo-language"
+    ) || "zh";
+
+
+  function setLanguage(lang) {
+
+    currentLanguage = lang;
+
+    localStorage.setItem(
+      "sabaigo-language",
+      lang
+    );
+
+
+    document
+      .querySelectorAll("[data-zh]")
+      .forEach(function(el) {
+
+        const value =
+          el.getAttribute(
+            "data-" + lang
+          );
+
+        if (value !== null) {
+          el.textContent = value;
+        }
+
+      });
+
+
+    document
+      .getElementById("zhBtn")
+      .classList.toggle(
+        "active",
+        lang === "zh"
+      );
+
+
+    document
+      .getElementById("thBtn")
+      .classList.toggle(
+        "active",
+        lang === "th"
+      );
+
+
+    document.documentElement.lang =
+      lang === "zh"
+        ? "zh"
+        : "th";
+
+  }
+
+
+  setLanguage(
+    currentLanguage
+  );
+
+
+  /* =====================================
+     3. 如果已经登录，直接进后台
+  ===================================== */
+
+  async function checkExistingLogin() {
+
+    const {
+      data
+    } =
+      await supabaseClient
+        .auth
+        .getSession();
+
+
+    if (
+      data.session
+    ) {
+
+      window.location.href =
+        "admin-panel.html";
+
+    }
+
+  }
+
+
+  checkExistingLogin();
+
+
+  /* =====================================
+     4. 登录
+  ===================================== */
+
+  document
+    .getElementById(
+      "loginForm"
+    )
+    .addEventListener(
+      "submit",
+      async function(event) {
+
+        event.preventDefault();
+
+
+        const adminId =
+          document
+            .getElementById(
+              "adminId"
+            )
+            .value
+            .trim()
+            .toLowerCase();
+
+
+        const password =
+          document
+            .getElementById(
+              "password"
+            )
+            .value;
+
+
+        const message =
+          document
+            .getElementById(
+              "message"
+            );
+
+
+        const loginBtn =
+          document
+            .getElementById(
+              "loginBtn"
+            );
+
+
+        message.className =
+          "message";
+
+
+        message.textContent =
+          "";
+
+
+        /* ID 是否存在 */
+
+        const email =
+          ADMIN_ACCOUNTS[
+            adminId
+          ];
+
+
+        if (!email) {
+
+          message.className =
+            "message error";
+
+          message.textContent =
+            currentLanguage === "zh"
+              ? "管理员 ID 或密码错误。"
+              : "รหัสผู้ดูแลหรือรหัสผ่านไม่ถูกต้อง";
+
+          return;
+
+        }
+
+
+        loginBtn.disabled =
+          true;
+
+
+        loginBtn.textContent =
+          currentLanguage === "zh"
+            ? "登入中..."
+            : "กำลังเข้าสู่ระบบ...";
+
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .auth
+            .signInWithPassword({
+
+              email: email,
+
+              password:
+                password
+
+            });
+
+
+        if (
+          error ||
+          !data.session
+        ) {
+
+          message.className =
+            "message error";
+
+          message.textContent =
+            currentLanguage === "zh"
+              ? "管理员 ID 或密码错误。"
+              : "รหัสผู้ดูแลหรือรหัสผ่านไม่ถูกต้อง";
+
+
+          loginBtn.disabled =
+            false;
+
+
+          loginBtn.textContent =
+            currentLanguage === "zh"
+              ? "登入后台"
+              : "เข้าสู่ระบบ";
+
+          return;
+
+        }
+
+
+        message.className =
+          "message success";
+
+        message.textContent =
+          currentLanguage === "zh"
+            ? "登入成功，正在进入后台..."
+            : "เข้าสู่ระบบสำเร็จ";
+
+
+        setTimeout(
+          function() {
+
+            window.location.href =
+              "admin-panel.html";
+
+          },
+          500
+        );
+
+      }
+    );
+
+</script>
+
+</body>
+</html>
