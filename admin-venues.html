@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>SABAI GO - Venues Admin</title>
+  <title>SABAI GO - KTV / Club Admin</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -36,6 +36,10 @@
     button {
       cursor: pointer;
     }
+
+    /* ==============================
+       TOP BAR
+    ============================== */
 
     .topbar {
       position: sticky;
@@ -86,6 +90,11 @@
     .logout-btn {
       border-color: #444;
     }
+
+
+    /* ==============================
+       LAYOUT
+    ============================== */
 
     .layout {
       min-height: calc(100vh - 66px);
@@ -150,6 +159,11 @@
       padding: 30px;
     }
 
+
+    /* ==============================
+       PAGE HEADER
+    ============================== */
+
     .page-head {
       display: flex;
       justify-content: space-between;
@@ -195,6 +209,11 @@
       cursor: not-allowed;
     }
 
+
+    /* ==============================
+       STATS
+    ============================== */
+
     .stats {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -227,6 +246,11 @@
       font-weight: bold;
     }
 
+
+    /* ==============================
+       TOOLBAR
+    ============================== */
+
     .toolbar {
       display: flex;
       flex-wrap: wrap;
@@ -255,6 +279,11 @@
       min-width: 260px;
     }
 
+
+    /* ==============================
+       TABLE
+    ============================== */
+
     .table-wrap {
       overflow-x: auto;
 
@@ -267,7 +296,7 @@
 
     table {
       width: 100%;
-      min-width: 1200px;
+      min-width: 1150px;
 
       border-collapse: collapse;
     }
@@ -285,6 +314,7 @@
 
     th {
       color: #777;
+
       font-weight: normal;
 
       background: #121212;
@@ -366,6 +396,11 @@
 
       color: #777;
     }
+
+
+    /* ==============================
+       MODAL
+    ============================== */
 
     .modal {
       display: none;
@@ -488,6 +523,11 @@
       background: #1a1a1a;
     }
 
+
+    /* ==============================
+       GALLERY
+    ============================== */
+
     .gallery-title {
       margin-top: 8px;
       margin-bottom: 10px;
@@ -556,6 +596,11 @@
       font-size: 12px;
     }
 
+
+    /* ==============================
+       MESSAGE
+    ============================== */
+
     .message {
       display: none;
 
@@ -610,6 +655,11 @@
 
       border-radius: 9px;
     }
+
+
+    /* ==============================
+       MOBILE
+    ============================== */
 
     @media(max-width:900px) {
 
@@ -714,9 +764,9 @@
     <a
       href="admin-panel.html"
       class="menu-btn"
-      data-zh="👤 人物管理"
-      data-th="👤 จัดการโปรไฟล์">
-      👤 人物管理
+      data-zh="👤 Party Girl 管理"
+      data-th="👤 จัดการ Party Girl">
+      👤 Party Girl 管理
     </a>
 
     <a
@@ -728,9 +778,9 @@
     <a
       href="admin-venues.html"
       class="menu-btn active"
-      data-zh="🎤 娱乐场所"
-      data-th="🎤 สถานบันเทิง">
-      🎤 娱乐场所
+      data-zh="🎤 KTV / Club"
+      data-th="🎤 KTV / Club">
+      🎤 KTV / Club
     </a>
 
   </aside>
@@ -743,15 +793,15 @@
       <div>
 
         <h1
-          data-zh="娱乐场所管理"
-          data-th="จัดการสถานบันเทิง">
-          娱乐场所管理
+          data-zh="KTV / Club 管理"
+          data-th="จัดการ KTV / Club">
+          KTV / Club 管理
         </h1>
 
         <p
-          data-zh="管理 KTV、Pub、Bar、Club、Lounge 的资料、照片与上下架"
-          data-th="จัดการ KTV, Pub, Bar, Club และ Lounge">
-          管理 KTV、Pub、Bar、Club、Lounge 的资料、照片与上下架
+          data-zh="管理 KTV 和 Club 的资料、环境照片、状态与上下架"
+          data-th="จัดการข้อมูล KTV และ Club รูปภาพ สถานะ และการเผยแพร่">
+          管理 KTV 和 Club 的资料、环境照片、状态与上下架
         </p>
 
       </div>
@@ -789,8 +839,7 @@
 
       <div class="stat">
 
-        <div
-          class="stat-label">
+        <div class="stat-label">
           Available
         </div>
 
@@ -805,8 +854,7 @@
 
       <div class="stat">
 
-        <div
-          class="stat-label">
+        <div class="stat-label">
           Off
         </div>
 
@@ -864,20 +912,8 @@
           KTV
         </option>
 
-        <option value="pub">
-          Pub
-        </option>
-
-        <option value="bar">
-          Bar
-        </option>
-
         <option value="club">
           Club
-        </option>
-
-        <option value="lounge">
-          Lounge
         </option>
 
       </select>
@@ -1001,6 +1037,10 @@
 </div>
 
 
+<!-- ==================================================
+     ADD / EDIT MODAL
+================================================== -->
+
 <div
   class="modal"
   id="venueModal">
@@ -1035,6 +1075,9 @@
 
       <div class="form-grid">
 
+
+        <!-- SLUG -->
+
         <div class="field">
 
           <label>
@@ -1049,6 +1092,8 @@
 
         </div>
 
+
+        <!-- NAME -->
 
         <div class="field">
 
@@ -1066,6 +1111,8 @@
         </div>
 
 
+        <!-- TYPE -->
+
         <div class="field">
 
           <label
@@ -1082,26 +1129,16 @@
               KTV
             </option>
 
-            <option value="pub">
-              Pub
-            </option>
-
-            <option value="bar">
-              Bar
-            </option>
-
             <option value="club">
               Club
-            </option>
-
-            <option value="lounge">
-              Lounge
             </option>
 
           </select>
 
         </div>
 
+
+        <!-- AREA -->
 
         <div class="field">
 
@@ -1148,6 +1185,8 @@
         </div>
 
 
+        <!-- ADDRESS -->
+
         <div class="field full">
 
           <label
@@ -1166,6 +1205,8 @@
         </div>
 
 
+        <!-- OPENING HOURS -->
+
         <div class="field">
 
           <label
@@ -1182,6 +1223,8 @@
         </div>
 
 
+        <!-- PRICE RANGE -->
+
         <div class="field">
 
           <label
@@ -1197,6 +1240,8 @@
 
         </div>
 
+
+        <!-- STATUS -->
 
         <div class="field">
 
@@ -1220,6 +1265,8 @@
 
         </div>
 
+
+        <!-- PUBLISH -->
 
         <div class="field">
 
@@ -1250,6 +1297,8 @@
         </div>
 
 
+        <!-- ZH DESCRIPTION -->
+
         <div class="field full">
 
           <label
@@ -1265,6 +1314,8 @@
         </div>
 
 
+        <!-- TH DESCRIPTION -->
+
         <div class="field full">
 
           <label
@@ -1279,6 +1330,8 @@
 
         </div>
 
+
+        <!-- COVER -->
 
         <div class="field full">
 
@@ -1301,6 +1354,8 @@
 
         </div>
 
+
+        <!-- GALLERY -->
 
         <div class="field full">
 
@@ -1383,6 +1438,10 @@
 
 <script>
 
+  /* ==================================================
+     SUPABASE
+  ================================================== */
+
   const SUPABASE_URL =
     "https://xfezhdqakmyecregqesn.supabase.co";
 
@@ -1402,6 +1461,13 @@
     "venue-images";
 
 
+  const ALLOWED_TYPES =
+    [
+      "ktv",
+      "club"
+    ];
+
+
   let venues = [];
 
   let galleryImages = [];
@@ -1412,6 +1478,10 @@
       "sabaigo-language"
     ) || "zh";
 
+
+  /* ==================================================
+     AUTH
+  ================================================== */
 
   async function protectPage() {
 
@@ -1454,6 +1524,10 @@
 
   }
 
+
+  /* ==================================================
+     LANGUAGE
+  ================================================== */
 
   function setLanguage(lang) {
 
@@ -1542,10 +1616,20 @@
       );
 
 
+    document.documentElement.lang =
+      lang === "zh"
+        ? "zh"
+        : "th";
+
+
     renderTable();
 
   }
 
+
+  /* ==================================================
+     LOAD VENUES
+  ================================================== */
 
   async function loadVenues() {
 
@@ -1564,6 +1648,10 @@
       await supabaseClient
         .from("venues")
         .select("*")
+        .in(
+          "type",
+          ALLOWED_TYPES
+        )
         .order(
           "created_at",
           {
@@ -1580,7 +1668,9 @@
         "none";
 
 
-    if (error) {
+    if (
+      error
+    ) {
 
       alert(
         "Load error: " +
@@ -1598,14 +1688,36 @@
 
     await loadGalleryCounts();
 
+
     updateStats();
+
 
     renderTable();
 
   }
 
 
+  /* ==================================================
+     GALLERY COUNTS
+  ================================================== */
+
   async function loadGalleryCounts() {
+
+    if (
+      venues.length === 0
+    ) {
+
+      return;
+
+    }
+
+
+    const venueIds =
+      venues.map(
+        item =>
+          item.id
+      );
+
 
     const {
       data,
@@ -1617,10 +1729,16 @@
         )
         .select(
           "venue_id"
+        )
+        .in(
+          "venue_id",
+          venueIds
         );
 
 
-    if (error) {
+    if (
+      error
+    ) {
 
       console.error(
         error
@@ -1664,6 +1782,10 @@
 
   }
 
+
+  /* ==================================================
+     STATS
+  ================================================== */
 
   function updateStats() {
 
@@ -1712,6 +1834,10 @@
 
   }
 
+
+  /* ==================================================
+     TABLE
+  ================================================== */
 
   function renderTable() {
 
@@ -1777,12 +1903,14 @@
 
           const typeMatch =
             type === "all" ||
-            item.type === type;
+            item.type ===
+              type;
 
 
           const statusMatch =
             status === "all" ||
-            item.status === status;
+            item.status ===
+              status;
 
 
           return (
@@ -1827,8 +1955,8 @@
 
       empty.textContent =
         currentLanguage === "zh"
-          ? "暂时没有娱乐场所资料"
-          : "ยังไม่มีข้อมูลสถานบันเทิง";
+          ? "暂时没有 KTV / Club 资料"
+          : "ยังไม่มีข้อมูล KTV / Club";
 
 
       return;
@@ -2036,6 +2164,10 @@
   }
 
 
+  /* ==================================================
+     ADD
+  ================================================== */
+
   function openAddModal() {
 
     document
@@ -2059,6 +2191,14 @@
       )
       .value =
         "";
+
+
+    document
+      .getElementById(
+        "venueType"
+      )
+      .value =
+        "ktv";
 
 
     document
@@ -2134,8 +2274,8 @@
       )
       .textContent =
         currentLanguage === "zh"
-          ? "新增场所"
-          : "เพิ่มสถานที่";
+          ? "新增 KTV / Club"
+          : "เพิ่ม KTV / Club";
 
 
     document
@@ -2149,6 +2289,10 @@
 
   }
 
+
+  /* ==================================================
+     EDIT
+  ================================================== */
 
   async function editVenue(id) {
 
@@ -2193,7 +2337,11 @@
         "venueType"
       )
       .value =
-        item.type || "ktv";
+        ALLOWED_TYPES.includes(
+          item.type
+        )
+          ? item.type
+          : "ktv";
 
 
     document
@@ -2329,8 +2477,8 @@
       )
       .textContent =
         currentLanguage === "zh"
-          ? "编辑场所"
-          : "แก้ไขสถานที่";
+          ? "编辑 KTV / Club"
+          : "แก้ไข KTV / Club";
 
 
     document
@@ -2363,6 +2511,10 @@
 
   }
 
+
+  /* ==================================================
+     COVER PREVIEW
+  ================================================== */
 
   function previewCover() {
 
@@ -2398,6 +2550,10 @@
   }
 
 
+  /* ==================================================
+     GALLERY COUNT
+  ================================================== */
+
   function showSelectedGalleryCount() {
 
     const files =
@@ -2423,6 +2579,10 @@
 
   }
 
+
+  /* ==================================================
+     STORAGE UPLOAD
+  ================================================== */
 
   async function uploadImage(
     file,
@@ -2491,15 +2651,21 @@
 
 
     return {
+
       url:
         data.publicUrl,
 
       path:
         path
+
     };
 
   }
 
+
+  /* ==================================================
+     STORAGE DELETE
+  ================================================== */
 
   function getStoragePath(
     publicUrl
@@ -2569,7 +2735,9 @@
         ]);
 
 
-    if (error) {
+    if (
+      error
+    ) {
 
       console.error(
         error
@@ -2580,6 +2748,10 @@
   }
 
 
+  /* ==================================================
+     CHECK SLUG
+  ================================================== */
+
   async function checkSlug(
     slug,
     editId
@@ -2588,14 +2760,18 @@
     let query =
       supabaseClient
         .from("venues")
-        .select("id")
+        .select(
+          "id"
+        )
         .eq(
           "slug",
           slug
         );
 
 
-    if (editId) {
+    if (
+      editId
+    ) {
 
       query =
         query.neq(
@@ -2613,8 +2789,12 @@
       await query;
 
 
-    if (error) {
+    if (
+      error
+    ) {
+
       throw error;
+
     }
 
 
@@ -2625,6 +2805,10 @@
 
   }
 
+
+  /* ==================================================
+     SAVE VENUE
+  ================================================== */
 
   document
     .getElementById(
@@ -2683,12 +2867,35 @@
             );
 
 
-          if (!slug) {
+          if (
+            !slug
+          ) {
 
             throw new Error(
               currentLanguage === "zh"
                 ? "Slug 不正确。"
                 : "Slug ไม่ถูกต้อง"
+            );
+
+          }
+
+
+          const venueType =
+            document
+              .getElementById(
+                "venueType"
+              )
+              .value;
+
+
+          if (
+            !ALLOWED_TYPES.includes(
+              venueType
+            )
+          ) {
+
+            throw new Error(
+              "Only KTV / Club allowed."
             );
 
           }
@@ -2770,11 +2977,7 @@
                 .trim(),
 
             type:
-              document
-                .getElementById(
-                  "venueType"
-                )
-                .value,
+              venueType,
 
             area:
               document
@@ -2868,8 +3071,12 @@
                 );
 
 
-            if (error) {
+            if (
+              error
+            ) {
+
               throw error;
+
             }
 
           }
@@ -2892,8 +3099,12 @@
                 .single();
 
 
-            if (error) {
+            if (
+              error
+            ) {
+
               throw error;
+
             }
 
 
@@ -2902,6 +3113,8 @@
 
           }
 
+
+          /* remove old cover after DB save */
 
           if (
             coverFile &&
@@ -2916,6 +3129,8 @@
 
           }
 
+
+          /* gallery */
 
           const galleryFiles =
             Array.from(
@@ -2990,6 +3205,10 @@
       }
     );
 
+
+  /* ==================================================
+     UPLOAD GALLERY
+  ================================================== */
 
   async function uploadGalleryFiles(
     files,
@@ -3079,8 +3298,12 @@
             });
 
 
-        if (error) {
+        if (
+          error
+        ) {
+
           throw error;
+
         }
 
       }
@@ -3105,6 +3328,10 @@
 
   }
 
+
+  /* ==================================================
+     LOAD GALLERY
+  ================================================== */
 
   async function loadVenueGallery(
     venueId
@@ -3131,7 +3358,9 @@
         );
 
 
-    if (error) {
+    if (
+      error
+    ) {
 
       alert(
         error.message
@@ -3150,6 +3379,10 @@
 
   }
 
+
+  /* ==================================================
+     RENDER GALLERY
+  ================================================== */
 
   function renderGallery() {
 
@@ -3225,6 +3458,10 @@
   }
 
 
+  /* ==================================================
+     DELETE GALLERY IMAGE
+  ================================================== */
+
   async function deleteGalleryImage(
     imageId
   ) {
@@ -3269,7 +3506,9 @@
         );
 
 
-    if (error) {
+    if (
+      error
+    ) {
 
       alert(
         error.message
@@ -3298,6 +3537,10 @@
   }
 
 
+  /* ==================================================
+     PUBLISH
+  ================================================== */
+
   async function togglePublished(
     id,
     value
@@ -3322,7 +3565,9 @@
         );
 
 
-    if (error) {
+    if (
+      error
+    ) {
 
       alert(
         error.message
@@ -3337,6 +3582,10 @@
 
   }
 
+
+  /* ==================================================
+     DELETE VENUE
+  ================================================== */
 
   async function deleteVenue(
     id
@@ -3397,6 +3646,37 @@
     }
 
 
+    /* delete image DB records first */
+
+    const {
+      error: galleryDeleteError
+    } =
+      await supabaseClient
+        .from(
+          "venue_images"
+        )
+        .delete()
+        .eq(
+          "venue_id",
+          id
+        );
+
+
+    if (
+      galleryDeleteError
+    ) {
+
+      alert(
+        galleryDeleteError.message
+      );
+
+      return;
+
+    }
+
+
+    /* delete venue */
+
     const {
       error
     } =
@@ -3411,7 +3691,9 @@
         );
 
 
-    if (error) {
+    if (
+      error
+    ) {
 
       alert(
         error.message
@@ -3421,6 +3703,8 @@
 
     }
 
+
+    /* delete cover storage */
 
     if (
       venue.cover_image
@@ -3432,6 +3716,8 @@
 
     }
 
+
+    /* delete gallery storage */
 
     for (
       const image
@@ -3450,6 +3736,10 @@
   }
 
 
+  /* ==================================================
+     TYPE
+  ================================================== */
+
   function typeText(
     value
   ) {
@@ -3459,17 +3749,8 @@
       ktv:
         "KTV",
 
-      pub:
-        "Pub",
-
-      bar:
-        "Bar",
-
       club:
-        "Club",
-
-      lounge:
-        "Lounge"
+        "Club"
 
     };
 
@@ -3480,6 +3761,10 @@
 
   }
 
+
+  /* ==================================================
+     SLUG
+  ================================================== */
 
   function sanitizeSlug(
     value
@@ -3509,6 +3794,10 @@
 
   }
 
+
+  /* ==================================================
+     SAFE HTML
+  ================================================== */
 
   function escapeHtml(
     value
@@ -3540,6 +3829,10 @@
 
   }
 
+
+  /* ==================================================
+     START
+  ================================================== */
 
   async function start() {
 
