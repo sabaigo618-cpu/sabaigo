@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>SABAI GO - Companion Detail</title>
+  <title>SABAI GO - Party Girl Detail</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -25,6 +25,15 @@
       color: inherit;
       text-decoration: none;
     }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    /* =========================
+       TOPBAR
+    ========================= */
 
     .topbar {
       position: sticky;
@@ -70,13 +79,15 @@
 
       padding: 7px 13px;
       border-radius: 20px;
-
-      cursor: pointer;
     }
 
     .lang-btn.active {
       background: #ff2ea6;
     }
+
+    /* =========================
+       LAYOUT
+    ========================= */
 
     .container {
       max-width: 1150px;
@@ -93,7 +104,12 @@
     .photo-card {
       position: sticky;
       top: 95px;
+
       height: fit-content;
+    }
+
+    .main-photo-wrap {
+      position: relative;
     }
 
     .main-photo {
@@ -107,6 +123,8 @@
       background: #111;
 
       border: 1px solid rgba(255,255,255,.08);
+
+      cursor: pointer;
     }
 
     .photo-placeholder {
@@ -127,6 +145,49 @@
         );
 
       color: #666;
+    }
+
+    /* =========================
+       THUMBNAILS
+    ========================= */
+
+    .thumbs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+
+      gap: 8px;
+
+      margin-top: 10px;
+    }
+
+    .thumb-item {
+      aspect-ratio: 3 / 4;
+
+      overflow: hidden;
+
+      border-radius: 9px;
+
+      border: 1px solid #292929;
+
+      background: #151515;
+
+      cursor: pointer;
+
+      opacity: .82;
+
+      transition: .2s;
+    }
+
+    .thumb-item:hover {
+      opacity: 1;
+      border-color: #ff2ea6;
+    }
+
+    .thumb-item img {
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
     }
 
     .status-row {
@@ -162,8 +223,13 @@
 
     .profile-code {
       color: #777;
+
       font-size: 12px;
     }
+
+    /* =========================
+       INFO
+    ========================= */
 
     .name {
       font-size: 42px;
@@ -199,6 +265,7 @@
 
     .label {
       color: #777;
+
       font-size: 11px;
 
       margin-bottom: 6px;
@@ -215,6 +282,7 @@
 
     .price-note {
       color: #aaa;
+
       font-size: 13px;
     }
 
@@ -253,6 +321,7 @@
 
     .value {
       font-size: 15px;
+      line-height: 1.6;
     }
 
     .tags {
@@ -282,9 +351,52 @@
       line-height: 1.8;
 
       font-size: 15px;
+
+      white-space: pre-line;
     }
 
-    /* WhatsApp Button */
+    /* =========================
+       GALLERY
+    ========================= */
+
+    .gallery-grid {
+      display: grid;
+
+      grid-template-columns: repeat(3, 1fr);
+
+      gap: 10px;
+    }
+
+    .gallery-item {
+      aspect-ratio: 3 / 4;
+
+      overflow: hidden;
+
+      border-radius: 12px;
+
+      background: #151515;
+
+      cursor: pointer;
+
+      border: 1px solid #292929;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+
+      transition: .2s;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.03);
+    }
+
+    /* =========================
+       WHATSAPP
+    ========================= */
 
     .whatsapp-btn {
       display: block;
@@ -311,8 +423,6 @@
       font-size: 17px;
       font-weight: bold;
 
-      cursor: pointer;
-
       margin-top: 15px;
 
       transition: .2s;
@@ -320,6 +430,7 @@
 
     .whatsapp-btn:hover {
       transform: translateY(-2px);
+
       opacity: .94;
     }
 
@@ -334,6 +445,64 @@
 
       text-align: center;
     }
+
+    /* =========================
+       LIGHTBOX
+    ========================= */
+
+    .lightbox {
+      display: none;
+
+      position: fixed;
+
+      inset: 0;
+
+      z-index: 5000;
+
+      background: rgba(0,0,0,.94);
+
+      align-items: center;
+      justify-content: center;
+
+      padding: 25px;
+    }
+
+    .lightbox.show {
+      display: flex;
+    }
+
+    .lightbox img {
+      max-width: 95%;
+      max-height: 92vh;
+
+      object-fit: contain;
+
+      border-radius: 12px;
+    }
+
+    .lightbox-close {
+      position: absolute;
+
+      top: 18px;
+      right: 24px;
+
+      width: 42px;
+      height: 42px;
+
+      border: none;
+
+      border-radius: 50%;
+
+      background: rgba(255,255,255,.12);
+
+      color: white;
+
+      font-size: 25px;
+    }
+
+    /* =========================
+       OTHER
+    ========================= */
 
     .loading,
     .not-found {
@@ -359,6 +528,10 @@
 
       font-size: 12px;
     }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
 
     @media(max-width:850px) {
 
@@ -406,15 +579,30 @@
         grid-template-columns: 1fr;
       }
 
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .thumbs {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
     }
   </style>
 </head>
 
 <body>
 
+
+<!-- =========================
+     TOPBAR
+========================= -->
+
 <header class="topbar">
 
-  <a href="index.html" class="logo">
+  <a
+    href="index.html"
+    class="logo">
     SABAI <span>GO</span>
   </a>
 
@@ -447,6 +635,10 @@
 </header>
 
 
+<!-- =========================
+     LOADING
+========================= -->
+
 <div
   id="loading"
   class="loading">
@@ -454,15 +646,32 @@
 </div>
 
 
+<!-- =========================
+     PROFILE
+========================= -->
+
 <div
   id="profilePage"
   style="display:none;">
 
   <main class="container">
 
+
+    <!-- LEFT -->
+
     <div class="photo-card">
 
-      <div id="photoBox"></div>
+      <div
+        id="photoBox"
+        class="main-photo-wrap">
+      </div>
+
+
+      <div
+        id="thumbnailSection"
+        class="thumbs"
+        style="display:none;">
+      </div>
 
 
       <div class="status-row">
@@ -482,6 +691,8 @@
     </div>
 
 
+    <!-- RIGHT -->
+
     <div>
 
       <h1
@@ -496,6 +707,8 @@
       </div>
 
 
+      <!-- PRICE -->
+
       <div class="price-box">
 
         <div
@@ -505,12 +718,10 @@
           价格
         </div>
 
-
         <div
           id="price"
           class="price">
         </div>
-
 
         <div
           id="minimum"
@@ -519,6 +730,8 @@
 
       </div>
 
+
+      <!-- INFO -->
 
       <section class="section">
 
@@ -620,6 +833,8 @@
       </section>
 
 
+      <!-- LANGUAGES -->
+
       <section class="section">
 
         <h2
@@ -635,6 +850,8 @@
 
       </section>
 
+
+      <!-- SERVICES -->
 
       <section class="section">
 
@@ -652,6 +869,8 @@
       </section>
 
 
+      <!-- DESCRIPTION -->
+
       <section class="section">
 
         <h2
@@ -668,7 +887,28 @@
       </section>
 
 
-      <!-- 直接 WhatsApp -->
+      <!-- GALLERY -->
+
+      <section
+        id="gallerySection"
+        class="section"
+        style="display:none;">
+
+        <h2
+          data-zh="更多照片"
+          data-th="รูปเพิ่มเติม">
+          更多照片
+        </h2>
+
+        <div
+          id="galleryGrid"
+          class="gallery-grid">
+        </div>
+
+      </section>
+
+
+      <!-- WHATSAPP -->
 
       <a
         href="#"
@@ -695,6 +935,10 @@
 </div>
 
 
+<!-- =========================
+     NOT FOUND
+========================= -->
+
 <div
   id="notFound"
   class="not-found">
@@ -710,10 +954,34 @@
   <a
     href="companions.html"
     style="color:#ff4eb3;"
-    data-zh="返回人物列表"
-    data-th="กลับไปหน้ารายการ">
-    返回人物列表
+    data-zh="返回 Party Girl 列表"
+    data-th="กลับไปหน้ารายการ Party Girl">
+    返回 Party Girl 列表
   </a>
+
+</div>
+
+
+<!-- =========================
+     LIGHTBOX
+========================= -->
+
+<div
+  id="lightbox"
+  class="lightbox"
+  onclick="closeLightbox()">
+
+  <button
+    type="button"
+    class="lightbox-close"
+    onclick="closeLightbox()">
+    ×
+  </button>
+
+  <img
+    id="lightboxImage"
+    src=""
+    alt="Party Girl">
 
 </div>
 
@@ -752,7 +1020,12 @@
     "601163803627";
 
 
-  let profile = null;
+  let profile =
+    null;
+
+
+  let galleryImages =
+    [];
 
 
   let currentLanguage =
@@ -768,7 +1041,9 @@
 
 
   const slug =
-    params.get("id");
+    params.get(
+      "id"
+    );
 
 
   /* =========================================
@@ -791,7 +1066,9 @@
       error
     } =
       await supabaseClient
-        .from("companions")
+        .from(
+          "companions"
+        )
         .select("*")
         .eq(
           "slug",
@@ -804,14 +1081,6 @@
         .maybeSingle();
 
 
-    document
-      .getElementById(
-        "loading"
-      )
-      .style.display =
-        "none";
-
-
     if (
       error ||
       !data
@@ -820,6 +1089,7 @@
       console.error(
         error
       );
+
 
       showNotFound();
 
@@ -830,6 +1100,17 @@
 
     profile =
       data;
+
+
+    await loadGallery();
+
+
+    document
+      .getElementById(
+        "loading"
+      )
+      .style.display =
+        "none";
 
 
     document
@@ -846,6 +1127,63 @@
 
 
   /* =========================================
+     LOAD MULTIPLE IMAGES
+  ========================================= */
+
+  async function loadGallery() {
+
+    if (!profile) {
+      return;
+    }
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from(
+          "companion_images"
+        )
+        .select("*")
+        .eq(
+          "companion_id",
+          profile.id
+        )
+        .order(
+          "sort_order",
+          {
+            ascending: true
+          }
+        );
+
+
+    if (
+      error
+    ) {
+
+      console.error(
+        "Gallery error:",
+        error
+      );
+
+
+      galleryImages =
+        [];
+
+
+      return;
+
+    }
+
+
+    galleryImages =
+      data || [];
+
+  }
+
+
+  /* =========================================
      RENDER
   ========================================= */
 
@@ -856,34 +1194,11 @@
     }
 
 
-    const photoBox =
-      document
-        .getElementById(
-          "photoBox"
-        );
+    renderMainPhoto();
 
+    renderThumbnails();
 
-    if (
-      profile.cover_image
-    ) {
-
-      photoBox.innerHTML = `
-        <img
-          class="main-photo"
-          src="${escapeHtml(profile.cover_image)}"
-          alt="${escapeHtml(profile.nickname || "")}">
-      `;
-
-    }
-    else {
-
-      photoBox.innerHTML = `
-        <div class="photo-placeholder">
-          No Image
-        </div>
-      `;
-
-    }
+    renderGallery();
 
 
     document
@@ -909,7 +1224,7 @@
         "age"
       )
       .textContent =
-        profile.age ||
+        profile.age ??
         "-";
 
 
@@ -937,9 +1252,7 @@
         "serviceType"
       )
       .textContent =
-        serviceTypeText(
-          profile.service_type
-        );
+        "Party Girl";
 
 
     document
@@ -998,10 +1311,7 @@
           profile.area ||
           "-"
         ) +
-        " · " +
-        serviceTypeText(
-          profile.service_type
-        );
+        " · Party Girl";
 
 
     document
@@ -1012,11 +1322,11 @@
         currentLanguage === "zh"
           ? (
               profile.description_zh ||
-              ""
+              "-"
             )
           : (
               profile.description_th ||
-              ""
+              "-"
             );
 
 
@@ -1040,7 +1350,369 @@
 
 
   /* =========================================
-     WHATSAPP DIRECT CONTACT
+     MAIN PHOTO
+  ========================================= */
+
+  function renderMainPhoto() {
+
+    const photoBox =
+      document
+        .getElementById(
+          "photoBox"
+        );
+
+
+    if (
+      profile.cover_image
+    ) {
+
+      photoBox.innerHTML = `
+
+        <img
+          id="mainPhoto"
+          class="main-photo"
+          src="${escapeHtml(profile.cover_image)}"
+          alt="${escapeHtml(profile.nickname || "")}"
+          onclick="openLightbox('${escapeJs(profile.cover_image)}')">
+
+      `;
+
+    }
+    else {
+
+      photoBox.innerHTML = `
+
+        <div class="photo-placeholder">
+          No Image
+        </div>
+
+      `;
+
+    }
+
+  }
+
+
+  /* =========================================
+     THUMBNAILS
+  ========================================= */
+
+  function renderThumbnails() {
+
+    const section =
+      document
+        .getElementById(
+          "thumbnailSection"
+        );
+
+
+    section.innerHTML =
+      "";
+
+
+    const photos =
+      [];
+
+
+    if (
+      profile.cover_image
+    ) {
+
+      photos.push(
+        profile.cover_image
+      );
+
+    }
+
+
+    galleryImages.forEach(
+      function(image) {
+
+        if (
+          image.image_url
+        ) {
+
+          photos.push(
+            image.image_url
+          );
+
+        }
+
+      }
+    );
+
+
+    if (
+      photos.length <= 1
+    ) {
+
+      section.style.display =
+        "none";
+
+
+      return;
+
+    }
+
+
+    section.style.display =
+      "grid";
+
+
+    photos.forEach(
+      function(url) {
+
+        const div =
+          document.createElement(
+            "div"
+          );
+
+
+        div.className =
+          "thumb-item";
+
+
+        const img =
+          document.createElement(
+            "img"
+          );
+
+
+        img.src =
+          url;
+
+
+        img.alt =
+          profile.nickname ||
+          "Party Girl";
+
+
+        img.addEventListener(
+          "click",
+          function() {
+
+            changeMainPhoto(
+              url
+            );
+
+          }
+        );
+
+
+        div.appendChild(
+          img
+        );
+
+
+        section.appendChild(
+          div
+        );
+
+      }
+    );
+
+  }
+
+
+  /* =========================================
+     CHANGE MAIN PHOTO
+  ========================================= */
+
+  function changeMainPhoto(
+    url
+  ) {
+
+    const mainPhoto =
+      document
+        .getElementById(
+          "mainPhoto"
+        );
+
+
+    if (
+      mainPhoto
+    ) {
+
+      mainPhoto.src =
+        url;
+
+
+      mainPhoto.onclick =
+        function() {
+
+          openLightbox(
+            url
+          );
+
+        };
+
+    }
+
+  }
+
+
+  /* =========================================
+     GALLERY
+  ========================================= */
+
+  function renderGallery() {
+
+    const section =
+      document
+        .getElementById(
+          "gallerySection"
+        );
+
+
+    const grid =
+      document
+        .getElementById(
+          "galleryGrid"
+        );
+
+
+    grid.innerHTML =
+      "";
+
+
+    if (
+      galleryImages.length === 0
+    ) {
+
+      section.style.display =
+        "none";
+
+
+      return;
+
+    }
+
+
+    section.style.display =
+      "block";
+
+
+    galleryImages.forEach(
+      function(image) {
+
+        if (
+          !image.image_url
+        ) {
+
+          return;
+
+        }
+
+
+        const div =
+          document.createElement(
+            "div"
+          );
+
+
+        div.className =
+          "gallery-item";
+
+
+        const img =
+          document.createElement(
+            "img"
+          );
+
+
+        img.src =
+          image.image_url;
+
+
+        img.alt =
+          profile.nickname ||
+          "Party Girl";
+
+
+        div.addEventListener(
+          "click",
+          function() {
+
+            openLightbox(
+              image.image_url
+            );
+
+          }
+        );
+
+
+        div.appendChild(
+          img
+        );
+
+
+        grid.appendChild(
+          div
+        );
+
+      }
+    );
+
+  }
+
+
+  /* =========================================
+     LIGHTBOX
+  ========================================= */
+
+  function openLightbox(
+    url
+  ) {
+
+    if (!url) {
+      return;
+    }
+
+
+    document
+      .getElementById(
+        "lightboxImage"
+      )
+      .src =
+        url;
+
+
+    document
+      .getElementById(
+        "lightbox"
+      )
+      .classList
+      .add(
+        "show"
+      );
+
+
+    document.body.style.overflow =
+      "hidden";
+
+  }
+
+
+  function closeLightbox() {
+
+    document
+      .getElementById(
+        "lightbox"
+      )
+      .classList
+      .remove(
+        "show"
+      );
+
+
+    document.body.style.overflow =
+      "";
+
+  }
+
+
+  /* =========================================
+     WHATSAPP
   ========================================= */
 
   function contactWhatsApp() {
@@ -1055,7 +1727,7 @@
       "-";
 
 
-    const slug =
+    const code =
       profile.slug ||
       "-";
 
@@ -1070,6 +1742,11 @@
       0;
 
 
+    const minimum =
+      profile.minimum_hours ||
+      0;
+
+
     let message;
 
 
@@ -1078,12 +1755,13 @@
     ) {
 
       message =
-`你好 SABAI GO，我想咨询这个资料。
+`你好 SABAI GO，我想咨询这个 Party Girl 资料。
 
-人物：${nickname}
-编号：${slug}
+昵称：${nickname}
+编号：${code}
 地区：${area}
 价格：RM${price} / 小时
+最低：${minimum} 小时
 
 请问现在可以安排吗？`;
 
@@ -1091,12 +1769,13 @@
     else {
 
       message =
-`สวัสดี SABAI GO ฉันต้องการสอบถามโปรไฟล์นี้
+`สวัสดี SABAI GO ฉันต้องการสอบถาม Party Girl โปรไฟล์นี้
 
 ชื่อ: ${nickname}
-รหัส: ${slug}
+รหัส: ${code}
 พื้นที่: ${area}
 ราคา: RM${price} / ชั่วโมง
+ขั้นต่ำ: ${minimum} ชั่วโมง
 
 ตอนนี้สามารถนัดได้ไหม?`;
 
@@ -1139,18 +1818,18 @@
       !profile.languages
     ) {
 
+      box.innerHTML =
+        `<span class="tag">-</span>`;
+
+
       return;
 
     }
 
 
-    profile.languages
-      .split(",")
-      .map(
-        item =>
-          item.trim()
-      )
-      .filter(Boolean)
+    splitValues(
+      profile.languages
+    )
       .forEach(
         function(item) {
 
@@ -1203,18 +1882,22 @@
         : profile.services_th;
 
 
-    if (!value) {
+    if (
+      !value
+    ) {
+
+      box.innerHTML =
+        `<span class="tag">-</span>`;
+
+
       return;
+
     }
 
 
-    value
-      .split(",")
-      .map(
-        item =>
-          item.trim()
-      )
-      .filter(Boolean)
+    splitValues(
+      value
+    )
       .forEach(
         function(item) {
 
@@ -1360,51 +2043,8 @@
     }
 
 
-    return value || "-";
-
-  }
-
-
-  /* =========================================
-     SERVICE TYPE
-  ========================================= */
-
-  function serviceTypeText(
-    value
-  ) {
-
-    if (
-      value === "party"
-    ) {
-
-      return "Party Companion";
-
-    }
-
-
-    if (
-      value === "girlfriend"
-    ) {
-
-      return currentLanguage === "zh"
-        ? "1日女友"
-        : "แฟน 1 วัน";
-
-    }
-
-
-    if (
-      value === "boyfriend"
-    ) {
-
-      return currentLanguage === "zh"
-        ? "1日男友"
-        : "แฟน 1 วัน (ผู้ชาย)";
-
-    }
-
-
-    return value || "-";
+    return value ||
+      "-";
 
   }
 
@@ -1418,7 +2058,9 @@
   ) {
 
     const key =
-      value
+      String(
+        value || ""
+      )
         .trim()
         .toLowerCase();
 
@@ -1426,18 +2068,27 @@
     const map = {
 
       thai: {
-        zh: "泰语",
-        th: "ภาษาไทย"
+        zh:
+          "泰语",
+
+        th:
+          "ภาษาไทย"
       },
 
       chinese: {
-        zh: "华语",
-        th: "ภาษาจีน"
+        zh:
+          "华语",
+
+        th:
+          "ภาษาจีน"
       },
 
       english: {
-        zh: "英语",
-        th: "ภาษาอังกฤษ"
+        zh:
+          "英语",
+
+        th:
+          "ภาษาอังกฤษ"
       }
 
     };
@@ -1511,7 +2162,8 @@
       .classList
       .toggle(
         "active",
-        lang === "zh"
+        lang ===
+          "zh"
       );
 
 
@@ -1522,12 +2174,14 @@
       .classList
       .toggle(
         "active",
-        lang === "th"
+        lang ===
+          "th"
       );
 
 
     document.documentElement.lang =
-      lang === "zh"
+      lang ===
+        "zh"
         ? "zh"
         : "th";
 
@@ -1539,6 +2193,83 @@
       renderProfile();
 
     }
+
+  }
+
+
+  /* =========================================
+     HELPERS
+  ========================================= */
+
+  function splitValues(
+    value
+  ) {
+
+    return String(
+      value || ""
+    )
+      .split(
+        /[,，]/
+      )
+      .map(
+        item =>
+          item.trim()
+      )
+      .filter(
+        Boolean
+      );
+
+  }
+
+
+  function escapeHtml(
+    value
+  ) {
+
+    return String(
+      value ??
+      ""
+    )
+      .replaceAll(
+        "&",
+        "&amp;"
+      )
+      .replaceAll(
+        "<",
+        "&lt;"
+      )
+      .replaceAll(
+        ">",
+        "&gt;"
+      )
+      .replaceAll(
+        '"',
+        "&quot;"
+      )
+      .replaceAll(
+        "'",
+        "&#039;"
+      );
+
+  }
+
+
+  function escapeJs(
+    value
+  ) {
+
+    return String(
+      value ||
+      ""
+    )
+      .replaceAll(
+        "\\",
+        "\\\\"
+      )
+      .replaceAll(
+        "'",
+        "\\'"
+      );
 
   }
 
@@ -1571,41 +2302,6 @@
       )
       .style.display =
         "block";
-
-  }
-
-
-  /* =========================================
-     SAFE HTML
-  ========================================= */
-
-  function escapeHtml(
-    value
-  ) {
-
-    return String(
-      value ?? ""
-    )
-      .replaceAll(
-        "&",
-        "&amp;"
-      )
-      .replaceAll(
-        "<",
-        "&lt;"
-      )
-      .replaceAll(
-        ">",
-        "&gt;"
-      )
-      .replaceAll(
-        '"',
-        "&quot;"
-      )
-      .replaceAll(
-        "'",
-        "&#039;"
-      );
 
   }
 
