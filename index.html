@@ -12,6 +12,10 @@
       padding: 0;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       font-family: Arial, Helvetica, sans-serif;
       background: #050505;
@@ -23,22 +27,35 @@
       color: inherit;
     }
 
+    button {
+      font-family: inherit;
+    }
+
+    /* =========================
+       TOPBAR
+    ========================= */
+
     .topbar {
       position: sticky;
       top: 0;
       z-index: 1000;
+
       display: flex;
       align-items: center;
       justify-content: space-between;
+
       padding: 16px 7%;
-      background: rgba(0, 0, 0, 0.88);
-      backdrop-filter: blur(10px);
+
+      background: rgba(0, 0, 0, 0.9);
+
+      backdrop-filter: blur(12px);
+
       border-bottom: 1px solid rgba(255,255,255,0.08);
     }
 
     .logo {
       font-size: 30px;
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing: 1px;
     }
 
@@ -53,11 +70,16 @@
 
     .lang-btn {
       border: 1px solid #ff2ea6;
+
       background: transparent;
       color: white;
+
       padding: 8px 14px;
+
       border-radius: 20px;
+
       cursor: pointer;
+
       font-size: 14px;
     }
 
@@ -65,26 +87,63 @@
       background: #ff2ea6;
     }
 
+    /* =========================
+       HERO
+    ========================= */
+
     .hero {
       min-height: 70vh;
+
       display: flex;
       align-items: center;
       justify-content: center;
+
       text-align: center;
-      padding: 50px 20px;
+
+      padding: 55px 20px;
+
       background:
-        radial-gradient(circle at top, rgba(154, 54, 255, 0.28), transparent 35%),
-        radial-gradient(circle at bottom right, rgba(255, 46, 166, 0.22), transparent 30%),
+        radial-gradient(
+          circle at top,
+          rgba(154, 54, 255, 0.30),
+          transparent 35%
+        ),
+        radial-gradient(
+          circle at bottom right,
+          rgba(255, 46, 166, 0.24),
+          transparent 30%
+        ),
         #050505;
     }
 
     .hero-inner {
-      max-width: 850px;
+      max-width: 880px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+
+      margin-bottom: 18px;
+
+      padding: 8px 15px;
+
+      border-radius: 30px;
+
+      border: 1px solid rgba(255,46,166,.35);
+
+      background: rgba(255,46,166,.08);
+
+      color: #ff65bd;
+
+      font-size: 12px;
+      letter-spacing: 2px;
     }
 
     .hero h1 {
       font-size: 58px;
+
       margin-bottom: 18px;
+
       line-height: 1.05;
     }
 
@@ -93,19 +152,42 @@
     }
 
     .hero p {
-      font-size: 19px;
-      line-height: 1.7;
+      max-width: 760px;
+
+      margin: 0 auto 30px;
+
+      font-size: 18px;
+      line-height: 1.75;
+
       color: #cfcfcf;
-      margin-bottom: 30px;
     }
 
     .hero-btn {
       display: inline-block;
-      padding: 14px 28px;
+
+      padding: 14px 29px;
+
       border-radius: 28px;
-      background: linear-gradient(90deg, #8c3cff, #ff2ea6);
+
+      background:
+        linear-gradient(
+          90deg,
+          #8c3cff,
+          #ff2ea6
+        );
+
       font-weight: bold;
+
+      transition: .2s;
     }
+
+    .hero-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    /* =========================
+       SECTION
+    ========================= */
 
     .section {
       padding: 70px 7%;
@@ -113,63 +195,120 @@
 
     .section-title {
       text-align: center;
+
       margin-bottom: 38px;
     }
 
     .section-title h2 {
       font-size: 34px;
+
       margin-bottom: 10px;
     }
 
     .section-title p {
       color: #9f9f9f;
+
+      line-height: 1.6;
     }
 
+    /* =========================
+       SERVICES
+    ========================= */
+
     .service-grid {
+      max-width: 1250px;
+
+      margin: auto;
+
       display: grid;
       grid-template-columns: repeat(4, 1fr);
+
       gap: 22px;
     }
 
     .service-card {
-      min-height: 290px;
+      position: relative;
+
+      min-height: 310px;
+
       padding: 28px;
+
       border-radius: 22px;
+
       background:
-        linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+        linear-gradient(
+          145deg,
+          rgba(255,255,255,0.08),
+          rgba(255,255,255,0.02)
+        );
+
       border: 1px solid rgba(255,255,255,0.08);
+
       transition: 0.25s;
-      cursor: pointer;
+
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: "";
+
+      position: absolute;
+
+      width: 140px;
+      height: 140px;
+
+      border-radius: 50%;
+
+      top: -60px;
+      right: -60px;
+
+      background: rgba(255,46,166,.08);
+
+      filter: blur(4px);
     }
 
     .service-card:hover {
       transform: translateY(-7px);
+
       border-color: rgba(255,46,166,0.45);
-      box-shadow: 0 15px 40px rgba(255,46,166,0.12);
+
+      box-shadow:
+        0 15px 40px rgba(255,46,166,0.12);
     }
 
     .service-icon {
       font-size: 48px;
+
       margin-bottom: 24px;
     }
 
     .service-card h3 {
       font-size: 23px;
+
       margin-bottom: 12px;
     }
 
     .service-card p {
       color: #bdbdbd;
+
       line-height: 1.7;
+
       font-size: 15px;
     }
 
     .service-link {
       margin-top: 25px;
+
       display: inline-block;
+
       color: #ff65bd;
+
       font-weight: bold;
     }
+
+    /* =========================
+       HOW
+    ========================= */
 
     .how {
       background: #0b0b0b;
@@ -177,26 +316,40 @@
 
     .steps {
       max-width: 900px;
+
       margin: auto;
+
       display: grid;
       grid-template-columns: repeat(3, 1fr);
+
       gap: 25px;
     }
 
     .step {
       text-align: center;
+
       padding: 25px;
     }
 
     .step-number {
       width: 48px;
       height: 48px;
+
       margin: 0 auto 15px;
+
       display: flex;
       align-items: center;
       justify-content: center;
+
       border-radius: 50%;
-      background: linear-gradient(135deg, #8c3cff, #ff2ea6);
+
+      background:
+        linear-gradient(
+          135deg,
+          #8c3cff,
+          #ff2ea6
+        );
+
       font-weight: bold;
     }
 
@@ -206,29 +359,50 @@
 
     .step p {
       color: #a8a8a8;
+
       line-height: 1.6;
+
       font-size: 14px;
     }
 
+    /* =========================
+       FOOTER
+    ========================= */
+
     footer {
       padding: 28px 7%;
+
       text-align: center;
+
       color: #777;
+
       border-top: 1px solid rgba(255,255,255,0.07);
+
       font-size: 13px;
     }
 
-    @media (max-width: 900px) {
+    /* =========================
+       TABLET
+    ========================= */
+
+    @media (max-width: 1000px) {
+
       .service-grid {
         grid-template-columns: repeat(2, 1fr);
       }
 
       .hero h1 {
-        font-size: 44px;
+        font-size: 46px;
       }
+
     }
 
+    /* =========================
+       MOBILE
+    ========================= */
+
     @media (max-width: 600px) {
+
       .topbar {
         padding: 14px 18px;
       }
@@ -237,8 +411,15 @@
         font-size: 24px;
       }
 
+      .lang-btn {
+        padding: 7px 11px;
+      }
+
       .hero {
         min-height: 62vh;
+
+        padding-left: 18px;
+        padding-right: 18px;
       }
 
       .hero h1 {
@@ -253,247 +434,479 @@
         padding: 50px 18px;
       }
 
+      .section-title h2 {
+        font-size: 29px;
+      }
+
       .service-grid,
       .steps {
         grid-template-columns: 1fr;
       }
+
+      .service-card {
+        min-height: auto;
+      }
+
     }
   </style>
 </head>
 
 <body>
 
+  <!-- =========================
+       TOPBAR
+  ========================= -->
+
   <header class="topbar">
-    <div class="logo">SABAI <span>GO</span></div>
+
+    <a href="index.html" class="logo">
+      SABAI <span>GO</span>
+    </a>
 
     <div class="lang-switch">
-      <button class="lang-btn active" id="zhBtn" onclick="setLanguage('zh')">
+
+      <button
+        class="lang-btn active"
+        id="zhBtn"
+        onclick="setLanguage('zh')">
         中文
       </button>
-      <button class="lang-btn" id="thBtn" onclick="setLanguage('th')">
+
+      <button
+        class="lang-btn"
+        id="thBtn"
+        onclick="setLanguage('th')">
         ไทย
       </button>
+
     </div>
+
   </header>
 
+
+  <!-- =========================
+       HERO
+  ========================= -->
+
   <section class="hero">
+
     <div class="hero-inner">
+
+      <div class="hero-badge">
+        SABAI GO
+      </div>
+
       <h1>
-        <span data-zh="今晚，轻松一点"
-              data-th="คืนนี้... สบายๆ กันหน่อย">
+
+        <span
+          data-zh="今晚，轻松一点"
+          data-th="คืนนี้... สบายๆ กันหน่อย">
+
           今晚，轻松一点
+
         </span>
+
       </h1>
 
       <p
-        data-zh="发现陪伴、按摩 SPA、KTV、酒吧、Club 与夜生活资讯，让你更简单找到适合今晚的选择。"
-        data-th="ค้นหาเพื่อนเที่ยว ร้านนวด สปา KTV บาร์ คลับ และสถานที่ท่องเที่ยวยามค่ำคืนได้ง่ายขึ้น">
-        发现陪伴、按摩 SPA、KTV、酒吧、Club 与夜生活资讯，让你更简单找到适合今晚的选择。
+        data-zh="发现 Party Girl、Massage & SPA、KTV / Club 与下水运动服务，让你更简单找到适合自己的选择。"
+        data-th="ค้นหา Party Girl, Massage & SPA, KTV / Club และบริการกิจกรรมทางน้ำได้ง่ายขึ้น">
+
+        发现 Party Girl、Massage & SPA、KTV / Club 与下水运动服务，让你更简单找到适合自己的选择。
+
       </p>
 
-      <a href="#services"
-         class="hero-btn"
-         data-zh="开始寻找"
-         data-th="เริ่มค้นหา">
+      <a
+        href="#services"
+        class="hero-btn"
+        data-zh="开始寻找"
+        data-th="เริ่มค้นหา">
+
         开始寻找
+
       </a>
+
     </div>
+
   </section>
 
-  <section class="section" id="services">
+
+  <!-- =========================
+       SERVICES
+  ========================= -->
+
+  <section
+    class="section"
+    id="services">
 
     <div class="section-title">
+
       <h2
         data-zh="选择你需要的服务"
         data-th="เลือกบริการที่คุณต้องการ">
+
         选择你需要的服务
+
       </h2>
 
       <p
-        data-zh="快速浏览不同类别"
-        data-th="ค้นหาบริการแต่ละประเภทได้อย่างรวดเร็ว">
-        快速浏览不同类别
+        data-zh="浏览资料、地区、价格、照片和详细介绍"
+        data-th="ดูข้อมูล พื้นที่ ราคา รูปภาพ และรายละเอียด">
+
+        浏览资料、地区、价格、照片和详细介绍
+
       </p>
+
     </div>
+
 
     <div class="service-grid">
 
-      <a href="companions.html" class="service-card">
-        <div class="service-icon">🥂</div>
+
+      <!-- PARTY GIRL -->
+
+      <a
+        href="companions.html"
+        class="service-card">
+
+        <div class="service-icon">
+          🥂
+        </div>
 
         <h3
-          data-zh="Party Companion"
-          data-th="เพื่อนปาร์ตี้">
-          Party Companion
+          data-zh="Party Girl"
+          data-th="Party Girl">
+
+          Party Girl
+
         </h3>
 
         <p
-          data-zh="陪喝酒、KTV、聚会、活动陪同。查看个人资料、地区、语言与每小时价格。"
-          data-th="เพื่อนดื่ม KTV ปาร์ตี้ และร่วมกิจกรรม ดูโปรไฟล์ พื้นที่ ภาษา และราคาต่อชั่วโมง">
-          陪喝酒、KTV、聚会、活动陪同。查看个人资料、地区、语言与每小时价格。
+          data-zh="浏览人物资料、地区、语言、价格、状态和详细介绍。"
+          data-th="ดูโปรไฟล์ พื้นที่ ภาษา ราคา สถานะ และรายละเอียด">
+
+          浏览人物资料、地区、语言、价格、状态和详细介绍。
+
         </p>
 
-        <div class="service-link"
-             data-zh="查看资料 →"
-             data-th="ดูโปรไฟล์ →">
+        <div
+          class="service-link"
+          data-zh="查看资料 →"
+          data-th="ดูโปรไฟล์ →">
+
           查看资料 →
+
         </div>
+
       </a>
 
-      <a href="massage.html" class="service-card">
-        <div class="service-icon">💆</div>
+
+      <!-- MASSAGE SPA -->
+
+      <a
+        href="spa.html"
+        class="service-card">
+
+        <div class="service-icon">
+          💆
+        </div>
 
         <h3
-          data-zh="按摩 & SPA"
-          data-th="นวด & สปา">
-          按摩 & SPA
+          data-zh="Massage & SPA"
+          data-th="Massage & SPA">
+
+          Massage & SPA
+
         </h3>
 
         <p
-          data-zh="寻找附近正规按摩院和 SPA，查看营业时间、项目、价格和环境。"
-          data-th="ค้นหาร้านนวดและสปา ดูเวลาเปิดบริการ รายการ ราคา และบรรยากาศ">
-          寻找附近正规按摩院和 SPA，查看营业时间、项目、价格和环境。
+          data-zh="查看店铺环境、地址、营业时间、按摩项目和 60 / 90 / 120 分钟价格。"
+          data-th="ดูร้าน ที่อยู่ เวลาเปิด ประเภทนวด และราคา 60 / 90 / 120 นาที">
+
+          查看店铺环境、地址、营业时间、按摩项目和 60 / 90 / 120 分钟价格。
+
         </p>
 
-        <div class="service-link"
-             data-zh="查看店家 →"
-             data-th="ดูร้านค้า →">
+        <div
+          class="service-link"
+          data-zh="查看店家 →"
+          data-th="ดูร้าน →">
+
           查看店家 →
+
         </div>
+
       </a>
 
-      <a href="nightlife.html" class="service-card">
-        <div class="service-icon">🍸</div>
+
+      <!-- KTV CLUB -->
+
+      <a
+        href="nightlife.html"
+        class="service-card">
+
+        <div class="service-icon">
+          🎤
+        </div>
 
         <h3
-          data-zh="娱乐场所"
-          data-th="สถานบันเทิง">
-          娱乐场所
+          data-zh="KTV / Club"
+          data-th="KTV / Club">
+
+          KTV / Club
+
         </h3>
 
         <p
-          data-zh="KTV、Pub、Bar、Club、Lounge，一次浏览地区、消费范围和营业时间。"
-          data-th="KTV ผับ บาร์ คลับ และเลานจ์ พร้อมข้อมูลพื้นที่ ราคา และเวลาเปิดบริการ">
-          KTV、Pub、Bar、Club、Lounge，一次浏览地区、消费范围和营业时间。
+          data-zh="浏览 KTV 与 Club，查看地区、地址、营业时间、消费范围和环境照片。"
+          data-th="ดู KTV และ Club พร้อมพื้นที่ ที่อยู่ เวลาเปิด ช่วงราคา และรูปภาพ">
+
+          浏览 KTV 与 Club，查看地区、地址、营业时间、消费范围和环境照片。
+
         </p>
 
-        <div class="service-link"
-             data-zh="开始探索 →"
-             data-th="เริ่มค้นหา →">
+        <div
+          class="service-link"
+          data-zh="开始探索 →"
+          data-th="เริ่มค้นหา →">
+
           开始探索 →
+
         </div>
+
       </a>
 
-      <a href="companions.html?type=day" class="service-card">
-        <div class="service-icon">❤️</div>
+
+      <!-- WATER SERVICE -->
+
+      <a
+        href="water.html"
+        class="service-card">
+
+        <div class="service-icon">
+          🌊
+        </div>
 
         <h3
-          data-zh="1日女友 / 男友"
-          data-th="เพื่อนเที่ยว 1 วัน">
-          1日女友 / 男友
+          data-zh="下水运动服务"
+          data-th="บริการกิจกรรมทางน้ำ">
+
+          下水运动服务
+
         </h3>
 
         <p
-          data-zh="吃饭、逛街、电影、活动陪同，可按小时或套餐查看与预约。"
-          data-th="กินข้าว ช้อปปิ้ง ดูหนัง หรือร่วมกิจกรรม สามารถเลือกแบบรายชั่วโมงหรือแพ็กเกจ">
-          吃饭、逛街、电影、活动陪同，可按小时或套餐查看与预约。
+          data-zh="浏览服务资料、地区、语言、价格、可安排时间和更多照片。"
+          data-th="ดูข้อมูลบริการ พื้นที่ ภาษา ราคา เวลาที่ว่าง และรูปเพิ่มเติม">
+
+          浏览服务资料、地区、语言、价格、可安排时间和更多照片。
+
         </p>
 
-        <div class="service-link"
-             data-zh="查看陪伴 →"
-             data-th="ดูเพื่อนเที่ยว →">
-          查看陪伴 →
+        <div
+          class="service-link"
+          data-zh="查看服务 →"
+          data-th="ดูบริการ →">
+
+          查看服务 →
+
         </div>
+
       </a>
 
     </div>
+
   </section>
+
+
+  <!-- =========================
+       HOW TO USE
+  ========================= -->
 
   <section class="section how">
 
     <div class="section-title">
+
       <h2
         data-zh="怎样使用 SABAI GO"
         data-th="ใช้งาน SABAI GO อย่างไร">
+
         怎样使用 SABAI GO
+
       </h2>
+
     </div>
+
 
     <div class="steps">
 
+
+      <!-- STEP 1 -->
+
       <div class="step">
-        <div class="step-number">1</div>
+
+        <div class="step-number">
+          1
+        </div>
 
         <h3
           data-zh="浏览"
           data-th="ค้นหา">
+
           浏览
+
         </h3>
 
         <p
-          data-zh="选择你感兴趣的人物、店家或娱乐场所。"
-          data-th="เลือกโปรไฟล์ ร้านค้า หรือสถานที่ที่คุณสนใจ">
-          选择你感兴趣的人物、店家或娱乐场所。
+          data-zh="选择 Party Girl、Massage & SPA、KTV / Club 或下水运动服务。"
+          data-th="เลือก Party Girl, Massage & SPA, KTV / Club หรือบริการกิจกรรมทางน้ำ">
+
+          选择 Party Girl、Massage & SPA、KTV / Club 或下水运动服务。
+
         </p>
+
       </div>
 
+
+      <!-- STEP 2 -->
+
       <div class="step">
-        <div class="step-number">2</div>
+
+        <div class="step-number">
+          2
+        </div>
 
         <h3
-          data-zh="选择"
-          data-th="เลือก">
-          选择
+          data-zh="查看资料"
+          data-th="ดูรายละเอียด">
+
+          查看资料
+
         </h3>
 
         <p
-          data-zh="查看价格、地区、时间和详细资料。"
-          data-th="ดูราคา พื้นที่ เวลา และรายละเอียด">
-          查看价格、地区、时间和详细资料。
+          data-zh="查看照片、地区、价格、营业时间或可安排时间等详细资料。"
+          data-th="ดูรูปภาพ พื้นที่ ราคา เวลาเปิด หรือเวลาที่สามารถนัดได้">
+
+          查看照片、地区、价格、营业时间或可安排时间等详细资料。
+
         </p>
+
       </div>
 
+
+      <!-- STEP 3 -->
+
       <div class="step">
-        <div class="step-number">3</div>
+
+        <div class="step-number">
+          3
+        </div>
 
         <h3
-          data-zh="提交预约"
-          data-th="ส่งคำขอจอง">
-          提交预约
+          data-zh="WhatsApp 联系"
+          data-th="ติดต่อ WhatsApp">
+
+          WhatsApp 联系
+
         </h3>
 
         <p
-          data-zh="填写日期、时间和需求，由我们与你确认安排。"
-          data-th="กรอกวันที่ เวลา และรายละเอียด จากนั้นเราจะติดต่อเพื่อยืนยัน">
-          填写日期、时间和需求，由我们与你确认安排。
+          data-zh="在详情页直接点击 WhatsApp 按钮联系 SABAI GO 查询更多资料。"
+          data-th="กดปุ่ม WhatsApp ในหน้ารายละเอียดเพื่อติดต่อ SABAI GO ได้โดยตรง">
+
+          在详情页直接点击 WhatsApp 按钮联系 SABAI GO 查询更多资料。
+
         </p>
+
       </div>
 
     </div>
+
   </section>
+
 
   <footer>
     © 2026 SABAI GO
   </footer>
 
+
   <script>
+
     function setLanguage(lang) {
-      localStorage.setItem("sabaigo-language", lang);
 
-      document.querySelectorAll("[data-zh]").forEach(function(el) {
-        el.textContent = el.getAttribute("data-" + lang);
-      });
+      localStorage.setItem(
+        "sabaigo-language",
+        lang
+      );
 
-      document.getElementById("zhBtn").classList.toggle("active", lang === "zh");
-      document.getElementById("thBtn").classList.toggle("active", lang === "th");
 
-      document.documentElement.lang = lang === "zh" ? "zh" : "th";
+      document
+        .querySelectorAll(
+          "[data-zh]"
+        )
+        .forEach(
+          function(el) {
+
+            const text =
+              el.getAttribute(
+                "data-" + lang
+              );
+
+
+            if (
+              text !== null
+            ) {
+
+              el.textContent =
+                text;
+
+            }
+
+          }
+        );
+
+
+      document
+        .getElementById(
+          "zhBtn"
+        )
+        .classList
+        .toggle(
+          "active",
+          lang === "zh"
+        );
+
+
+      document
+        .getElementById(
+          "thBtn"
+        )
+        .classList
+        .toggle(
+          "active",
+          lang === "th"
+        );
+
+
+      document.documentElement.lang =
+        lang === "zh"
+          ? "zh"
+          : "th";
+
     }
 
-    const savedLanguage =
-      localStorage.getItem("sabaigo-language") || "zh";
 
-    setLanguage(savedLanguage);
+    const savedLanguage =
+      localStorage.getItem(
+        "sabaigo-language"
+      ) || "zh";
+
+
+    setLanguage(
+      savedLanguage
+    );
+
   </script>
 
 </body>
