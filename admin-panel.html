@@ -661,11 +661,11 @@
     <div class="modal-head">
 
       <h2
-        id="modalTitle"
-        data-zh="新增人物"
-        data-th="เพิ่มโปรไฟล์">
-        新增人物
-      </h2>
+  id="modalTitle"
+  data-zh="新增 Party Girl"
+  data-th="เพิ่ม Party Girl">
+  新增 Party Girl
+</h2>
 
       <button class="close-btn" onclick="closeModal()">×</button>
 
@@ -1459,45 +1459,14 @@
   }
 
 
-  function serviceTypeLabel(
-    value
-  ) {
+  function serviceTypeLabel(value) {
 
-    if (
-      value === "party"
-    ) {
+  return "Party Girl";
 
-      return "Party Companion";
-
-    }
+}
 
 
-    if (
-      value === "girlfriend"
-    ) {
-
-      return currentLanguage === "zh"
-        ? "1日女友"
-        : "แฟน 1 วัน";
-
-    }
-
-
-    if (
-      value === "boyfriend"
-    ) {
-
-      return currentLanguage === "zh"
-        ? "1日男友"
-        : "แฟน 1 วัน (ผู้ชาย)";
-
-    }
-
-
-    return value || "-";
-
-  }
-
+  
 
   /* =========================================
      ADD / EDIT MODAL
@@ -1576,8 +1545,8 @@
       )
       .textContent =
         currentLanguage === "zh"
-          ? "新增人物"
-          : "เพิ่มโปรไฟล์";
+  ? "新增 Party Girl"
+  : "เพิ่ม Party Girl";
 
 
     document
@@ -1783,8 +1752,8 @@
       )
       .textContent =
         currentLanguage === "zh"
-          ? "编辑人物"
-          : "แก้ไขโปรไฟล์";
+  ? "编辑 Party Girl"
+  : "แก้ไข Party Girl";
 
 
     document
