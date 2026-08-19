@@ -481,42 +481,51 @@
 
   <aside class="sidebar">
 
-    <div class="menu-title">
-      ADMIN
-    </div>
+  <div class="menu-title">
+    ADMIN
+  </div>
 
-    <button
-      class="menu-btn active"
-      data-zh="👤 人物管理"
-      data-th="👤 จัดการโปรไฟล์">
-      👤 人物管理
-    </button>
+  <!-- PARTY GIRL -->
+  <a
+    href="admin-panel.html"
+    class="menu-btn active"
+    style="display:block;text-decoration:none;"
+    data-zh="👤 Party Girl 管理"
+    data-th="👤 จัดการ Party Girl">
+    👤 Party Girl 管理
+  </a>
 
-    <button
-      class="menu-btn"
-      data-zh="📋 预约订单（稍后）"
-      data-th="📋 รายการจอง (ภายหลัง)">
-      📋 预约订单（稍后）
-    </button>
+  <!-- MASSAGE & SPA -->
+  <a
+    href="admin-spa.html"
+    class="menu-btn"
+    style="display:block;text-decoration:none;"
+    data-zh="💆 Massage & SPA"
+    data-th="💆 Massage & SPA">
+    💆 Massage & SPA
+  </a>
 
-<a
-  href="admin-spa.html"
-  class="menu-btn"
-  style="display:block;text-decoration:none;"
-  data-zh="💆 Massage & SPA"
-  data-th="💆 Massage & SPA">
-  💆 Massage & SPA
-</a>
+  <!-- KTV / CLUB -->
+  <a
+    href="admin-venues.html"
+    class="menu-btn"
+    style="display:block;text-decoration:none;"
+    data-zh="🎤 KTV / Club"
+    data-th="🎤 KTV / Club">
+    🎤 KTV / Club
+  </a>
 
-    <button
-      class="menu-btn"
-      data-zh="🍸 娱乐场所（稍后）"
-      data-th="🍸 สถานบันเทิง (ภายหลัง)">
-      🍸 娱乐场所（稍后）
-    </button>
+  <!-- WATER -->
+  <a
+    href="admin-water.html"
+    class="menu-btn"
+    style="display:block;text-decoration:none;"
+    data-zh="🌊 下水运动服务"
+    data-th="🌊 บริการกิจกรรมทางน้ำ">
+    🌊 下水运动服务
+  </a>
 
-  </aside>
-
+</aside>
 
   <main class="main">
 
@@ -524,10 +533,10 @@
 
       <div>
         <h1
-          data-zh="人物管理"
-          data-th="จัดการโปรไฟล์">
-          人物管理
-        </h1>
+  data-zh="Party Girl 管理"
+  data-th="จัดการ Party Girl">
+  Party Girl 管理
+</h1>
 
         <p
           data-zh="新增、编辑、价格、状态、照片与上下架"
@@ -539,9 +548,9 @@
       <button
         class="primary-btn"
         onclick="openAddModal()"
-        data-zh="+ 新增人物"
-        data-th="+ เพิ่มโปรไฟล์">
-        + 新增人物
+        data-zh="+ 新增 Party Girl"
+       data-th="+ เพิ่ม Party Girl">
+       + 新增 Party Girl
       </button>
 
     </div>
@@ -737,22 +746,16 @@
 
 
         <div class="field">
-          <label
-            data-zh="服务类型"
-            data-th="ประเภทบริการ">
-            服务类型
-          </label>
+  <label
+    data-zh="服务类型"
+    data-th="ประเภทบริการ">
+    服务类型
+  </label>
 
-          <select id="serviceType" required>
-            <option value="party">Party Companion</option>
-            <option value="girlfriend" data-zh="1日女友" data-th="แฟน 1 วัน">
-              1日女友
-            </option>
-            <option value="boyfriend" data-zh="1日男友" data-th="แฟน 1 วัน (ผู้ชาย)">
-              1日男友
-            </option>
-          </select>
-        </div>
+  <select id="serviceType" required>
+    <option value="party">Party Girl</option>
+  </select>
+</div>
 
 
         <div class="field">
