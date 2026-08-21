@@ -550,61 +550,25 @@
 <section class="page-header">
 
   <div class="small-title">
-    SABAI GO COMPANION
-  </div>
+  SABAI GO PARTY GIRL
+</div>
 
-  <h1
-    data-zh="找到今晚适合你的陪伴"
-    data-th="ค้นหาเพื่อนที่เหมาะกับคืนนี้">
-    找到今晚适合你的陪伴
-  </h1>
+<h1
+  data-zh="寻找适合你的 Party Girl"
+  data-th="ค้นหา Party Girl ที่เหมาะกับคุณ">
+  寻找适合你的 Party Girl
+</h1>
 
-  <p
-    data-zh="浏览资料、地区、语言、服务类型与价格，再选择适合你的陪伴。"
-    data-th="ดูโปรไฟล์ พื้นที่ ภาษา ประเภทบริการ และราคา ก่อนเลือกเพื่อนที่เหมาะกับคุณ">
-    浏览资料、地区、语言、服务类型与价格，再选择适合你的陪伴。
-  </p>
+<p
+  data-zh="浏览资料、地区、语言、服务内容与价格，选择适合你的 Party Girl。"
+  data-th="ดูโปรไฟล์ พื้นที่ ภาษา บริการ และราคา เพื่อเลือก Party Girl ที่เหมาะกับคุณ">
+  浏览资料、地区、语言、服务内容与价格，选择适合你的 Party Girl。
+</p>
 
 </section>
 
 
-<div class="service-tabs">
 
-  <button
-    class="tab-btn active"
-    data-type="all"
-    onclick="setType('all',this)"
-    data-zh="全部"
-    data-th="ทั้งหมด">
-    全部
-  </button>
-
-  <button
-    class="tab-btn"
-    data-type="party"
-    onclick="setType('party',this)">
-    Party Companion
-  </button>
-
-  <button
-    class="tab-btn"
-    data-type="girlfriend"
-    onclick="setType('girlfriend',this)"
-    data-zh="1日女友"
-    data-th="แฟน 1 วัน">
-    1日女友
-  </button>
-
-  <button
-    class="tab-btn"
-    data-type="boyfriend"
-    onclick="setType('boyfriend',this)"
-    data-zh="1日男友"
-    data-th="แฟน 1 วัน (ผู้ชาย)">
-    1日男友
-  </button>
-
-</div>
 
 
 <div class="filter-wrap">
@@ -807,8 +771,6 @@
 
   let companions = [];
 
-  let currentType =
-    "all";
 
   let currentLanguage =
     localStorage.getItem(
@@ -924,12 +886,6 @@
       companions.filter(
         function(item) {
 
-          const typeMatch =
-            currentType === "all" ||
-            item.service_type ===
-              currentType;
-
-
           const areaMatch =
             area === "all" ||
             item.area === area;
@@ -962,14 +918,12 @@
               status;
 
 
-          return (
-            typeMatch &&
-            areaMatch &&
-            genderMatch &&
-            languageMatch &&
-            statusMatch
-          );
-
+         return (
+  areaMatch &&
+  genderMatch &&
+  languageMatch &&
+  statusMatch
+);
         }
       );
 
@@ -1285,47 +1239,9 @@
   }
 
 
-  function serviceTypeText(
-    type
-  ) {
-
-    if (
-      type ===
-      "party"
-    ) {
-
-      return "Party Companion";
-
-    }
-
-
-    if (
-      type ===
-      "girlfriend"
-    ) {
-
-      return currentLanguage === "zh"
-        ? "1日女友"
-        : "แฟน 1 วัน";
-
-    }
-
-
-    if (
-      type ===
-      "boyfriend"
-    ) {
-
-      return currentLanguage === "zh"
-        ? "1日男友"
-        : "แฟน 1 วัน (ผู้ชาย)";
-
-    }
-
-
-    return type || "-";
-
-  }
+  function serviceTypeText() {
+  return "Party Girl";
+}
 
 
   function statusClass(
@@ -1385,40 +1301,6 @@
     return currentLanguage === "zh"
       ? "● Off"
       : "● ปิด";
-
-  }
-
-
-  function setType(
-    type,
-    button
-  ) {
-
-    currentType =
-      type;
-
-
-    document
-      .querySelectorAll(
-        ".tab-btn"
-      )
-      .forEach(
-        function(btn) {
-
-          btn.classList.remove(
-            "active"
-          );
-
-        }
-      );
-
-
-    button.classList.add(
-      "active"
-    );
-
-
-    renderCards();
 
   }
 
@@ -1524,51 +1406,6 @@
         "'",
         "&#039;"
       );
-
-  }
-
-
-  const params =
-    new URLSearchParams(
-      window.location.search
-    );
-
-
-  const typeFromUrl =
-    params.get(
-      "type"
-    );
-
-
-  if (
-    typeFromUrl ===
-    "party"
-  ) {
-
-    currentType =
-      "party";
-
-  }
-
-
-  if (
-    typeFromUrl ===
-    "girlfriend"
-  ) {
-
-    currentType =
-      "girlfriend";
-
-  }
-
-
-  if (
-    typeFromUrl ===
-    "boyfriend"
-  ) {
-
-    currentType =
-      "boyfriend";
 
   }
 
