@@ -91,34 +91,41 @@
        HERO
     ========================= */
 
-    .hero {
-      min-height: 70vh;
+   .hero {
+  min-height: 70vh;
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-      text-align: center;
+  text-align: center;
 
-      padding: 55px 20px;
+  padding: 55px 20px;
 
-      background:
-        radial-gradient(
-          circle at top,
-          rgba(154, 54, 255, 0.30),
-          transparent 35%
-        ),
-        radial-gradient(
-          circle at bottom right,
-          rgba(255, 46, 166, 0.24),
-          transparent 30%
-        ),
-        #050505;
-    }
+  position: relative;
 
-    .hero-inner {
-      max-width: 880px;
-    }
+  background:
+    linear-gradient(
+      rgba(0, 0, 0, 0.58),
+      rgba(0, 0, 0, 0.72)
+    ),
+    radial-gradient(
+      circle at center,
+      rgba(126, 38, 210, 0.16),
+      transparent 55%
+    ),
+    url("images/home-hero.jpg");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hero-inner {
+  max-width: 880px;
+  position: relative;
+  z-index: 2;
+}
 
     .hero-badge {
       display: inline-block;
